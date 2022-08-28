@@ -1,5 +1,0 @@
-.page-header {
-  @include pxRem(padding, 10);
-  background: map-get($colors, bg-gray);
-  text-align: center;
-}

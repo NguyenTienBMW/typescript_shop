@@ -1,0 +1,66 @@
+.banner-section {
+	margin-top: 40px;
+}
+.banner-content {
+	min-height: 215px;
+	background-position: top center;
+	background-size: cover;
+	padding: 20px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+}
+.banner-cate {
+	text-transform: uppercase;
+	color: #252525;
+	letter-spacing: 3px;
+	font-size: 13px;
+	font-weight: 500;
+}
+.banner-subtitle {
+	font-size: 22px;
+	line-height: 1.75;
+	color: #252525;
+	font-weight: 500;
+}
+.banner-price {
+}
+.banner-discount-badge {
+	padding: 4px 0;
+	line-height: 18px;
+	margin-bottom: 4px;
+	color: #7a7a7a;
+	font-weight: 500;
+}
+.banner-price-wrap {
+	display: flex;
+	align-items: center;
+}
+.banner-price-new {
+	color: #ff6000;
+	font-size: 24px;
+}
+.banner-price-old {
+	margin-left: 15px;
+	font-size: 20px;
+	text-decoration: line-through;
+	color: #7d7d7d;
+}
+
+// Banner2
+.banner2 {
+	margin-top: 100px;
+}
+.banner2-wrap {
+	display: flex;
+}
+.banner-left {
+	height: 65vh;
+	width: 25%;
+}
+.banner-right {
+	width: 75%;
+	.banner-heading {
+		padding: 20px;
+	}
+}

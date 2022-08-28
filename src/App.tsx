@@ -1,9 +1,10 @@
 import React from "react";
-import { Home } from "./pages/Features";
+import { Home, ProductDetail } from "./pages/Features";
 export default function App() {
 	return (
 		<>
-			<Home></Home>
+			{/* <Home></Home> */}
+			<ProductDetail />
 		</>
 	);
 }

@@ -60,6 +60,6 @@ export default function Product_List() {
 					<ProductItem />
 				</SwiperSlide>
 			</Swiper>
-		</section >
-	)
+		</section>
+	);
 }

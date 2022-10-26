@@ -11,6 +11,7 @@ import Label2 from "./Label2";
 import Contact from "./Contact";
 import Footer from "./Footer";
 import BreadCrumb from "./BreadCrumb";
+import Card from "./Card";
 
 export {
 	Header,
@@ -26,4 +27,5 @@ export {
 	Contact,
 	Footer,
 	BreadCrumb,
+	Card,
 };

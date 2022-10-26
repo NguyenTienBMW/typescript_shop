@@ -4,7 +4,7 @@ import ProductList from "../../../components/Product";
 function Home() {
 	return (
 		<>
-			<Header />
+			{/* <Header /> */}
 			<Carousel />
 			<Banner />
 			<div className="container">
@@ -29,9 +29,6 @@ function Home() {
 			</div>
 			<div className="container">
 				<Contact />
-			</div>
-			<div className="container">
-				<Footer />
 			</div>
 		</>
 	);

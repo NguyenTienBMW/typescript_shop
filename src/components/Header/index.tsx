@@ -1,4 +1,12 @@
 import React from "react";
+import {
+	BrowserRouter as Router,
+	Switch,
+	Route,
+	Link,
+	useRouteMatch,
+	useParams
+} from "react-router-dom";
 import Logo from "../../assets/images/logo.png";
 function Header() {
 	return (
@@ -100,7 +108,7 @@ function Header() {
 												<a href="/" className="header-main-icon-link"><i className="fa-solid fa-heart"></i></a>
 											</li>
 											<li className="header-main-icon-item">
-												<a href="/" className="header-main-icon-link"><i className="fa-solid fa-bag-shopping"></i></a>
+												<Link to="/cart" className="header-main-icon-link"><i className="fa-solid fa-bag-shopping"></i></Link>
 											</li>
 										</ul>
 									</div>

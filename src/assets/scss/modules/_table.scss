@@ -1,8 +1,33 @@
 table {
-  width: 100%;
-  border-collapse: collapse;
-  th, td {
-    @include pxRem(padding, 10);
-    border: 1px solid map-get($colors, border-gray);
-  }
+	width: 100%;
+	border-collapse: collapse;
+	th,
+	td {
+		@include pxRem(padding, 10);
+		border: 1px solid map-get($colors, border-gray);
+	}
+	.pro-img {
+		width: 40px;
+		height: 40px;
+	}
+}
+.table-wrap {
+	margin-top: 100px;
+	.product-quanlity {
+		display: flex;
+		.input-quanlity {
+			width: 38px;
+			height: 40px;
+			border-radius: 0;
+			text-align: center;
+			font-size: 16px;
+		}
+		.btn-quanlity-dec,
+		.btn-quanlity-inc {
+			border-radius: 0;
+			background-color: #fff;
+			border: 1px solid#ccc;
+			color: #000;
+		}
+	}
 }

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 // Import Swiper React components
 import { Swiper, SwiperSlide } from "swiper/react";
 
@@ -14,8 +14,23 @@ import Camera from "../../assets/images/camera.jpg";
 import Oppo from "../../assets/images/oppo.jpg";
 import Mayxoay from "../../assets/images/mayxoay.jpg";
 import ProductItem from "../ProductItem";
+import axios from "axios";
+import { QueryAPI } from "../../access";
+import {ProductModel} from '../../model'
 
 export default function Product_List() {
+	const [productList, setProductList] = useState<ProductModel[]>([])
+
+	useEffect(() => {
+		axios.get(QueryAPI.product.all())
+		.then(res => {
+			setProductList(res.data)
+		}) 
+		.catch(err => {
+			console.log(err)
+		})
+	}, [])
+
 	return (
 		<section className="product-section">
 			<h2 className="product-heading">Products Of The Week</h2>
@@ -24,10 +39,10 @@ export default function Product_List() {
 				spaceBetween={20}
 				slidesPerGroup={3}
 				loopFillGroupWithBlank={true}
-				autoplay={{
-					delay: 2500,
-					disableOnInteraction: false,
-				}}
+				// autoplay={{
+				// 	delay: 2500,
+				// 	disableOnInteraction: false,
+				// }}
 				// pagination={{
 				// 	clickable: true,
 				// }}
@@ -35,30 +50,13 @@ export default function Product_List() {
 				// modules={[Pagination, Navigation]}
 				modules={[Autoplay]}
 			>
-				<SwiperSlide className="swiper-item">
-					<ProductItem />
-				</SwiperSlide>
-				<SwiperSlide className="swiper-item">
-					<ProductItem />
-				</SwiperSlide>
-				<SwiperSlide className="swiper-item">
-					<ProductItem />
-				</SwiperSlide>
-				<SwiperSlide className="swiper-item">
-					<ProductItem />
-				</SwiperSlide>
-				<SwiperSlide className="swiper-item">
-					<ProductItem />
-				</SwiperSlide>
-				<SwiperSlide className="swiper-item">
-					<ProductItem />
-				</SwiperSlide>
-				<SwiperSlide className="swiper-item">
-					<ProductItem />
-				</SwiperSlide>
-				<SwiperSlide className="swiper-item">
-					<ProductItem />
-				</SwiperSlide>
+				{productList.map((product) => {
+					return <SwiperSlide className="swiper-item">
+						<ProductItem 
+							data={product}
+						/>
+					</SwiperSlide>
+				})}
 			</Swiper>
 		</section>
 	);

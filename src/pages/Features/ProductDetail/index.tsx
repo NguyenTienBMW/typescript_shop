@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Slider from "react-slick";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import {
@@ -7,6 +7,7 @@ import {
 	Product_List,
 	Contact,
 	Footer,
+	Comment,
 } from "../../../components";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -16,10 +17,34 @@ import abstract01 from "../../../assets/images/abstract01.jpg";
 import abstract02 from "../../../assets/images/abstract02.jpg";
 import abstract03 from "../../../assets/images/abstract03.jpg";
 import abstract04 from "../../../assets/images/abstract04.jpg";
+import {
+	BrowserRouter as Router,
+	Switch,
+	Route,
+	Link,
+	useParams
+  } from "react-router-dom";
+import axios from "axios";
+import { QueryAPI } from "../../../access";
+import { ProductModel } from "../../../model";
+import './style.scss'
 
 export default function ProductDetail() {
+	const { product_id } = useParams<any>();
+	const [product, setProduct] = useState<ProductModel>();
+
+	useEffect(() => {
+		axios.get(QueryAPI.product.single(product_id))
+		.then(res => {
+			setProduct(res.data)
+		})
+		.catch(err => {
+			console.log(err)
+		})
+	}, [product_id])
+
 	var settings = {
-		customPaging: function (i) {
+		customPaging: function (i: any) {
 			return (
 				<a href="/">
 					<img
@@ -41,32 +66,20 @@ export default function ProductDetail() {
 			<div className="product-detail">
 				<div className="container">
 					<div className="row">
-						<div className="col-6">
-							<Slider {...settings}>
-								<div>
-									<img src={abstract01} alt="slide-img" />
-								</div>
-								<div>
-									<img src={abstract02} alt="slide-img" />
-								</div>
-								<div>
-									<img src={abstract03} alt="slide-img" />
-								</div>
-								<div>
-									<img src={abstract04} alt="slide-img" />
-								</div>
-							</Slider>
+						<div className="col-6 image-wrap">
+							<div className="image-product" style={{
+								backgroundImage: `url(${product?.image})`,
+								backgroundRepeat: "no-repeat",
+								backgroundPosition: 'center',
+								backgroundSize: 'contain'
+							}}/>
 						</div>
 						<div className="col-6">
 							<p className="product-stock">37 In stock</p>
-							<h3 className="product-name">High-Speed HDMI</h3>
-							<p className="product-price">$99.00</p>
+							<h3 className="product-name">{product?.name}</h3>
+							<p className="product-price">${product?.price}</p>
 							<p className="product-desc">
-								Pellentesque habitant morbi tristique senectus et netus et
-								malesuada fames ac turpis egestas. Vestibulum tortor quam,
-								feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu
-								libero sit amet quam egestas semper. Aenean ultricies mi vitae
-								est. Mauris placerat eleifend leo.
+								{product?.description}
 							</p>
 							<hr className="sprate-block" />
 							<div className="product-buy">
@@ -127,6 +140,9 @@ export default function ProductDetail() {
 								</div>
 							</TabPanel>
 						</Tabs>
+					</div>
+					<div className="comment-container">
+						<Comment />
 					</div>
 					<div className="product_viewed">
 						<Product_List />

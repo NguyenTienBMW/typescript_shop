@@ -1,17 +1,21 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import Oppo from "../../assets/images/oppo.jpg";
 import Smartphone from "../../assets/images/smartphone.jpg";
-export default function ProductItem() {
+import { ProductModel } from "../../model";
+
+type ProductItemProps = {
+	data?: ProductModel
+}
+export default function ProductItem({data}: ProductItemProps) {
 	return (
 		<>
 			<div className="product">
 				<div className="product-img-wrap">
 					<img
-						src={Smartphone}
+						src={data?.image}
 						alt="arrow"
 						className="product-img"
-						onMouseOver={e => (e.currentTarget.src = Oppo)}
-						onMouseOut={e => (e.currentTarget.src = Smartphone)}
 					/>
 					<div className="product-action">
 						<ul className="product-action-list">
@@ -47,15 +51,13 @@ export default function ProductItem() {
 						<i className="fa-solid fa-star"></i>
 					</div>
 					<div className="product-title">
-						<h3>
-							<a href="#" className="product-link">
-								Classical Headphone
-							</a>
-						</h3>
+						<Link to={`/product-detail/${data?.id}`} className="product-link">
+							{data?.name}
+						</Link>
 					</div>
 					<div className="product-price">
-						<div className="product-price-old">$15.00</div>
-						<div className="product-price-new">$99.00</div>
+						{/* <div className="product-price-old">$15.00</div> */}
+						<div className="product-price-new">{`$${data?.price}`}</div>
 					</div>
 				</div>
 				<ul className="product-badge">

@@ -97,11 +97,12 @@ function Header() {
 										<ul className="header-main-icon-list">
 											<li className="header-main-icon-item">
 												<a href="/" className="header-main-icon-link has-badge">
+													hellllllllllllllllllllll
 													<i className="fa-solid fa-user"></i>
 													<span className="badge">0</span>
 												</a>
 											</li>
-											<li className="header-main-icon-item">
+											{/* <li className="header-main-icon-item">
 												<a href="/" className="header-main-icon-link"><i className="fa-solid fa-arrows-rotate"></i></a>
 											</li>
 											<li className="header-main-icon-item">
@@ -109,7 +110,7 @@ function Header() {
 											</li>
 											<li className="header-main-icon-item">
 												<Link to="/cart" className="header-main-icon-link"><i className="fa-solid fa-bag-shopping"></i></Link>
-											</li>
+											</li> */}
 										</ul>
 									</div>
 								</div>

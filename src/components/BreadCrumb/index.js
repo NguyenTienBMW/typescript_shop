@@ -7,7 +7,7 @@ export default function BreadCrumb() {
 				<h1 className="breadcrumb-heading">shop</h1>
 				<ul className="breadcumb-list">
 					<li className="breadcrumb-item">
-						<a href="" className="breadcrumb-link">
+						<a href="/" className="breadcrumb-link">
 							Home
 						</a>
 					</li>

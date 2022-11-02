@@ -12,6 +12,8 @@ import Contact from "./Contact";
 import Footer from "./Footer";
 import BreadCrumb from "./BreadCrumb";
 import Card from "./Card";
+export {Comment} from "./Comment";
+export {notificationSuccess} from "./Noti";
 
 export {
 	Header,

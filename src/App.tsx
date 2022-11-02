@@ -3,17 +3,33 @@ import {
 	BrowserRouter as Router,
 	Switch,
 	Route,
-	Link
+	Link,
+	Redirect
 } from "react-router-dom";
 import { Footer, Header } from "./components";
+import { UserModel } from "./model/user";
 import { Cart, Checkout, Home, ProductDetail } from "./pages/Features";
+import { Login } from "./pages/Features/login";
+import { Register } from "./pages/Features/Register";
+
 export default function App() {
+	const user: any = localStorage.getItem('user');
+	const userInfo: UserModel = JSON.parse(user);
+
+	const location = window.location.pathname;
+
 	return (
 		<>
 			<Router>
-				<Header />
+				{(!location.includes('login') && !location.includes('register'))  ? <Header /> : <></>}
 				<Switch>
-					<Route path="/product-detail">
+					<Route path="/login">
+						<Login />
+					</Route>
+					<Route path="/register">
+						<Register />
+					</Route>
+					<Route path="/product-detail/:product_id">
 						<ProductDetail />
 					</Route>
 					<Route path="/cart">
@@ -26,7 +42,7 @@ export default function App() {
 						<Home />
 					</Route>
 				</Switch>
-				<Footer />
+				{(!location.includes('login') && !location.includes('register')) ? <Footer /> : <></>}
 			</Router>
 		</>
 	);

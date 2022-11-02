@@ -1,0 +1,106 @@
+.comment-list {
+    margin-top: 15px;
+    .comment-item {
+        display: flex;
+        gap: 10px;
+        .image {
+            img {
+                height: 50px;
+                width: 50px;
+                border-radius: 50%;
+            }
+        }
+        .information {
+            display: flex;
+            flex-direction: column;
+            font-size: 14px;
+            .user-name {
+                font-weight: bold;
+                font-size: 16px;
+            }
+            .content {
+                font-size: 16px;
+            }
+        }
+    }
+    .comment-item ~ .comment-item {
+        margin-top: 15px;
+    }
+}
+.write-comment {
+    margin-top: 15px;
+    .input-wrapper {
+        width: 50%;
+        display: flex;
+        gap: 5px;
+        margin-top: 10px;
+        input {
+            flex: 1;
+            height: 35px;
+            border-radius: 3px;
+            padding: 0 15px;
+            border: 1px solid;
+        }
+        button {
+            background-color: #ff6000;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            padding: 0 10px;
+            cursor: pointer;
+            &:hover {
+                opacity: 0.9;
+            }
+        }
+    }
+}
+
+.star-rating {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    gap: 3px;
+    font-size: 20px;
+    span {
+        font-size: 16px;
+        display: block;
+        margin-right: 5px;
+    }
+    button {
+        background-color: transparent;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        // gap: 3px;
+    }
+    .on {
+        color: #ffa800;
+    }
+    .off {
+        color: #ccc;
+    }
+}
+
+.suggest-list {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 10px;
+    .suggest {
+        padding: 5px 15px;
+        border-radius: 20px;
+        border: 1px solid black;
+        cursor: pointer;
+         &:hover {
+            background-color: #ff6000;
+            color: white;
+         }
+    }
+}
+
+.render-start {
+    .fa-solid.fa-star {
+        color: #ffa800;
+    }
+}

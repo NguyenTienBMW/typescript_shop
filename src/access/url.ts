@@ -24,6 +24,10 @@ export const QueryAPI = {
 }
 
 export const Command = {
+    user: {
+        register: () => buildUrl(['register']),
+        login: () => buildUrl(['login'])
+    },
     comment: {
         add: () => buildUrl(['rate','create_rate'])
     }

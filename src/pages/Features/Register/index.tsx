@@ -1,13 +1,38 @@
 import { Button, Checkbox, Form, Input, Radio } from 'antd';
+import axios from 'axios';
 import React, {useState} from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory  } from 'react-router-dom';
+import { Command } from '../../../access';
+import { notificationSuccess } from '../../../components';
+import { notificationError } from '../../../components/Noti';
 import './style.scss';
 
 export const Register = () => {
+    const history = useHistory();
     const [gender, setGender] = useState<string>('');
+    const [error, setError] = useState<string>('');
     const genderOption = ['Nam', 'Nữ', 'Khác'];
+
+
     const onFinish = (values: any) => {
-        console.log('Success:', values);
+        axios({
+            method: 'post',
+            url: Command.user.register(),
+            headers: {}, 
+            data: values
+        })
+        .then((response) => {
+            if(response.data.code !== '404') {
+                notificationSuccess({description: 'Bạn đã đăng ký tài khoản thành công'});
+                history.push('/login')
+                setError('')
+            }else {
+                notificationError({description: response.data.message});
+                setError(response.data.message)
+            }
+        }, (error) => {
+            alert(error)
+        });
     };
 
     const onFinishFailed = (errorInfo: any) => {
@@ -57,6 +82,7 @@ export const Register = () => {
             >
                 <Input.Password placeholder='Enter password' />
             </Form.Item>
+            {error && <div className='error-form'>{error}</div>}
 
             <Form.Item>
                 <Button type="primary" htmlType="submit">Đăng ký</Button>

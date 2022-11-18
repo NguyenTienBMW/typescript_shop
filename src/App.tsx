@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {
 	BrowserRouter as Router,
 	Switch,
@@ -15,9 +15,9 @@ import { Register } from "./pages/Features/Register";
 export default function App() {
 	const user: any = localStorage.getItem('user');
 	const userInfo: UserModel = JSON.parse(user);
-
 	const location = window.location.pathname;
 
+	console.log('vo')
 	return (
 		<>
 			<Router>

@@ -74,8 +74,11 @@ const WriteCommentComponent = ({
 }) => {
     const [rating, setRating] = useState<number>(0);
     const [content, setContent] = useState<string>('');
+    const user: any = localStorage.getItem('user');
+	const userInfo: UserModel = JSON.parse(user);
 
     const handleSubmitComment = () => {
+
         axios({
             method: 'post',
             url: Command.comment.add(),
@@ -101,17 +104,20 @@ const WriteCommentComponent = ({
 
     return <div className="write-comment">
         <h4>Write Comment</h4>
-        <StarRating rating={rating} handleRating={(value) => setRating(value) }/>
-        <ListRecommendComment handleContent={(value) => setContent(value)}/>
-        <div className="input-wrapper">
-            <input placeholder="Entern comment for this product..." 
-                value={content}
-                onChange={(e) => {
-                    setContent(e.target.value)
-                }}
-            />
-            <button disabled={!rating || !content} onClick={handleSubmitComment}>Comment</button>
-        </div>
+        {userInfo ? <>
+            <StarRating rating={rating} handleRating={(value) => setRating(value) }/>
+            <ListRecommendComment handleContent={(value) => setContent(value)}/>
+            <div className="input-wrapper">
+                <input placeholder="Entern comment for this product..." 
+                    value={content}
+                    onChange={(e) => {
+                        setContent(e.target.value)
+                    }}
+                />
+                <button disabled={!rating || !content} onClick={handleSubmitComment}>Comment</button>
+            </div>
+        </>
+        : <a href="/login">Đăng nhập để comment</a> }
     </div>
 }
 

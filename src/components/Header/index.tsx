@@ -5,10 +5,16 @@ import {
 	Route,
 	Link,
 	useRouteMatch,
+	useHistory,
 	useParams
 } from "react-router-dom";
+import {LogoutOutlined} from '@ant-design/icons'
 import Logo from "../../assets/images/logo.png";
+import { UserModel } from "../../model/user";
 function Header() {
+	const user: any = localStorage.getItem('user');
+	const userInfo: UserModel = JSON.parse(user);
+	const history = useHistory();
 	return (
 		<>
 			<div className="page-header">
@@ -95,13 +101,16 @@ function Header() {
 								<div className="col-3">
 									<div className="header-main-icon">
 										<ul className="header-main-icon-list">
-											<li className="header-main-icon-item">
+											{userInfo 
+											? <li className="header-main-icon-item">
 												<a href="/" className="header-main-icon-link has-badge">
-													hellllllllllllllllllllll
+													{userInfo?.first_name}&nbsp;
 													<i className="fa-solid fa-user"></i>
-													<span className="badge">0</span>
+													<span className="badge">0</span>&nbsp;
+													<span onClick={() => localStorage.removeItem('user')}><LogoutOutlined /></span>
 												</a>
 											</li>
+											: <a href="/login">Đăng nhập</a>}
 											{/* <li className="header-main-icon-item">
 												<a href="/" className="header-main-icon-link"><i className="fa-solid fa-arrows-rotate"></i></a>
 											</li>

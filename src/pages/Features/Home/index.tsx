@@ -1,4 +1,4 @@
-import { Banner, Banner2, BannerFooter, Carousel, Contact, Footer, Header, Label, Label2, ProductItem } from "../../../components";
+import { Banner, Banner2, BannerFooter, Carousel, Category, Contact, Footer, Header, Label, Label2, ProductItem } from "../../../components";
 import ProductList from "../../../components/Product";
 
 function Home() {
@@ -7,6 +7,7 @@ function Home() {
 			{/* <Header /> */}
 			<Carousel />
 			<Banner />
+			<Category />
 			<div className="container">
 				<ProductList />
 			</div>

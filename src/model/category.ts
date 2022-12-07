@@ -4,4 +4,5 @@ const defaultCategory = {
 	id: "",
 	value_category: "",
 	display_category: "",
+	image: "",
 };

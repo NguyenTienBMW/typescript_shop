@@ -31,6 +31,7 @@ export const QueryAPI = {
 	},
 	comment: {
 		all: (productId: string) => buildUrl(["rate", "product", productId]),
+		checkComment: (userId: string, productId: string) => buildUrl(["rate", 'check_rating', 'user', userId, 'product', productId])
 	},
 };
 

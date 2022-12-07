@@ -12,6 +12,7 @@ import Contact from "./Contact";
 import Footer from "./Footer";
 import BreadCrumb from "./BreadCrumb";
 import Card from "./Card";
+export { Category } from "./category";
 export { Comment } from "./Comment";
 export { notificationSuccess } from "./Noti";
 

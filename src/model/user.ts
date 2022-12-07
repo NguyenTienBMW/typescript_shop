@@ -1,20 +1,16 @@
 export type UserModel = typeof defaultUser;
 
-const defaultUser = {
+export const defaultUser = {
     id: '',
-    type_name: '',
-    first_name: '',
-    last_name: '',
+    name: '',
     password: '',
     date_of_birth: '',
     gender: '',
-    age: '',
     avatar: '',
     description: '',
     email: '',
     delete_at: '',
-    status: '',
-    country: '',
+    address: '',
     created_at: '',
     updated_at: '',
 }

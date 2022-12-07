@@ -6,20 +6,25 @@ import {
 } from "react-router-dom";
 import { Command, QueryAPI } from "../../access";
 import { CommentModel } from "../../model/comment";
-import { UserModel } from "../../model/user";
+import { defaultUser, UserModel } from "../../model/user";
 import moment from "moment";
 import './style.scss';
 import { notificationError, notificationSuccess } from "../Noti";
+import { Pagination, PaginationProps } from "antd";
 
 export const Comment = () => {
-    const { product_id = '1' } = useParams<any>();
-    const userId = '19'
-    const [refresh, setfresh] = useState(0);
+    const user: any = localStorage.getItem('user');
+    const userInfo: UserModel = JSON.parse(user);
+    const { product_id } = useParams<any>();
 
+    const [refresh, setfresh] = useState(0);
+    const [current, setCurrent] = useState(1);
+
+    const [checkComment, setCheckComment] = useState(false);
     const [commentList, setCommentList] = useState<CommentModel[]>([])
 
     useEffect(() => {
-        axios.get(QueryAPI.comment.all('1'))
+        axios.get(QueryAPI.comment.all(product_id))
             .then(resComment => {
                 setCommentList(resComment.data)
             })
@@ -29,14 +34,37 @@ export const Comment = () => {
             })
     }, [refresh])
 
+    useEffect(() => {
+        axios.get(QueryAPI.comment.checkComment(userInfo.id, product_id))
+            .then(resComment => {
+                if (resComment.data.check) {
+                    setCheckComment(true)
+                } else {
+                    setCheckComment(false)
+                }
+            })
+            .catch(err => {
+                alert(err);
+                console.log(err)
+            })
+    }, [product_id, userInfo.id])
+
+    const onChange: PaginationProps['onChange'] = (page) => {
+        setCurrent(page);
+    };
+
     return <div className="comment-wrapper">
         <h3>Comment</h3>
         <div className="comment-list">
-            {commentList.map(comment => {
+            {commentList.slice((current - 1) * 5, current * 5).map(comment => {
                 return <EntityComment data={comment} key={comment.id} />
             })}
         </div>
-        <WriteCommentComponent onSuccess={() => setfresh(prev => prev + 1)} />
+        <Pagination current={current} onChange={onChange} pageSize={5} total={commentList.length} />
+        <WriteCommentComponent disable={checkComment} onSuccess={() => {
+            setfresh(prev => prev + 1)
+            setCheckComment(true)
+        }} />
     </div>
 }
 
@@ -57,7 +85,7 @@ const EntityComment = React.memo(({ data }: { data: CommentModel }) => {
             <img src={user?.avatar} alt="no-image" />
         </div>
         <div className="information">
-            <div className="user-name">{user?.first_name}</div>
+            <div className="user-name">{user?.name}</div>
             <div className="rating">
                 <RenderStarComponent numberStar={Number(data.rating)} />
             </div>
@@ -68,15 +96,17 @@ const EntityComment = React.memo(({ data }: { data: CommentModel }) => {
 })
 
 const WriteCommentComponent = ({
-    onSuccess
+    onSuccess,
+    disable
 }: {
-    onSuccess: () => void
+    onSuccess: () => void,
+    disable: boolean
 }) => {
     const [rating, setRating] = useState<number>(0);
     const [content, setContent] = useState<string>('');
     const user: any = localStorage.getItem('user');
     const userInfo: UserModel = JSON.parse(user);
-
+    const { product_id } = useParams<any>();
     const handleSubmitComment = () => {
 
         axios({
@@ -84,8 +114,8 @@ const WriteCommentComponent = ({
             url: Command.comment.add(),
             headers: {},
             data: {
-                userId: '64367235-b9e3-4cbf-a6cc-9b619ff19ba3',
-                productId: '100048745',
+                userId: userInfo.id,
+                productId: product_id,
                 content: content,
                 rating: rating,
             }
@@ -104,20 +134,23 @@ const WriteCommentComponent = ({
 
     return <div className="write-comment">
         <h4>Write Comment</h4>
-        {userInfo ? <>
-            <StarRating rating={rating} handleRating={(value) => setRating(value)} />
-            <ListRecommendComment handleContent={(value) => setContent(value)} />
-            <div className="input-wrapper">
-                <input placeholder="Entern comment for this product..."
-                    value={content}
-                    onChange={(e) => {
-                        setContent(e.target.value)
-                    }}
-                />
-                <button disabled={!rating || !content} onClick={handleSubmitComment}>Comment</button>
-            </div>
-        </>
-            : <a href="/login">Đăng nhập để comment</a>}
+        {disable
+            ? <div>Bạn đã comment sản phẩm này</div>
+            : userInfo ? <>
+                <StarRating rating={rating} handleRating={(value) => setRating(value)} />
+                <ListRecommendComment handleContent={(value) => setContent(value)} />
+                <div className="input-wrapper">
+                    <input placeholder="Entern comment for this product..."
+                        disabled={disable}
+                        value={content}
+                        onChange={(e) => {
+                            setContent(e.target.value)
+                        }}
+                    />
+                    <button disabled={!rating || !content} style={(!rating || !content) ? {backgroundColor: 'gray', cursor: 'not-allowed'} : {}}  onClick={handleSubmitComment}>Comment</button>
+                </div>
+            </>
+                : <a href="/login">Đăng nhập để comment</a>}
     </div>
 }
 

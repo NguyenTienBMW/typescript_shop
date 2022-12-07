@@ -15,12 +15,14 @@ import Logo from "../../assets/images/logo.png";
 import { UserModel } from "../../model/user";
 import { QueryAPI } from "../../access";
 import { CategoryModel } from '../../model'
+import { Dropdown, Menu } from 'antd'
 
 function Header() {
 	const user: any = localStorage.getItem('user');
 	const userInfo: UserModel = JSON.parse(user);
 	const history = useHistory();
 	const [categories, setCategoryList] = useState<CategoryModel[]>([])
+	const [test, setTest] = useState(0)
 
 	useEffect(() => {
 		axios.get(QueryAPI.category.all())
@@ -31,6 +33,18 @@ function Header() {
 				console.log(err)
 			})
 	}, [])
+
+	const renderMenuUser = () => {
+		return <Menu>
+			<Menu.Item>Tài khoản của tôi</Menu.Item>
+			<Menu.Item>Đơn mua</Menu.Item>
+			<Menu.Item onClick={() => {
+				localStorage.removeItem('user')
+				setTest(prev => prev + 1)
+			}}>Đăng xuất</Menu.Item>
+		</Menu>
+	}
+
 	return (
 		<>
 			<div className="page-header">
@@ -98,43 +112,30 @@ function Header() {
 								<div className="col-9">
 									<form action="" className="search-wrap">
 										<input type="text" name="" className="search-input-wrap" id="" placeholder="Search for your item's type..." />
-										<div className="header-search-select">
-											<span className="header-search-lable">All Category</span>
-											<i className="fa-solid fa-chevron-down"></i>
-											<ul className="search-cate">
-												{categories.map((category) => {
-													return <li className="cate-item" key={category.id}>{category.display_category}</li>
-												})}
-											</ul>
-										</div>
 										<button className="search-btn">
 											<i className="fa-solid fa-magnifying-glass search-btn-icon"></i>
 										</button>
 									</form>
 								</div>
-								<div className="col-3">
-									<div className="header-main-icon">
-										<ul className="header-main-icon-list">
-											{userInfo
-												? <li className="header-main-icon-item">
-													<a href="/" className="header-main-icon-link has-badge">
-														{userInfo?.first_name}&nbsp;
+								<div className="col-3" style={{display: 'flex', justifyContent: 'flex-end'}}>
+									<div className="header-main-icon-list">
+										{userInfo
+											? <div className="header-main-icon-item">
+												<Dropdown overlay={renderMenuUser} placement="topLeft">
+													<div className="header-main-icon-link has-badge">
+														{userInfo?.name}&nbsp;
 														<i className="fa-solid fa-user"></i>
-														<span className="badge">0</span>&nbsp;
-														<span onClick={() => localStorage.removeItem('user')}><LogoutOutlined /></span>
-													</a>
-												</li>
-												: <a href="/login">Đăng nhập</a>}
-											{/* <li className="header-main-icon-item">
-												<a href="/" className="header-main-icon-link"><i className="fa-solid fa-arrows-rotate"></i></a>
-											</li>
-											<li className="header-main-icon-item">
-												<a href="/" className="header-main-icon-link"><i className="fa-solid fa-heart"></i></a>
-											</li>
-											<li className="header-main-icon-item">
-												<Link to="/cart" className="header-main-icon-link"><i className="fa-solid fa-bag-shopping"></i></Link>
-											</li> */}
-										</ul>
+														{/* <span className="badge">0</span>&nbsp; */}
+														{/* <span onClick={() => localStorage.removeItem('user')}><LogoutOutlined /></span> */}
+													</div>
+												</Dropdown>
+											</div>
+											: <>
+												<a href="/login">Đăng nhập</a>
+												<span>|</span>
+												<a href="/register">Đăng ký</a>
+											</>
+										}
 									</div>
 								</div>
 							</div>
@@ -142,7 +143,7 @@ function Header() {
 					</div>
 				</div>
 				<div className="header-bottom">
-					<div className="container">
+					{/* <div className="container">
 						<div className="row header-bottom-wrap">
 							<div className="col-3">
 								<div className="header-bottom-left header-bottom-item">
@@ -166,7 +167,7 @@ function Header() {
 								</ul>
 							</div >
 						</div >
-					</div >
+					</div > */}
 				</div >
 			</div >
 		</>

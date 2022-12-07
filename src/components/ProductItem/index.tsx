@@ -7,13 +7,13 @@ import { ProductModel } from "../../model";
 type ProductItemProps = {
 	data?: ProductModel
 }
-export default function ProductItem({data}: ProductItemProps) {
+export default function ProductItem({ data }: ProductItemProps) {
 	return (
 		<>
 			<div className="product">
 				<div className="product-img-wrap">
 					<img
-						src={data?.image}
+						src={data?.product_image}
 						alt="arrow"
 						className="product-img"
 					/>
@@ -52,12 +52,12 @@ export default function ProductItem({data}: ProductItemProps) {
 					</div>
 					<div className="product-title">
 						<Link to={`/product-detail/${data?.id}`} className="product-link">
-							{data?.name}
+							{data?.product_name}
 						</Link>
 					</div>
 					<div className="product-price">
 						{/* <div className="product-price-old">$15.00</div> */}
-						<div className="product-price-new">{`$${data?.price}`}</div>
+						<div className="product-price-new">{`$${data?.product_price}`}</div>
 					</div>
 				</div>
 				<ul className="product-badge">

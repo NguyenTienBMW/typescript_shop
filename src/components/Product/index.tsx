@@ -16,19 +16,19 @@ import Mayxoay from "../../assets/images/mayxoay.jpg";
 import ProductItem from "../ProductItem";
 import axios from "axios";
 import { QueryAPI } from "../../access";
-import {ProductModel} from '../../model'
+import { ProductModel } from '../../model'
 
 export default function Product_List() {
 	const [productList, setProductList] = useState<ProductModel[]>([])
 
 	useEffect(() => {
 		axios.get(QueryAPI.product.all())
-		.then(res => {
-			setProductList(res.data)
-		}) 
-		.catch(err => {
-			console.log(err)
-		})
+			.then(res => {
+				setProductList(res.data)
+			})
+			.catch(err => {
+				console.log(err)
+			})
 	}, [])
 
 	return (
@@ -51,9 +51,10 @@ export default function Product_List() {
 				modules={[Autoplay]}
 			>
 				{productList.map((product) => {
-					return <SwiperSlide className="swiper-item">
-						<ProductItem 
+					return <SwiperSlide className="swiper-item" key={product.id}>
+						<ProductItem
 							data={product}
+							key={product.id}
 						/>
 					</SwiperSlide>
 				})}

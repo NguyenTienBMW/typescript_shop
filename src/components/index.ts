@@ -6,14 +6,14 @@ import BannerItem from "./BannerItem";
 import BannerFooter from "./BannerFooter";
 import ProductItem from "./ProductItem";
 import Label from "./Label";
-import Banner2 from "./Banner2";
+import { Banner2 } from "./Banner2";
 import Label2 from "./Label2";
 import Contact from "./Contact";
 import Footer from "./Footer";
 import BreadCrumb from "./BreadCrumb";
 import Card from "./Card";
-export {Comment} from "./Comment";
-export {notificationSuccess} from "./Noti";
+export { Comment } from "./Comment";
+export { notificationSuccess } from "./Noti";
 
 export {
 	Header,

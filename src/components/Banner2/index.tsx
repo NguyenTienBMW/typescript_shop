@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import BannerItem from "../BannerItem";
 import Product_List from "../Product";
 
@@ -17,8 +17,22 @@ import Oppo from "../../assets/images/oppo.jpg";
 import Mayxoay from "../../assets/images/mayxoay.jpg";
 import Banner2_1 from "../../assets/images/banner2.jpg";
 import ProductItem from "../ProductItem";
+import axios from "axios";
+import { QueryAPI } from "../../access";
+import { ProductModel } from "../../model";
 
-export default function Banner2() {
+export const Banner2 = () => {
+	const [productList, setProductList] = useState<ProductModel[]>([]);
+	useEffect(() => {
+		axios
+			.get(QueryAPI.product.all())
+			.then(res => {
+				setProductList(res.data);
+			})
+			.catch(err => {
+				console.log(err);
+			});
+	}, []);
 	return (
 		<section className="banner2">
 			<div className="banner2-wrap">
@@ -50,6 +64,13 @@ export default function Banner2() {
 						<SwiperSlide className="swiper-item">
 							<ProductItem />
 						</SwiperSlide>
+						{productList.map(product => {
+							return (
+								<SwiperSlide className="swiper-item" key={product.id}>
+									<ProductItem data={product} />
+								</SwiperSlide>
+							);
+						})}
 					</Swiper>
 				</div>
 			</div>

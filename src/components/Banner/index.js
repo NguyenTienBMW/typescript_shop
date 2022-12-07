@@ -7,103 +7,103 @@ import BannerItem from "../BannerItem";
 export default function Banner() {
 	return (
 		<section className="banner-section">
-			<div class="container">
-				<div class="row">
-					<div class="col-4">
+			<div className="container">
+				<div className="row">
+					<div className="col-4">
 						<BannerItem />
 						{/* <div
-							class="banner-content"
+							className="banner-content"
 							style={{ backgroundImage: `url(${Banner31})` }}
 						>
-							<div class="banner-title">
-								<div class="banner-cate">Smart Phone</div>
-								<div class="banner-subtitle">Samsung note 21</div>
+							<div className="banner-title">
+								<div className="banner-cate">Smart Phone</div>
+								<div className="banner-subtitle">Samsung note 21</div>
 							</div>
-							<div class="banner-price">
-								<div class="banner-discount-badge">Discounted Price</div>
-								<div class="banner-price-wrap">
-									<div class="banner-price-new">390</div>
-									<div class="banner-price-old">450</div>
+							<div className="banner-price">
+								<div className="banner-discount-badge">Discounted Price</div>
+								<div className="banner-price-wrap">
+									<div className="banner-price-new">390</div>
+									<div className="banner-price-old">450</div>
 								</div>
 							</div>
 						</div> */}
 					</div>
-					<div class="col-4">
+					<div className="col-4">
 						<BannerItem />
 						{/* <div
-							class="banner-content"
+							className="banner-content"
 							style={{ backgroundImage: `url(${Banner32})` }}
 						>
-							<div class="banner-title">
-								<div class="banner-cate">Smart Phone</div>
-								<div class="banner-subtitle">Samsung note 21</div>
+							<div className="banner-title">
+								<div className="banner-cate">Smart Phone</div>
+								<div className="banner-subtitle">Samsung note 21</div>
 							</div>
-							<div class="banner-price">
-								<div class="banner-discount-badge">Discounted Price</div>
-								<div class="banner-price-wrap">
-									<div class="banner-price-new">390</div>
-									<div class="banner-price-old">450</div>
+							<div className="banner-price">
+								<div className="banner-discount-badge">Discounted Price</div>
+								<div className="banner-price-wrap">
+									<div className="banner-price-new">390</div>
+									<div className="banner-price-old">450</div>
 								</div>
 							</div>
 						</div> */}
 					</div>
-					<div class="col-4">
+					<div className="col-4">
 						<BannerItem />
 						{/* <div
-							class="banner-content"
+							className="banner-content"
 							style={{ backgroundImage: `url(${Banner33})` }}
 						>
-							<div class="banner-title">
-								<div class="banner-cate">Smart Phone</div>
-								<div class="banner-subtitle">Samsung note 21</div>
+							<div className="banner-title">
+								<div className="banner-cate">Smart Phone</div>
+								<div className="banner-subtitle">Samsung note 21</div>
 							</div>
-							<div class="banner-price">
-								<div class="banner-discount-badge">Discounted Price</div>
-								<div class="banner-price-wrap">
-									<div class="banner-price-new">390</div>
-									<div class="banner-price-old">450</div>
+							<div className="banner-price">
+								<div className="banner-discount-badge">Discounted Price</div>
+								<div className="banner-price-wrap">
+									<div className="banner-price-new">390</div>
+									<div className="banner-price-old">450</div>
 								</div>
 							</div>
 						</div> */}
 					</div>
 				</div>
-				{/* <ul class="banner-list">
-          <li class="banner-item">
-            <div class="banner-title">
-              <div class="banner-cate">Smart Phone</div>
-              <div class="banner-subtitle">Samsung note 21</div>
+				{/* <ul className="banner-list">
+          <li className="banner-item">
+            <div className="banner-title">
+              <div className="banner-cate">Smart Phone</div>
+              <div className="banner-subtitle">Samsung note 21</div>
             </div>
-            <div class="banner-price">
-              <div class="banner-discount-badge">Discounted Price</div>
-              <div class="banner-price-wrap">
-                <div class="banner-price-new">390</div>
-                <div class="banner-price-old">450</div>
+            <div className="banner-price">
+              <div className="banner-discount-badge">Discounted Price</div>
+              <div className="banner-price-wrap">
+                <div className="banner-price-new">390</div>
+                <div className="banner-price-old">450</div>
               </div>
             </div>
           </li>
-          <li class="banner-item">
-            <div class="banner-title">
-              <div class="banner-cate">Smart Phone</div>
-              <div class="banner-subtitle">Samsung note 21</div>
+          <li className="banner-item">
+            <div className="banner-title">
+              <div className="banner-cate">Smart Phone</div>
+              <div className="banner-subtitle">Samsung note 21</div>
             </div>
-            <div class="banner-price">
-              <div class="banner-discount-badge">Discounted Price</div>
-              <div class="banner-price-wrap">
-                <div class="banner-price-new">390</div>
-                <div class="banner-price-old">450</div>
+            <div className="banner-price">
+              <div className="banner-discount-badge">Discounted Price</div>
+              <div className="banner-price-wrap">
+                <div className="banner-price-new">390</div>
+                <div className="banner-price-old">450</div>
               </div>
             </div>
           </li>
-          <li class="banner-item">
-            <div class="banner-title">
-              <div class="banner-cate">Smart Phone</div>
-              <div class="banner-subtitle">Samsung note 21</div>
+          <li className="banner-item">
+            <div className="banner-title">
+              <div className="banner-cate">Smart Phone</div>
+              <div className="banner-subtitle">Samsung note 21</div>
             </div>
-            <div class="banner-price">
-              <div class="banner-discount-badge">Discounted Price</div>
-              <div class="banner-price-wrap">
-                <div class="banner-price-new">390</div>
-                <div class="banner-price-old">450</div>
+            <div className="banner-price">
+              <div className="banner-discount-badge">Discounted Price</div>
+              <div className="banner-price-wrap">
+                <div className="banner-price-new">390</div>
+                <div className="banner-price-old">450</div>
               </div>
             </div>
           </li>

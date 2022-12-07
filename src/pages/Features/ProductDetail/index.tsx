@@ -23,7 +23,7 @@ import {
 	Route,
 	Link,
 	useParams
-  } from "react-router-dom";
+} from "react-router-dom";
 import axios from "axios";
 import { QueryAPI } from "../../../access";
 import { ProductModel } from "../../../model";
@@ -35,12 +35,12 @@ export default function ProductDetail() {
 
 	useEffect(() => {
 		axios.get(QueryAPI.product.single(product_id))
-		.then(res => {
-			setProduct(res.data)
-		})
-		.catch(err => {
-			console.log(err)
-		})
+			.then(res => {
+				setProduct(res.data)
+			})
+			.catch(err => {
+				console.log(err)
+			})
 	}, [product_id])
 
 	var settings = {
@@ -68,18 +68,18 @@ export default function ProductDetail() {
 					<div className="row">
 						<div className="col-6 image-wrap">
 							<div className="image-product" style={{
-								backgroundImage: `url(${product?.image})`,
+								backgroundImage: `url(${product?.product_image})`,
 								backgroundRepeat: "no-repeat",
 								backgroundPosition: 'center',
 								backgroundSize: 'contain'
-							}}/>
+							}} />
 						</div>
 						<div className="col-6">
 							<p className="product-stock">37 In stock</p>
-							<h3 className="product-name">{product?.name}</h3>
-							<p className="product-price">${product?.price}</p>
+							<h3 className="product-name">{product?.product_name}</h3>
+							<p className="product-price">${product?.product_price}</p>
 							<p className="product-desc">
-								{product?.description}
+								{product?.product_description}
 							</p>
 							<hr className="sprate-block" />
 							<div className="product-buy">
@@ -110,13 +110,7 @@ export default function ProductDetail() {
 
 							<TabPanel className="tab-content">
 								<p>
-									Contrary to popular belief, Lorem Ipsum is not simply random
-									text. It has roots in a piece of classical Latin literature
-									from 45 BC, making it over 2000 years old. Vivamus bibendum
-									magna Lorem ipsum dolor sit amet, consectetur adipiscing
-									elit.Contrary to popular belief, Lorem Ipsum is not simply
-									random text. It has roots in a piece of classical Latin
-									literature from 45 BC, making it over 2000 years old.
+									{product?.product_name}
 								</p>
 
 								<p>

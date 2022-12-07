@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import {
 	BrowserRouter as Router,
 	Switch,
@@ -11,6 +11,7 @@ import { UserModel } from "./model/user";
 import { Cart, Checkout, Home, ProductDetail } from "./pages/Features";
 import { Login } from "./pages/Features/login";
 import { Register } from "./pages/Features/Register";
+import { Add_Product, TableProduct } from "./pages/Product"
 
 export default function App() {
 	const user: any = localStorage.getItem('user');
@@ -21,7 +22,7 @@ export default function App() {
 	return (
 		<>
 			<Router>
-				{(!location.includes('login') && !location.includes('register'))  ? <Header /> : <></>}
+				{(!location.includes('login') && !location.includes('register')) ? <Header /> : <></>}
 				<Switch>
 					<Route path="/login">
 						<Login />
@@ -37,6 +38,12 @@ export default function App() {
 					</Route>
 					<Route path="/checkout">
 						<Checkout />
+					</Route>
+					<Route path="/add-product">
+						<Add_Product />
+					</Route>
+					<Route path="/list-product">
+						<TableProduct />
 					</Route>
 					<Route path="/">
 						<Home />

@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import "./index.scss"
 import {
 	BrowserRouter as Router,
 	Switch,
@@ -8,13 +10,27 @@ import {
 	useHistory,
 	useParams
 } from "react-router-dom";
-import {LogoutOutlined} from '@ant-design/icons'
+import { LogoutOutlined } from '@ant-design/icons'
 import Logo from "../../assets/images/logo.png";
 import { UserModel } from "../../model/user";
+import { QueryAPI } from "../../access";
+import { CategoryModel } from '../../model'
+
 function Header() {
 	const user: any = localStorage.getItem('user');
 	const userInfo: UserModel = JSON.parse(user);
 	const history = useHistory();
+	const [categories, setCategoryList] = useState<CategoryModel[]>([])
+
+	useEffect(() => {
+		axios.get(QueryAPI.category.all())
+			.then(res => {
+				setCategoryList(res.data)
+			})
+			.catch(err => {
+				console.log(err)
+			})
+	}, [])
 	return (
 		<>
 			<div className="page-header">
@@ -86,11 +102,9 @@ function Header() {
 											<span className="header-search-lable">All Category</span>
 											<i className="fa-solid fa-chevron-down"></i>
 											<ul className="search-cate">
-												<li className="cate-item">All Category</li>
-												<li className="cate-item">Accessories</li>
-												<li className="cate-item">Best Seller</li>
-												<li className="cate-item">Camera</li>
-												<li className="cate-item">Computer</li>
+												{categories.map((category) => {
+													return <li className="cate-item" key={category.id}>{category.display_category}</li>
+												})}
 											</ul>
 										</div>
 										<button className="search-btn">
@@ -101,16 +115,16 @@ function Header() {
 								<div className="col-3">
 									<div className="header-main-icon">
 										<ul className="header-main-icon-list">
-											{userInfo 
-											? <li className="header-main-icon-item">
-												<a href="/" className="header-main-icon-link has-badge">
-													{userInfo?.first_name}&nbsp;
-													<i className="fa-solid fa-user"></i>
-													<span className="badge">0</span>&nbsp;
-													<span onClick={() => localStorage.removeItem('user')}><LogoutOutlined /></span>
-												</a>
-											</li>
-											: <a href="/login">Đăng nhập</a>}
+											{userInfo
+												? <li className="header-main-icon-item">
+													<a href="/" className="header-main-icon-link has-badge">
+														{userInfo?.first_name}&nbsp;
+														<i className="fa-solid fa-user"></i>
+														<span className="badge">0</span>&nbsp;
+														<span onClick={() => localStorage.removeItem('user')}><LogoutOutlined /></span>
+													</a>
+												</li>
+												: <a href="/login">Đăng nhập</a>}
 											{/* <li className="header-main-icon-item">
 												<a href="/" className="header-main-icon-link"><i className="fa-solid fa-arrows-rotate"></i></a>
 											</li>
@@ -131,34 +145,30 @@ function Header() {
 					<div className="container">
 						<div className="row header-bottom-wrap">
 							<div className="col-3">
-								<p className="header-bottom-left">
+								<div className="header-bottom-left header-bottom-item">
 									<i className="fa-solid fa-bars"></i>
 									<a href="/" className="header-bottom-link">All Categories</a>
 									<i className="fa-solid fa-chevron-down"></i>
-								</p>
+								</div>
 							</div>
 							<div className="col-9">
 								<ul className="header-bottom-nav">
-									<li className="header-bottom-item"><a href="" className="header-bottom-link">
-										Home <i className="fa-solid fa-chevron-down header-bottom-icon"></i> </a></li>
-									<li className="header-bottom-item"><a href="" className="header-bottom-link">
-										Categories <i className="fa-solid fa-chevron-down header-bottom-icon"></i></a></li>
-									<li className="header-bottom-item"><a href="" className="header-bottom-link">
-										Shop <i className="fa-solid fa-chevron-down header-bottom-icon"></i></a></li>
-									<li className="header-bottom-item"><a href="" className="header-bottom-link">
-										Pages <i className="fa-solid fa-chevron-down header-bottom-icon"></i></a></li>
-									<li className="header-bottom-item"><a href="" className="header-bottom-link">
-										Special <i className="fa-solid fa-chevron-down header-bottom-icon"></i></a></li>
-									<li className="header-bottom-item"><a href="" className="header-bottom-link">
-										Stories List <i className="fa-solid fa-chevron-down header-bottom-icon"></i></a></li>
-									<li className="header-bottom-item"><a href="" className="header-bottom-link">
-										Contact</a></li>
+									<li className="header-bottom-item header-category">
+										Categories <i className="fa-solid fa-chevron-down header-bottom-icon"></i>
+										<ul className="sub-menu">
+											{categories.map((category) => {
+												return <li className="cate-item" key={category.id}>{category.display_category}</li>
+											})}
+										</ul>
+									</li>
+									<li className="header-bottom-item">
+										Contact</li>
 								</ul>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
+							</div >
+						</div >
+					</div >
+				</div >
+			</div >
 		</>
 	);
 }

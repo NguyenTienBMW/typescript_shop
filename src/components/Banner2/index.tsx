@@ -52,18 +52,6 @@ export const Banner2 = () => {
 						}}
 						modules={[Autoplay]}
 					>
-						<SwiperSlide className="swiper-item">
-							<ProductItem />
-						</SwiperSlide>
-						<SwiperSlide className="swiper-item">
-							<ProductItem />
-						</SwiperSlide>
-						<SwiperSlide className="swiper-item">
-							<ProductItem />
-						</SwiperSlide>
-						<SwiperSlide className="swiper-item">
-							<ProductItem />
-						</SwiperSlide>
 						{productList.map(product => {
 							return (
 								<SwiperSlide className="swiper-item" key={product.id}>

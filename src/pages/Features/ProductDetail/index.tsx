@@ -75,12 +75,12 @@ export default function ProductDetail() {
 							}} />
 						</div>
 						<div className="col-6">
-							<p className="product-stock">37 In stock</p>
+							<p className="product-stock">{product?.product_quanlity} In stock</p>
 							<h3 className="product-name">{product?.product_name}</h3>
 							<p className="product-price">${product?.product_price}</p>
-							<p className="product-desc">
+							{/* <p className="product-desc">
 								{product?.product_description}
-							</p>
+							</p> */}
 							<hr className="sprate-block" />
 							<div className="product-buy">
 								<div className="product-quanlity">
@@ -105,21 +105,12 @@ export default function ProductDetail() {
 						<Tabs>
 							<TabList>
 								<Tab>Description</Tab>
-								<Tab>Additional information</Tab>
+								{/* <Tab>Additional information</Tab> */}
 							</TabList>
 
 							<TabPanel className="tab-content">
-								<p>
-									{product?.product_name}
-								</p>
-
-								<p>
-									At vero eos et accusamus et iusto odio dignissimos ducimus qui
-									blanditiis praesentium voluptatum deleniti atque corrupti quos
-									dolores et quas molestias excepturi sint occaecati cupiditate
-									non provident, similique sunt in culpa qui officia deserunt
-									mollitia animi, id est laborum et dolorum fuga. Et harum
-									quidem rerum facilis est et expedita distinctio.
+								<p dangerouslySetInnerHTML={{__html: product?.product_description ?? ''}}>
+									{/* {product?.product_description} */}
 								</p>
 							</TabPanel>
 							<TabPanel className="tab-content">
@@ -139,7 +130,7 @@ export default function ProductDetail() {
 						<Comment />
 					</div>
 					<div className="product_viewed">
-						<Product_List />
+						<Product_List recommend title="Recommend" />
 					</div>
 					<Contact />
 				</div>

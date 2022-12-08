@@ -3,10 +3,12 @@ import { Link } from "react-router-dom";
 import Oppo from "../../assets/images/oppo.jpg";
 import Smartphone from "../../assets/images/smartphone.jpg";
 import { ProductModel } from "../../model";
+import './style.scss';
 
 type ProductItemProps = {
 	data?: ProductModel
 }
+
 export default function ProductItem({ data }: ProductItemProps) {
 	return (
 		<>
@@ -17,29 +19,6 @@ export default function ProductItem({ data }: ProductItemProps) {
 						alt="arrow"
 						className="product-img"
 					/>
-					<div className="product-action">
-						<ul className="product-action-list">
-							<li className="product-action-item">
-								<a href="#" className="product-action-link">
-									<i className=" product-icon fa-solid fa-eye">
-									</i>
-								</a>
-							</li>
-							<li className="product-action-item">
-								<a href="#" className="product-action-link">
-									<i className=" product-icon fa-solid fa-heart">
-									</i>
-								</a>
-							</li>
-							<li className="product-action-item">
-								<a href="#" className="product-action-link">
-									<i className=" product-icon fa-solid fa-arrows-rotate">
-									</i>
-								</a>
-							</li>
-						</ul>
-						<button className="product-view">View Produts</button>
-					</div>
 				</div>
 
 				<div className="product-info">

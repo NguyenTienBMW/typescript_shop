@@ -8,32 +8,43 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 // import required modules
 import { Pagination, Navigation, Autoplay } from "swiper";
-import HeadPhone from "../../assets/images/headphone.jpg";
-import SmartPhone from "../../assets/images/smartphone.jpg";
-import Camera from "../../assets/images/camera.jpg";
-import Oppo from "../../assets/images/oppo.jpg";
-import Mayxoay from "../../assets/images/mayxoay.jpg";
 import ProductItem from "../ProductItem";
 import axios from "axios";
 import { QueryAPI } from "../../access";
 import { ProductModel } from '../../model'
+import { UserModel } from "../../model/user";
+import { Spin, Skeleton } from 'antd';
+import './style.scss';
 
-export default function Product_List() {
+export default function Product_List({
+	recommend,
+	title
+}: {
+	recommend?: boolean,
+	title?: string
+}) {
+	const user: any = localStorage.getItem('user');
+	const userInfo: UserModel = JSON.parse(user);
+
 	const [productList, setProductList] = useState<ProductModel[]>([])
+	const [loading, setLoading] = useState<boolean>(false)
 
 	useEffect(() => {
-		axios.get(QueryAPI.product.all())
+		setLoading(true)
+		axios.get(recommend ? QueryAPI.product.recommend(userInfo.id) : QueryAPI.product.all())
 			.then(res => {
+				setLoading(false)
 				setProductList(res.data)
 			})
 			.catch(err => {
+				setLoading(false)
 				console.log(err)
 			})
 	}, [])
 
 	return (
 		<section className="product-section">
-			<h2 className="product-heading">Products Of The Week</h2>
+			<h2 className="product-heading">{title || 'Products Of The Week'}</h2>
 			<Swiper
 				slidesPerView={5}
 				spaceBetween={20}
@@ -50,14 +61,23 @@ export default function Product_List() {
 				// modules={[Pagination, Navigation]}
 				modules={[Autoplay]}
 			>
-				{productList.map((product) => {
-					return <SwiperSlide className="swiper-item" key={product.id}>
-						<ProductItem
-							data={product}
-							key={product.id}
-						/>
-					</SwiperSlide>
-				})}
+				{loading
+					? <div className="card-loading">
+						{Array(5).fill(0).map(item => {
+							return <SwiperSlide className="swiper-item">
+								<Skeleton.Button active style={{ height: '400px', width: '100%' }} />
+							</SwiperSlide>
+						})}
+					</div>
+					: productList.map((product) => {
+						return <SwiperSlide className="swiper-item" key={product.id}>
+							<ProductItem
+								data={product}
+								key={product.id}
+							/>
+						</SwiperSlide>
+					})}
+
 			</Swiper>
 		</section>
 	);

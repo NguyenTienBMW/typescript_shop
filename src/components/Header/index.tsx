@@ -16,6 +16,7 @@ import { UserModel } from "../../model/user";
 import { QueryAPI } from "../../access";
 import { CategoryModel } from '../../model'
 import { Dropdown, Menu } from 'antd'
+import { ShoppingCartOutlined } from '@ant-design/icons'
 
 function Header() {
 	const user: any = localStorage.getItem('user');
@@ -143,31 +144,15 @@ function Header() {
 					</div>
 				</div>
 				<div className="header-bottom">
-					{/* <div className="container">
-						<div className="row header-bottom-wrap">
-							<div className="col-3">
-								<div className="header-bottom-left header-bottom-item">
-									<i className="fa-solid fa-bars"></i>
-									<a href="/" className="header-bottom-link">All Categories</a>
-									<i className="fa-solid fa-chevron-down"></i>
-								</div>
+					<div className="container">
+						<div className="header-bottom-list">
+							<div className="cart-icon">
+								<Link to={'/cart'}>
+								<ShoppingCartOutlined />
+								</Link>
 							</div>
-							<div className="col-9">
-								<ul className="header-bottom-nav">
-									<li className="header-bottom-item header-category">
-										Categories <i className="fa-solid fa-chevron-down header-bottom-icon"></i>
-										<ul className="sub-menu">
-											{categories.map((category) => {
-												return <li className="cate-item" key={category.id}>{category.display_category}</li>
-											})}
-										</ul>
-									</li>
-									<li className="header-bottom-item">
-										Contact</li>
-								</ul>
-							</div >
-						</div >
-					</div > */}
+						</div>
+					</div>
 				</div >
 			</div >
 		</>

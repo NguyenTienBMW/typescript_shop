@@ -9,7 +9,7 @@ function Home() {
 			<Banner />
 			<Category />
 			<div className="container">
-				<ProductList />
+				<ProductList recommend title="Recommend"/>
 			</div>
 			<BannerFooter />
 			<div className="container">

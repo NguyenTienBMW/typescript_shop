@@ -8,15 +8,11 @@ import {
 	Contact,
 	Footer,
 	Comment,
+	notificationSuccess,
 } from "../../../components";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "react-tabs/style/react-tabs.css";
-// import images from "../../../core/constants";
-import abstract01 from "../../../assets/images/abstract01.jpg";
-import abstract02 from "../../../assets/images/abstract02.jpg";
-import abstract03 from "../../../assets/images/abstract03.jpg";
-import abstract04 from "../../../assets/images/abstract04.jpg";
 import {
 	BrowserRouter as Router,
 	Switch,
@@ -24,14 +20,18 @@ import {
 	Link,
 	useParams
 } from "react-router-dom";
-import axios from "axios";
-import { QueryAPI } from "../../../access";
+import axios, { Axios } from "axios";
+import { Command, QueryAPI } from "../../../access";
 import { ProductModel } from "../../../model";
 import './style.scss'
+import { UserModel } from "../../../model/user";
 
 export default function ProductDetail() {
+	const user: any = localStorage.getItem('user');
+    const userInfo: UserModel = JSON.parse(user);
 	const { product_id } = useParams<any>();
 	const [product, setProduct] = useState<ProductModel>();
+	const [quanlity, setQuanlity] = useState(1);
 
 	useEffect(() => {
 		axios.get(QueryAPI.product.single(product_id))
@@ -42,6 +42,48 @@ export default function ProductDetail() {
 				console.log(err)
 			})
 	}, [product_id])
+
+	const handleQuanlityIncrease = () => {
+		if (quanlity === Number(product?.product_quanlity)) return;
+		setQuanlity(prev => prev + 1)
+	}
+
+	const handleQuanlityReduced = () => {
+		if (quanlity <= 1) return;
+		setQuanlity(prev => prev - 1)
+	}
+
+	const onChangeQuanlity = (e: any) => {
+		let result = e.target.value.replace(/\D/g, '');
+		console.log(result)
+		if (result === 0 || !result) {
+			result = 1
+		} else if (result[0] === 0) {
+			result = result.slice(1, result.length)
+		}
+		setQuanlity(Number(result))
+
+	}
+
+	const handleAddCart = () => {
+		axios({
+			method: 'post',
+			url: Command.cart.add(),
+			data: {
+				userId: userInfo.id,
+				productId: product_id,
+				quanlity: quanlity,
+			}
+		})
+		.then((response) => {
+			if (response.statusText === 'OK') {
+				notificationSuccess({ description: 'Bạn đã thêm sản phẩm vào giỏ hàng thành công' });
+				setQuanlity(1);
+			}
+		}, (error) => {
+			alert(error)
+		});
+	}
 
 	var settings = {
 		customPaging: function (i: any) {
@@ -84,17 +126,16 @@ export default function ProductDetail() {
 							<hr className="sprate-block" />
 							<div className="product-buy">
 								<div className="product-quanlity">
-									<button className="btn btn-quanlity-dec">-</button>
+									<button className="btn btn-quanlity-dec" onClick={handleQuanlityReduced}>-</button>
 									<input
 										type="text"
-										name=""
-										id=""
-										placeholder="1"
+										value={quanlity}
 										className="input-quanlity"
+										onChange={onChangeQuanlity}
 									/>
-									<button className="btn btn-quanlity-inc">+</button>
+									<button className="btn btn-quanlity-inc" onClick={handleQuanlityIncrease}>+</button>
 								</div>
-								<button className="btn btn-add-cart">
+								<button className="btn btn-add-cart" onClick={handleAddCart}>
 									Add to cart
 									<i className="fa-solid fa-cart-plus btn-cart-icon"></i>
 								</button>
@@ -109,7 +150,7 @@ export default function ProductDetail() {
 							</TabList>
 
 							<TabPanel className="tab-content">
-								<p dangerouslySetInnerHTML={{__html: product?.product_description ?? ''}}>
+								<p dangerouslySetInnerHTML={{ __html: product?.product_description ?? '' }}>
 									{/* {product?.product_description} */}
 								</p>
 							</TabPanel>

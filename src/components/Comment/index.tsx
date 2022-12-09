@@ -26,7 +26,8 @@ export const Comment = () => {
     useEffect(() => {
         axios.get(QueryAPI.comment.all(product_id))
             .then(resComment => {
-                setCommentList(resComment.data)
+                console.log(resComment);
+                setCommentList(resComment.data.ratings)
             })
             .catch(err => {
                 alert(err);
@@ -147,7 +148,7 @@ const WriteCommentComponent = ({
                             setContent(e.target.value)
                         }}
                     />
-                    <button disabled={!rating || !content} style={(!rating || !content) ? {backgroundColor: 'gray', cursor: 'not-allowed'} : {}}  onClick={handleSubmitComment}>Comment</button>
+                    <button disabled={!rating || !content} style={(!rating || !content) ? { backgroundColor: 'gray', cursor: 'not-allowed' } : {}} onClick={handleSubmitComment}>Comment</button>
                 </div>
             </>
                 : <a href="/login">Đăng nhập để comment</a>}
@@ -191,9 +192,11 @@ const ListRecommendComment = ({
 }) => {
     const suggestList = ['good', 'goood1', 'goood2']
     return <div className="suggest-list">
-        {suggestList.map(suggest => {
+        {suggestList.map((suggest, index) => {
+            console.log("index,suggest", index, suggest)
             return <div
                 className="suggest"
+                key={index}
                 onClick={() => handleContent(suggest)}
             >
                 {suggest}

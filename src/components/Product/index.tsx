@@ -63,8 +63,8 @@ export default function Product_List({
 			>
 				{loading
 					? <div className="card-loading">
-						{Array(5).fill(0).map(item => {
-							return <SwiperSlide className="swiper-item">
+						{Array(5).fill(0).map((index, item) => {
+							return <SwiperSlide className="swiper-item" key={item}>
 								<Skeleton.Button active style={{ height: '400px', width: '100%' }} />
 							</SwiperSlide>
 						})}

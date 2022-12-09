@@ -15,6 +15,7 @@ import Card from "./Card";
 export { Category } from "./category";
 export { Comment } from "./Comment";
 export { notificationSuccess } from "./Noti";
+export { RenderStarComponent } from "./Rating";
 
 export {
 	Header,

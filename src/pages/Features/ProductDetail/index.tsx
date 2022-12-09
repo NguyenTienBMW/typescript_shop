@@ -1,37 +1,30 @@
 import React, { useState, useEffect } from "react";
-import Slider from "react-slick";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import {
 	BreadCrumb,
-	Header,
 	Product_List,
 	Contact,
-	Footer,
 	Comment,
 } from "../../../components";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "react-tabs/style/react-tabs.css";
-// import images from "../../../core/constants";
-import abstract01 from "../../../assets/images/abstract01.jpg";
-import abstract02 from "../../../assets/images/abstract02.jpg";
-import abstract03 from "../../../assets/images/abstract03.jpg";
-import abstract04 from "../../../assets/images/abstract04.jpg";
 import {
-	BrowserRouter as Router,
-	Switch,
-	Route,
-	Link,
 	useParams
 } from "react-router-dom";
 import axios from "axios";
 import { QueryAPI } from "../../../access";
 import { ProductModel } from "../../../model";
 import './style.scss'
+import { Rate } from 'antd';
+import { RenderStarComponent } from "../../../components"
+import { CommentModel } from "../../../model/comment";
 
 export default function ProductDetail() {
 	const { product_id } = useParams<any>();
 	const [product, setProduct] = useState<ProductModel>();
+	const [commentList, setCommentList] = useState<CommentModel>();
+
 
 	useEffect(() => {
 		axios.get(QueryAPI.product.single(product_id))
@@ -43,6 +36,18 @@ export default function ProductDetail() {
 			})
 	}, [product_id])
 
+	useEffect(() => {
+		axios.get(QueryAPI.comment.all(product_id))
+			.then(res => {
+				console.log(res.data);
+				setCommentList(res.data)
+			})
+			.catch(err => {
+				console.log(err)
+			})
+	}, [product_id])
+
+	let priceFormater = Number(product?.product_price).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })
 	var settings = {
 		customPaging: function (i: any) {
 			return (
@@ -77,7 +82,13 @@ export default function ProductDetail() {
 						<div className="col-6">
 							<p className="product-stock">{product?.product_quanlity} In stock</p>
 							<h3 className="product-name">{product?.product_name}</h3>
-							<p className="product-price">${product?.product_price}</p>
+							<div>
+								<div className="rating" style={{ display: "flex" }}>
+									<RenderStarComponent numberStar={Math.floor(Number(commentList?.averageRating) / 2)} />
+									<a href="#reviews" style={{ color: "#40a9ff", marginLeft: "5px" }}>{commentList?.customerRating} customers reviews</a >
+								</div>
+							</div>
+							<p className="product-price">{`${priceFormater}`}</p>
 							{/* <p className="product-desc">
 								{product?.product_description}
 							</p> */}
@@ -109,7 +120,7 @@ export default function ProductDetail() {
 							</TabList>
 
 							<TabPanel className="tab-content">
-								<p dangerouslySetInnerHTML={{__html: product?.product_description ?? ''}}>
+								<p dangerouslySetInnerHTML={{ __html: product?.product_description ?? '' }}>
 									{/* {product?.product_description} */}
 								</p>
 							</TabPanel>
@@ -126,7 +137,7 @@ export default function ProductDetail() {
 							</TabPanel>
 						</Tabs>
 					</div>
-					<div className="comment-container">
+					<div className="comment-container" id="reviews">
 						<Comment />
 					</div>
 					<div className="product_viewed">

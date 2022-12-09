@@ -10,6 +10,9 @@ type ProductItemProps = {
 }
 
 export default function ProductItem({ data }: ProductItemProps) {
+	// let dataPrice = data?.product_price;
+	let priceFormater = Number(data?.product_price).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })
+
 	return (
 		<>
 			<div className="product">
@@ -36,7 +39,7 @@ export default function ProductItem({ data }: ProductItemProps) {
 					</div>
 					<div className="product-price">
 						{/* <div className="product-price-old">$15.00</div> */}
-						<div className="product-price-new">{`$${data?.product_price}`}</div>
+						<div className="product-price-new">{`${priceFormater}`}</div>
 					</div>
 				</div>
 				<ul className="product-badge">

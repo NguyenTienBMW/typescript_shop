@@ -1,12 +1,15 @@
 .product {
-    height: 400px;
-    .product-img-wrap {
-        height: 220px;
-        img {
-            height: 100%;
-        }
-    }
-    .product-info {
-        border-top: solid 1px rgb(229, 221, 221);
-    }
+	height: 400px;
+	.product-img-wrap {
+		height: 220px;
+		img {
+			height: 100%;
+		}
+	}
+	.product-info {
+		border-top: solid 1px rgb(229, 221, 221);
+	}
+	.product-price-new {
+		font-size: 20px;
+	}
 }

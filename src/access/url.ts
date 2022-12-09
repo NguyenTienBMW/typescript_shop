@@ -13,7 +13,7 @@ export const QueryAPI = {
 	},
 	product: {
 		all: () => buildUrl(["product"]),
-		recommend: (userId: string) => buildUrl(['recommend', userId]),
+		recommend: (userId: string) => buildUrl(["recommend", userId]),
 		single: (productId: string) => {
 			return buildUrl(["product", productId]);
 		},
@@ -32,7 +32,8 @@ export const QueryAPI = {
 	},
 	comment: {
 		all: (productId: string) => buildUrl(["rate", "product", productId]),
-		checkComment: (userId: string, productId: string) => buildUrl(["rate", 'check_rating', 'user', userId, 'product', productId])
+		checkComment: (userId: string, productId: string) =>
+			buildUrl(["rate", "check_rating", "user", userId, "product", productId]),
 	},
 };
 

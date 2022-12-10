@@ -35,6 +35,9 @@ export const QueryAPI = {
 		checkComment: (userId: string, productId: string) =>
 			buildUrl(["rate", "check_rating", "user", userId, "product", productId]),
 	},
+	cart: {
+		all: (userId: string) => buildUrl(["cart", userId]),
+	},
 };
 
 export const Command = {
@@ -44,5 +47,8 @@ export const Command = {
 	},
 	comment: {
 		add: () => buildUrl(["rate", "create_rate"]),
+	},
+	cart: {
+		add: () => buildUrl(["cart", "add_cart"]),
 	},
 };

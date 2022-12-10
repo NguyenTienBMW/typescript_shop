@@ -5,6 +5,7 @@ import {
 	Product_List,
 	Contact,
 	Comment,
+	notificationSuccess,
 } from "../../../components";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -12,19 +13,23 @@ import "react-tabs/style/react-tabs.css";
 import {
 	useParams
 } from "react-router-dom";
-import axios from "axios";
-import { QueryAPI } from "../../../access";
+import axios, { Axios } from "axios";
+import { Command, QueryAPI } from "../../../access";
 import { ProductModel } from "../../../model";
 import './style.scss'
 import { Rate } from 'antd';
 import { RenderStarComponent } from "../../../components"
 import { CommentModel } from "../../../model/comment";
+import { UserModel } from "../../../model/user";
 
 export default function ProductDetail() {
+	const user: any = localStorage.getItem('user');
+	const userInfo: UserModel = JSON.parse(user);
 	const { product_id } = useParams<any>();
 	const [product, setProduct] = useState<ProductModel>();
 	const [commentList, setCommentList] = useState<CommentModel>();
 
+	const [quanlity, setQuanlity] = useState(1);
 
 	useEffect(() => {
 		axios.get(QueryAPI.product.single(product_id))
@@ -48,6 +53,48 @@ export default function ProductDetail() {
 	}, [product_id])
 
 	let priceFormater = Number(product?.product_price).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })
+	const handleQuanlityIncrease = () => {
+		if (quanlity === Number(product?.product_quanlity)) return;
+		setQuanlity(prev => prev + 1)
+	}
+
+	const handleQuanlityReduced = () => {
+		if (quanlity <= 1) return;
+		setQuanlity(prev => prev - 1)
+	}
+
+	const onChangeQuanlity = (e: any) => {
+		let result = e.target.value.replace(/\D/g, '');
+		console.log(result)
+		if (result === 0 || !result) {
+			result = 1
+		} else if (result[0] === 0) {
+			result = result.slice(1, result.length)
+		}
+		setQuanlity(Number(result))
+
+	}
+
+	const handleAddCart = () => {
+		axios({
+			method: 'post',
+			url: Command.cart.add(),
+			data: {
+				userId: userInfo.id,
+				productId: product_id,
+				quanlity: quanlity,
+			}
+		})
+			.then((response) => {
+				if (response.statusText === 'OK') {
+					notificationSuccess({ description: 'Bạn đã thêm sản phẩm vào giỏ hàng thành công' });
+					setQuanlity(1);
+				}
+			}, (error) => {
+				alert(error)
+			});
+	}
+
 	var settings = {
 		customPaging: function (i: any) {
 			return (
@@ -95,17 +142,16 @@ export default function ProductDetail() {
 							<hr className="sprate-block" />
 							<div className="product-buy">
 								<div className="product-quanlity">
-									<button className="btn btn-quanlity-dec">-</button>
+									<button className="btn btn-quanlity-dec" onClick={handleQuanlityReduced}>-</button>
 									<input
 										type="text"
-										name=""
-										id=""
-										placeholder="1"
+										value={quanlity}
 										className="input-quanlity"
+										onChange={onChangeQuanlity}
 									/>
-									<button className="btn btn-quanlity-inc">+</button>
+									<button className="btn btn-quanlity-inc" onClick={handleQuanlityIncrease}>+</button>
 								</div>
-								<button className="btn btn-add-cart">
+								<button className="btn btn-add-cart" onClick={handleAddCart}>
 									Add to cart
 									<i className="fa-solid fa-cart-plus btn-cart-icon"></i>
 								</button>

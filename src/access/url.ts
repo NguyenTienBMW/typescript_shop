@@ -51,4 +51,7 @@ export const Command = {
 	cart: {
 		add: () => buildUrl(["cart", "add_cart"]),
 	},
+	payment: {
+		add: () => buildUrl(["pay"]),
+	},
 };

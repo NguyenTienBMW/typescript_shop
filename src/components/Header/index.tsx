@@ -118,7 +118,7 @@ function Header() {
 										</button>
 									</form>
 								</div>
-								<div className="col-3" style={{display: 'flex', justifyContent: 'flex-end'}}>
+								<div className="col-3" style={{ display: 'flex', justifyContent: 'flex-end' }}>
 									<div className="header-main-icon-list">
 										{userInfo
 											? <div className="header-main-icon-item">
@@ -146,9 +146,12 @@ function Header() {
 				<div className="header-bottom">
 					<div className="container">
 						<div className="header-bottom-list">
+							<div className="home-redirect">
+								<Link to={'/'}>Home</Link>
+							</div>
 							<div className="cart-icon">
 								<Link to={'/cart'}>
-								<ShoppingCartOutlined />
+									<ShoppingCartOutlined />
 								</Link>
 							</div>
 						</div>

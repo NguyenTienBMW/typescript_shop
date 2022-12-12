@@ -38,6 +38,10 @@ export const QueryAPI = {
 	cart: {
 		all: (userId: string) => buildUrl(["cart", userId]),
 	},
+	address: {
+		allFull: () => buildUrl(['full-address']),
+		all: (userId: string) => buildUrl(["address", "all", userId])
+	}
 };
 
 export const Command = {
@@ -50,8 +54,13 @@ export const Command = {
 	},
 	cart: {
 		add: () => buildUrl(["cart", "add_cart"]),
+		delete: (cartId: string) => buildUrl(["cart", "delete_cart", cartId]),
+		update: (cartId: string) => buildUrl(["cart","update_cart", cartId])
 	},
 	payment: {
 		add: () => buildUrl(["pay"]),
 	},
+	address: {
+		add: (user_id: string) => buildUrl(["address", "create-address", user_id])
+	}
 };

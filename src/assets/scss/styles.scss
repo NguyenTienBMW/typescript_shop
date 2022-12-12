@@ -4,3 +4,17 @@
 @import "state/all";
 @import "pages/all";
 @import '~antd/dist/antd.css';
+
+
+.truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.truncate-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;  
+    overflow: hidden;
+}

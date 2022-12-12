@@ -1,0 +1,51 @@
+.form-add-address {
+    border-radius: 10px;
+    padding: 15px 25px;
+    .ant-row.ant-form-item-row {
+        display: flex;
+        flex-direction: column;
+
+        .ant-form-item-label {
+            display: none;
+        }
+        .ant-form-item-control {
+            max-width: unset !important;
+            flex: 1;
+        }
+    }
+    .modal-footer-container {
+        display: flex;
+        justify-content: flex-end;
+        padding-right: 25px;
+        gap: 15px;
+    }
+    .ant-select-selector {
+        height: 40px !important;
+        border-radius: 0.5rem !important;
+        .ant-select-selection-search {
+            display: flex !important;
+            align-items: center !important;
+        }
+        .ant-select-selection-item,
+        .ant-select-selection-placeholder {
+            display: flex !important;
+            align-items: center !important;
+        }
+    }
+    .form-footer {
+        margin: 0;
+        display: flex;
+        flex-direction: row;
+    }
+}
+
+.add-address-model {
+    
+    .ant-modal-body {
+        
+        padding: 0 !important;
+    }
+    .ant-modal-footer {
+        display: none;
+    }
+}

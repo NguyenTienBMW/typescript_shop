@@ -37,6 +37,7 @@ export const QueryAPI = {
 	},
 	cart: {
 		all: (userId: string) => buildUrl(["cart", userId]),
+		list: (listId: number[], userId: string) => buildUrl(["cart", "cart-list", JSON.stringify(listId), "user", userId])
 	},
 	address: {
 		allFull: () => buildUrl(['full-address']),
@@ -58,6 +59,7 @@ export const Command = {
 		update: (cartId: string) => buildUrl(["cart","update_cart", cartId])
 	},
 	address: {
-		add: (user_id: string) => buildUrl(["address", "create-address", user_id])
+		add: (user_id: string) => buildUrl(["address", "create-address", user_id]),
+		update: (user_id: string) => buildUrl(["address", "update-address", user_id])
 	}
 };

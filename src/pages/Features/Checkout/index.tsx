@@ -1,213 +1,346 @@
-import React, { useState, useEffect } from 'react'
-import axios from 'axios';
-
-import { BannerFooter, Card } from '../../../components'
+import { Checkbox, Input, Radio } from 'antd';
+import React, { useEffect, useState } from 'react'
+import { BannerFooter, Card, notificationSuccess } from '../../../components'
 import Cart from '../Cart'
-import Paypal from "../../../assets/images/paypal-mark.jpg"
+import './style.scss';
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
 import { Command, QueryAPI } from '../../../access';
-import { notificationSuccess } from '../../../components';
+import { UserModel } from '../../../model/user';
+import { AddressModel, CartModel } from '../../../model';
+import { Form, Select, Modal, Button } from 'antd'
 import { notificationError } from '../../../components/Noti';
-import { CartModel, ProductModel } from '../../../model'
-import { UserModel } from '../../../model/user'
 
-type NewCart = ProductModel & CartModel
 export default function Checkout() {
-  const [error, setError] = useState<string>('');
-  const [inputField, setInputField] = useState<{ [x: string]: string }>()
   const user: any = localStorage.getItem('user');
   const userInfo: UserModel = JSON.parse(user);
-  const [productList, setProductList] = useState<NewCart[]>([])
+  let data = window.location.href.split('?id=')[1]
+  const listId = JSON.parse(data)
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [cartList, setCartList] = useState<Record<string, CartModel[]>>({})
+  const [address, setAddress] = useState<AddressModel>()
+  const [refresh, setRefresh] = useState(0)
+  const [dataAddress, setDataAddress] = useState<any>([]);
+  const [city, setCity] = useState('');
+  const [district, setDistrict] = useState('');
+  const [ward, setWard] = useState('');
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [line, setLine] = useState('');
+
+
 
   useEffect(() => {
-    axios.get(QueryAPI.cart.all(userInfo.id))
+    axios.get(QueryAPI.address.allFull())
       .then(res => {
-        setProductList(res.data)
+        setDataAddress(res.data)
+      })
+  }, [])
+
+  useEffect(() => {
+    axios.get(QueryAPI.address.all(userInfo.id))
+      .then(res => {
+        const { city_name, district_name, ward_name, full_name, phone, address, city, district, ward } = res.data;
+        setAddress(res.data)
+        setCity(String(city))
+        setDistrict(String(district))
+        setWard(String(ward))
+        setPhone(phone)
+        setName(full_name)
+        setLine(address)
+      })
+      .catch(err => {
+        alert(err)
+      })
+  }, [refresh])
+
+  useEffect(() => {
+    if (!listId) return;
+    axios.get(QueryAPI.cart.list(listId, userInfo.id))
+      .then(res => {
+        const data: CartModel[] = res.data;
+        const shopIdContainer: number[] = [];
+        const result: Record<string, CartModel[]> = {}
+
+        data.forEach((item: CartModel) => {
+          if (shopIdContainer.includes(item.shop_id)) return
+          shopIdContainer.push(item.shop_id)
+        })
+
+        shopIdContainer.forEach(item => {
+          if (!result[String(item)]) result[String(item)] = [];
+          data.forEach((itemData: CartModel) => {
+            if (itemData.shop_id === Number(item)) {
+              result[String(item)] = [
+                ...result[String(item)],
+                itemData
+              ]
+            }
+          })
+        })
+        setCartList(result)
       })
       .catch(err => {
         console.log(err)
       })
-  }, [])
+  }, [JSON.stringify(listId)])
 
-  const handleSubmit = async (e: React.MouseEvent<HTMLElement>) => {
-    e.preventDefault();
-    const data = {
-      firstName: inputField?.firstName,
-      lastName: inputField?.lastName,
-      company: inputField?.company,
-      country: inputField?.country,
-      address: inputField?.address,
-      postCode: inputField?.postCode,
-      city: inputField?.city,
-      phone: inputField?.phone,
-      notes: inputField?.notes,
-      paymentOption: inputField?.paymentOption,
+  const total = Object.values(cartList).reduce((prev, curr) => {
+    return prev.concat(curr)
+  }, []).reduce((prev, curr) => {
+    if (listId.includes(curr.product_id)) {
+      return prev + (curr.quanlity * curr.product_price)
+    } else {
+      return prev + 0
     }
-    console.log(productList, data)
+  }, 0)
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
+  const onFinishFailed = (errorInfo: any) => {
+    console.log('Failed:', errorInfo);
+  };
+
+  const onFinish = (values: any) => {
     axios({
       method: 'post',
-      url: Command.payment.add(),
+      url: Command.address.update(userInfo.id),
       headers: {},
-      data: { data, productList }
+      data: values
     })
       .then((response) => {
         if (response.data.code !== '404') {
-          notificationSuccess({ description: 'Bạn đã đăng ký tài khoản thành công' });
-          // history.push('/login')
-          setError('')
+          notificationSuccess({ description: 'Bạn đã đổi địa chỉ thành công' });
+          // handleSetAddress();
+          handleCancel();
+          setRefresh(prev => prev + 1)
         } else {
           notificationError({ description: response.data.message });
-          setError(response.data.message)
         }
       }, (error) => {
         alert(error)
       });
   };
-  const handleInputChange = (e: any) => {
-    const { name, value } = e.currentTarget
-    setInputField(prevState => ({ ...prevState, [name]: value }))
-  }
 
+  console.log(phone)
 
-  const onFinishFailed = (errorInfo: any) => {
-    console.log('Failed:', errorInfo);
-  };
   return (
-    <div>
+    <div className='checkout-container'>
       <div className="container">
-        <BannerFooter />
-      </div>
-      <div className="container mt-30">
-        <h3 className='my-30'>Billing details</h3>
-        <form>
-          <div className="row">
-            <div className="col-6">
-              <div className="row">
-                <div className="col-6">
-                  <div className="form-group">
-                    <label className="form-check-label" htmlFor="firstName">FIRST NAME <span>*</span></label>
-                    <input type="text" className="form-control" id="firstName" name="firstName"
-                      value={inputField?.firstName || ''}
-                      onChange={handleInputChange}
-                      placeholder="First name" />
-                  </div>
-                </div>
-                <div className="col-6">
-                  <div className="form-group">
-                    <label className="form-check-label" htmlFor="lastName">LAST NAME <span>*</span></label>
-                    <input type="text" className="form-control" id="lastName" name="lastName"
-                      value={inputField?.lastName || ''}
-                      onChange={handleInputChange}
-                      placeholder="Last name" />
-                  </div>
-                </div>
-              </div>
-              <div className="row">
-                <div className="col-12">
-                  <div className="form-group">
-                    <label className="form-check-label" htmlFor="company">COMPANY NAME (OPTIONAL)</label>
-                    <input type="text" className="form-control" id="company" name="company"
-                      value={inputField?.company || ''}
-                      onChange={handleInputChange}
-                      placeholder="First name" />
-                  </div>
-                </div>
-              </div>
-              <div className="row">
-                <div className="col-12">
-                  <div className="form-group">
-                    <label className="form-check-label" htmlFor="country">COUNTRY / REGION <span>*</span></label>
-                    <input type="text" className="form-control" id="country" name="country"
-                      value={inputField?.country || ''}
-                      onChange={handleInputChange}
-                      placeholder="Viet Nam" />
-                  </div>
-                </div>
-              </div>
-              <div className="row">
-                <div className="col-12">
-                  <div className="form-group">
-                    <label className="form-check-label" htmlFor="address">STREET ADDRESS <span>*</span></label>
-                    <input type="text" className="form-control" id="address" name="address"
-                      value={inputField?.address || ''}
-                      onChange={handleInputChange}
-                      placeholder="Trần Phú, Hải Châu 1, Q. Hải Châu" />
-                  </div>
-                </div>
-              </div>
-              <div className="row">
-                <div className="col-12">
-                  <div className="form-group">
-                    <label className="form-check-label" htmlFor="postCode">POSTCODE / ZIP (OPTIONAL)</label>
-                    <input type="number" className="form-control" id="postCode" name="postCode"
-                      value={inputField?.postCode || ''}
-                      onChange={handleInputChange}
-                      placeholder="55555" />
-                  </div>
-                </div>
-              </div>
-              <div className="row">
-                <div className="col-12">
-                  <div className="form-group">
-                    <label className="form-check-label" htmlFor="city">TOWN / CITY <span>*</span></label>
-                    <input type="text" className="form-control" id="city" name='city'
-                      value={inputField?.city || ''}
-                      onChange={handleInputChange}
-                      placeholder="ĐÀ NẴNG" />
-                  </div>
-                </div>
-              </div>
-              <div className="row">
-                <div className="col-12">
-                  <div className="form-group">
-                    <label className="form-check-label" htmlFor="phone">PHONE<span>*</span></label>
-                    <input type="tel" className="form-control" id="phone" name="phone"
-                      value={inputField?.phone || ''}
-                      onChange={handleInputChange}
-                      placeholder="0123456789" />
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="col-6">
-              <div className="row">
-                <div className="col-12">
-                  <div className="form-group">
-                    <label className="form-check-label" htmlFor="notes">ORDER NOTES (OPTIONAL)</label>
-                    <textarea className="form-control" id="notes" name="notes"
-                      onChange={handleInputChange}
-                      value={inputField?.notes || ''}
-                      rows={2} cols={4} placeholder="Notes about your order, e.g. special notes for delivery."></textarea>
-                  </div>
-                </div>
-              </div>
-              <div className="row">
-                <div className="col-12">
-                  <Card />
-                  <div className="">
-                    <label>
-                      <input type="radio" name="paymentOption"
-                        id="paymentOption"
-                        onChange={handleInputChange}
-                        value="paypal" checked />
-                      <img src={Paypal} alt="Pay with PayPal" />
-                    </label>
-
-                    <label>
-                      <input type="radio" name="payment_option" value="alternate" />
-                      <div id="paypal-marks-container"></div>
-                    </label>
-
-                    <div id="paypal-buttons-container"></div>
-                    <div id="alternate-button-container" onClick={handleSubmit}>
-                      <button>Pay with a different method</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+        <div className='address-container box-container'>
+          <div className='address-title'>
+            <i className="fa-sharp fa-solid fa-location-dot"></i>
+            <span>Địa chỉ nhận hàng</span>
           </div>
-        </form>
+          <div className='address-user'>
+            <b>{address?.full_name} ({address?.phone})</b>
+            <span>{`${address?.address}, ${address?.ward_name}, ${address?.district_name}, ${address?.city_name}`}</span>
+            <div className='button-change' onClick={() => showModal()}>Change</div>
+          </div>
+        </div>
+
+        <div className='product-container'>
+          <div className="header box-container">
+            <div className='name'>Product</div>
+            <div className='price'>Price</div>
+            <div className='quanlity'>Quanlity</div>
+            <div className='total'>Total</div>
+          </div>
+          {Object.keys(cartList).length > 0 && Object.values(cartList).map((item) => {
+            return <>
+              <div className='shop box-container'>
+                <span>{item[0].shop_name}</span>
+              </div>
+              <div className='product-list box-container'>
+                {item.map((item1) => {
+                  return <div className="product-item">
+                    <div className='info-container'>
+                      <div className="product-image">
+                        <img
+                          src={item1.product_image}
+                          className="pro-img"
+                          alt="pro-img"
+                        />
+                      </div>
+                      <div className="product-name">
+                        <h5 className="truncate-2">{item1.product_name}</h5>
+                      </div>
+                    </div>
+                    <div className="product-price">{item1.product_price}</div>
+                    <div className="product-quanlity">{item1.quanlity}</div>
+                    <div className="product-total-price">{Number(item1.quanlity) * Number(item1.product_price)}</div>
+                  </div>
+                })}
+              </div>
+            </>
+          })}
+          <div className='total-product-container box-container'>
+            <span className='total-product'>
+              Tổng số tiền ({Object.keys(cartList)?.length} sản phẩm)
+            </span>
+            <span className='total-price'>
+              {total}
+            </span>
+          </div>
+        </div>
+
+        <div className='payment-container box-container'>
+          <div>Phương thức thanh toán</div>
+          <Radio.Group className='payment-list'>
+            <Radio value={1}>A</Radio>
+            <Radio value={2}>B</Radio>
+            <Radio value={3}>C</Radio>
+            <Radio value={4}>D</Radio>
+          </Radio.Group>
+          <div className='total-payment'>
+            <div className='total-item'>
+              <div>Tổng thanh toán</div>
+              <div>{total}</div>
+            </div>
+            {/* <div className='total-item'>
+              <div>Tổng tiền</div>
+              <div>0</div>
+            </div> */}
+          </div>
+          <div className='btn-order-container box'>
+            <div className='btn-payment'>Order</div>
+          </div>
+        </div>
+
       </div>
+      <Modal title="Update Address" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} className='add-address-model'>
+        <Form
+          name="basic"
+          labelCol={{ span: 8 }}
+          wrapperCol={{ span: 16 }}
+          initialValues={{
+            name: name,
+            phone: phone,
+            city: Number(city),
+            district: Number(district),
+            ward: Number(ward),
+            address: line
+          }}
+          onFinish={onFinish}
+          onFinishFailed={onFinishFailed}
+          className='form-add-address'
+          autoComplete="off"
+        >
+          <Form.Item
+            label="Full Name"
+            name="name"
+            rules={[{ required: true, message: 'Please input your name!' }]}
+          >
+            <Input placeholder='Full Name' />
+          </Form.Item>
+
+          <Form.Item
+            label="Phone"
+            name="phone"
+            rules={[{ required: true, message: 'Please input your phone!' }]}
+          >
+            <Input placeholder='Phone' />
+          </Form.Item>
+
+          <Form.Item
+            label="City"
+            name="city"
+            rules={[{ required: true, message: 'Please input your city!' }]}
+          >
+            <Select
+              showSearch
+              placeholder="Select a City"
+              options={dataAddress.map((item: any, index: any) => ({
+                label: item.name,
+                value: index
+              }))}
+              value={city}
+              onChange={(value1) => {
+                setCity(value1)
+                setDistrict('')
+                setWard('')
+                setLine('')
+              }}
+            />
+          </Form.Item>
+
+          <Form.Item
+            label="District"
+            name="district"
+            rules={[{ required: true, message: 'Please input your district!' }]}
+          >
+            <Select
+              value={district}
+              showSearch
+              disabled={city === ''}
+              placeholder="Select a District"
+              options={dataAddress[Number(city)]?.districts.map((item: any, index: any) => ({
+                label: item.name,
+                value: index
+              }))}
+              onChange={(value) => {
+                setDistrict(value)
+                setWard('')
+                setLine('')
+              }}
+            />
+          </Form.Item>
+
+          <Form.Item
+            label="Ward"
+            name="ward"
+            rules={[{ required: true, message: 'Please input your ward!' }]}
+          >
+            <Select
+              showSearch
+              value={ward}
+              disabled={district === ''}
+              placeholder="Select a City"
+              options={dataAddress[Number(city)]?.districts[Number(district)]?.wards?.map((item: any, index: any) => ({
+                label: item.name,
+                value: index
+              }))}
+              onChange={(value) => {
+                setWard(value)
+                setLine('')
+              }}
+            />
+          </Form.Item>
+
+          <Form.Item
+            label="Address"
+            name="address"
+            rules={[{ required: true, message: 'Please input your address!' }]}
+          >
+            <Input value={line} placeholder='Address' />
+          </Form.Item>
+
+
+          <div className='modal-footer-container'>
+            <Form.Item wrapperCol={{ offset: 8, span: 16 }} className='form-footer'>
+              <Button type="ghost" onClick={handleCancel}>
+                Cancel
+              </Button>
+            </Form.Item>
+            <Form.Item wrapperCol={{ offset: 8, span: 16 }} className='form-footer'>
+              <Button type="primary" htmlType="submit">
+                Save
+              </Button>
+            </Form.Item>
+          </div>
+        </Form>
+      </Modal>
     </div>
   )
 }

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import {
   BrowserRouter as Router,
   Link,
+  useHistory,
 } from "react-router-dom";
 import { UserModel } from '../../model/user';
 import { Button, Modal, Form, Input, Select } from 'antd';
@@ -13,6 +14,7 @@ import { notificationError, notificationSuccess } from '../Noti';
 export default function Card({ total, listId }: { total?: number; listId?: number[] }) {
   const user: any = localStorage.getItem('user');
   const userInfo: UserModel = JSON.parse(user);
+  const history = useHistory()
 
   const [refresh, setRefresh] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -23,7 +25,8 @@ export default function Card({ total, listId }: { total?: number; listId?: numbe
 
   const checkAddress = () => {
     if (userInfo.address) {
-      alert('ok')
+
+      history.push(`checkout?id=${JSON.stringify(listId)}`)
     } else {
       showModal()
     }
@@ -32,13 +35,16 @@ export default function Card({ total, listId }: { total?: number; listId?: numbe
   const showModal = () => {
     setIsModalOpen(true);
   };
-
+  
   const handleOk = () => {
     setIsModalOpen(false);
   };
-
+  
   const handleCancel = () => {
     setIsModalOpen(false);
+    setCity('')
+    setDistrict('')
+    setWard('')
   };
 
   useEffect(() => {

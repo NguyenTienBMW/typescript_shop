@@ -42,7 +42,13 @@ export const QueryAPI = {
 	address: {
 		allFull: () => buildUrl(['full-address']),
 		all: (userId: string) => buildUrl(["address", "all", userId])
-	}
+	},
+	province: {
+		province: () => buildUrl(['province']),
+		district: (provinceId: string) => buildUrl(["district", provinceId]),
+		ward: (districtId: string) => buildUrl(["ward", districtId]),
+		fee: () => buildUrl(["fee"]),  
+	}, 
 };
 
 export const Command = {
@@ -63,6 +69,9 @@ export const Command = {
 	},
 	address: {
 		add: (user_id: string) => buildUrl(["address", "create-address", user_id]),
-		update: (user_id: string) => buildUrl(["address", "update-address", user_id])
-	}
+		update: (user_id: string) => buildUrl(["address", "update-address", user_id]),
+		services: (userId: string,shopId: string) => buildUrl(["available-services","user",userId,"shop",shopId]),
+		fee: (serviceId: string,userId: string,shopId: string) => buildUrl(["fee",serviceId,"user",userId,"shop",shopId]),
+	},
+
 };

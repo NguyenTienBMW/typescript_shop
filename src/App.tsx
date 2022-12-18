@@ -8,7 +8,7 @@ import {
 } from "react-router-dom";
 import { Footer, Header } from "./components";
 import { UserModel } from "./model/user";
-import { Cart, Checkout, Home, ProductDetail } from "./pages/Features";
+import { Cart, Checkout, Home, ProductDetail, Purchase } from "./pages/Features";
 import { Login } from "./pages/Features/login";
 import { Register } from "./pages/Features/Register";
 import { Add_Product, TableProduct } from "./pages/Product"
@@ -44,6 +44,9 @@ export default function App() {
 					</Route>
 					<Route path="/list-product">
 						<TableProduct />
+					</Route>
+					<Route path="/purchase">
+						<Purchase />
 					</Route>
 					<Route path="/">
 						<Home />

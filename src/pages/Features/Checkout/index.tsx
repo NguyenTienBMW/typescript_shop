@@ -1,15 +1,19 @@
-import { Checkbox, Input, Radio } from 'antd';
+import { Alert, Checkbox, Input, Radio, Space } from 'antd';
 import React, { useEffect, useState } from 'react'
 import { BannerFooter, Card, notificationSuccess } from '../../../components'
 import Cart from '../Cart'
+import Purchase from '../Purchase';
 import './style.scss';
-import { useParams } from 'react-router-dom';
+import { Redirect, useParams, useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { Command, QueryAPI } from '../../../access';
 import { UserModel } from '../../../model/user';
 import { AddressModel, CartModel } from '../../../model';
 import { Form, Select, Modal, Button } from 'antd'
+import type { RadioChangeEvent } from 'antd';
 import { notificationError } from '../../../components/Noti';
+import Paypal from "../../../assets/images/paypal-mark.jpg"
+const Router = require('react-router');
 
 export default function Checkout() {
   const user: any = localStorage.getItem('user');
@@ -28,8 +32,10 @@ export default function Checkout() {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [line, setLine] = useState('');
-
-
+  const [checked, setChecked] = useState(0);
+  const [error, setError] = useState<string>('');
+  const [newDataAddress, setNewDataAddress] = useState<any>([]);
+  let history = useHistory();
 
   useEffect(() => {
     axios.get(QueryAPI.address.allFull())
@@ -39,8 +45,16 @@ export default function Checkout() {
   }, [])
 
   useEffect(() => {
+    axios.get(QueryAPI.province.province())
+      .then(res => {
+        setNewDataAddress(res.data.data)
+      })
+  }, [])
+
+  useEffect(() => {
     axios.get(QueryAPI.address.all(userInfo.id))
       .then(res => {
+        console.log("res", res.data)
         const { city_name, district_name, ward_name, full_name, phone, address, city, district, ward } = res.data;
         setAddress(res.data)
         setCity(String(city))
@@ -133,8 +147,42 @@ export default function Checkout() {
       });
   };
 
-  console.log(phone)
+  const onChange = (e: RadioChangeEvent) => {
+    setChecked(e.target.value);
 
+  };
+  const handleSubmit = () => {
+    switch (checked) {
+      case 1:
+        const userId = userInfo.id;
+        axios({
+          maxRedirects: 0,
+          method: 'post',
+          // url: Command.payment.add(),
+          url: "http://localhost:8000/pay",
+          headers: {},
+          data: { userId, total, listId, address }
+        })
+          .then((response) => {
+            console.log(response);
+            if (response.data.code !== '404') {
+              setError('')
+              window.location = response.data.forwardLink
+
+            } else {
+              notificationError({ description: response.data.message });
+              setError(response.data.message)
+            }
+          }, (error) => {
+            alert(error)
+          });
+        break;
+      case 2:
+        history.push(`purchase?id=${JSON.stringify(listId)}`)
+        break;
+      default: notificationError({ message: "Order thất bại", description: "Vui lòng chọn phương thức thanh toán" });
+    }
+  }
   return (
     <div className='checkout-container'>
       <div className="container">
@@ -183,8 +231,10 @@ export default function Checkout() {
                   </div>
                 })}
               </div>
+              <Shipping userId={userInfo.id} shopId={item[0].shop_id.toString()} />
             </>
           })}
+
           <div className='total-product-container box-container'>
             <span className='total-product'>
               Tổng số tiền ({Object.keys(cartList)?.length} sản phẩm)
@@ -195,13 +245,15 @@ export default function Checkout() {
           </div>
         </div>
 
+
+
         <div className='payment-container box-container'>
           <div>Phương thức thanh toán</div>
-          <Radio.Group className='payment-list'>
-            <Radio value={1}>A</Radio>
-            <Radio value={2}>B</Radio>
-            <Radio value={3}>C</Radio>
-            <Radio value={4}>D</Radio>
+          <Radio.Group className='payment-list' onChange={onChange} value={checked}>
+            <Radio value={1} style={{ display: "flex", alignItems: "center" }}><img src={Paypal} style={{ maxHeight: "52px" }} alt="Pay with PayPal" /></Radio>
+            <Radio value={2}>Thanh toán khi nhận hàng</Radio>
+            {/* <Radio value={3}>C</Radio>
+            <Radio value={4}>D</Radio> */}
           </Radio.Group>
           <div className='total-payment'>
             <div className='total-item'>
@@ -213,8 +265,8 @@ export default function Checkout() {
               <div>0</div>
             </div> */}
           </div>
-          <div className='btn-order-container box'>
-            <div className='btn-payment'>Order</div>
+          <div className='btn-order-container box' >
+            <button className='btn-payment' onClick={handleSubmit}>Order</button>
           </div>
         </div>
 
@@ -343,4 +395,36 @@ export default function Checkout() {
       </Modal>
     </div>
   )
+}
+const Shipping = ({ userId, shopId }: { userId: string, shopId: string }) => {
+  const [service, setService] = useState<any[]>([]);
+  useEffect(() => {
+    axios.get(Command.address.services(userId, shopId))
+      .then(res => { setService(res.data.data) })
+  }, [userId, shopId])
+  return <div className='payment-container box-container' style={{ marginTop: "0" }}>
+    <div>Phương thức vận chuyển</div>
+    <Radio.Group className='payment-list'>
+      {service.map(payment =>
+        <Radio value={payment.service_id} style={{ display: "flex", alignItems: "center" }}>
+          {payment.short_name}
+          <Fee serviceId={payment.service_id} userId={userId} shopId={shopId} />
+        </Radio>
+      )}
+
+    </Radio.Group>
+  </div>
+}
+
+const Fee = ({ serviceId, userId, shopId }: { serviceId: string, userId: string, shopId: string }) => {
+  const [fee, setFee] = useState<any>();
+  useEffect(() => {
+    axios.get(Command.address.fee(serviceId, userId, shopId))
+      .then(res => { setFee(res.data.data) })
+  }, [serviceId, userId, shopId])
+  console.log(fee);
+  return fee ? <div>
+    {fee.total}
+  </div>
+    : <></>
 }

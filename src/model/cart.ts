@@ -15,4 +15,5 @@ const defaultCart = {
     shop_id: 0,
     shop_name: '',
     shop_avatar: '',
+    status:0
 };

@@ -216,7 +216,7 @@ const CartItem = ({
 	const handleUpdateQuanlity = (value: number) => {
 		setQuanlity(value)
 	}
-	
+
 	useEffect(() => {
 		axios({
 			method: 'post',
@@ -224,13 +224,13 @@ const CartItem = ({
 			headers: {},
 			data: { quanlity: quanlity }
 		})
-		.then((response) => {
-			if (response.statusText === 'OK') {
-				onUpdateQuanlity(cart.shop_id, itemindex, quanlity)
-			}
-		}, (error) => {
-			alert(error)
-		});
+			.then((response) => {
+				if (response.statusText === 'OK') {
+					onUpdateQuanlity(cart.shop_id, itemindex, quanlity)
+				}
+			}, (error) => {
+				alert(error)
+			});
 	}, [quanlity])
 
 	return <div className="shop-cart-item">
@@ -254,6 +254,7 @@ const CartItem = ({
 				type="text"
 				value={quanlity}
 				className="input-quanlity"
+				readOnly
 				onChange={onChangeQuanlity}
 				onBlur={(e) => handleUpdateQuanlity(Number(e.target.value))}
 			/>

@@ -11,7 +11,7 @@ import { UserModel } from "./model/user";
 import { Cart, Checkout, Home, ProductDetail } from "./pages/Features";
 import { Login } from "./pages/Features/login";
 import { Register } from "./pages/Features/Register";
-import { Add_Product, TableProduct } from "./pages/Product"
+import { AddProduct, TableProduct } from "./pages/Product"
 
 export default function App() {
 	const user: any = localStorage.getItem('user');
@@ -39,8 +39,8 @@ export default function App() {
 					<Route path="/checkout">
 						<Checkout />
 					</Route>
-					<Route path="/add-product">
-						<Add_Product />
+					<Route path="/manage-shop">
+						<AddProduct />
 					</Route>
 					<Route path="/list-product">
 						<TableProduct />

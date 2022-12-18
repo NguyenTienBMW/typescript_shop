@@ -17,6 +17,7 @@ export const QueryAPI = {
 		single: (productId: string) => {
 			return buildUrl(["product", productId]);
 		},
+		shopProduct: (userId: string) => buildUrl(["product", "shop", userId])
 	},
 	recommend: {
 		all: () => buildUrl(["recommend"]),

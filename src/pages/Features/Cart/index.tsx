@@ -1,10 +1,13 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
-import { QueryAPI } from '../../../access'
-import { BannerFooter, BreadCrumb, Card, Contact, Footer, Header, Product_List } from '../../../components'
+import { Command, QueryAPI } from '../../../access'
+import { BannerFooter, BreadCrumb, Card, Contact, Footer, Header, notificationSuccess, Product_List } from '../../../components'
 import { Table } from '../../../components/Table'
 import { CartModel, ProductModel } from '../../../model'
 import { UserModel } from '../../../model/user'
+import Paypal from "../../../assets/images/paypal-mark.jpg"
+import { notificationError } from '../../../components/Noti'
+
 
 export default function Cart() {
   const user: any = localStorage.getItem('user');
@@ -13,6 +16,7 @@ export default function Cart() {
   const [totalPrice, setTotalPrice] = useState(0)
   const [refresh, setRefresh] = useState(0)
   const [listIdSelect, setListIdSelect] = useState<number[]>([])
+  const [error, setError] = useState<string>('');
 
   useEffect(() => {
     axios.get(QueryAPI.cart.all(userInfo.id))
@@ -52,14 +56,14 @@ export default function Cart() {
   const onUpdateQuanlity = (shopId: number, cartId: number, value: number) => {
     setCartList(prev => {
       prev[shopId][cartId].quanlity = value
-      return {...prev}
+      return { ...prev }
     })
   }
 
   // const onDelete =()
 
   return (
-    <div>
+    <>
       <div className="container">
         <div className="row table-wrap">
           <div className="col-9">
@@ -73,8 +77,9 @@ export default function Cart() {
           <div className="col-3">
             <Card total={totalPrice} listId={listIdSelect} />
           </div>
+
         </div>
       </div>
-    </div>
+    </>
   )
 }

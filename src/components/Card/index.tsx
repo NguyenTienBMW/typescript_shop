@@ -18,10 +18,14 @@ export default function Card({ total, listId }: { total?: number; listId?: numbe
 
   const [refresh, setRefresh] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [dataAddress, setDataAddress] = useState<any>([]);
   const [city, setCity] = useState('');
   const [district, setDistrict] = useState('');
   const [ward, setWard] = useState('');
+  const [provinceList, setProvinceList] = useState<any>([]);
+  const [districtList, setDistrictList] = useState<any>([]);
+  const [wardList, setWardList] = useState<any>([]);
+  // const [services, setServices] = useState<any>([]);
+
 
   const checkAddress = () => {
     if (userInfo.address) {
@@ -35,24 +39,17 @@ export default function Card({ total, listId }: { total?: number; listId?: numbe
   const showModal = () => {
     setIsModalOpen(true);
   };
-  
+
   const handleOk = () => {
     setIsModalOpen(false);
   };
-  
+
   const handleCancel = () => {
     setIsModalOpen(false);
     setCity('')
     setDistrict('')
     setWard('')
   };
-
-  useEffect(() => {
-    axios.get(QueryAPI.address.allFull())
-      .then(res => {
-        setDataAddress(res.data)
-      })
-  }, [])
 
   const onFinishFailed = (errorInfo: any) => {
     console.log('Failed:', errorInfo);
@@ -80,11 +77,33 @@ export default function Card({ total, listId }: { total?: number; listId?: numbe
 
   const handleSetAddress = () => {
     axios.get(QueryAPI.user.single(userInfo.id))
-    .then(res => {
-      localStorage.setItem('user', JSON.stringify(res.data));
-      setRefresh(prev => prev + 1)
-    })
+      .then(res => {
+        localStorage.setItem('user', JSON.stringify(res.data));
+        setRefresh(prev => prev + 1)
+      })
   }
+  useEffect(() => {
+    axios.get(QueryAPI.province.province())
+      .then(res => {
+        setProvinceList(res.data.data)
+      })
+  }, [])
+
+  useEffect(() => {
+    if (!city) return
+    axios.get(QueryAPI.province.district(city))
+      .then(res => {
+        setDistrictList(res.data.data)
+      })
+  }, [city])
+
+  useEffect(() => {
+    if (!district) return
+    axios.get(QueryAPI.province.ward(district))
+      .then(res => {
+        setWardList(res.data.data)
+      })
+  }, [district])
 
   return (
     <>
@@ -142,10 +161,10 @@ export default function Card({ total, listId }: { total?: number; listId?: numbe
           >
             <Select
               showSearch
-              placeholder="Select a City"
-              options={dataAddress.map((item: any, index: any) => ({
-                label: item.name,
-                value: index
+              placeholder="Select a city"
+              options={provinceList.map((item: any) => ({
+                label: item.ProvinceName,
+                value: item.ProvinceID
               }))}
               value={city}
               onChange={(value) => setCity(value)}
@@ -160,10 +179,10 @@ export default function Card({ total, listId }: { total?: number; listId?: numbe
             <Select
               showSearch
               disabled={city === ''}
-              placeholder="Select a City"
-              options={dataAddress[Number(city)]?.districts.map((item: any, index: any) => ({
-                label: item.name,
-                value: index
+              placeholder="Select a district"
+              options={districtList.map((item: any) => ({
+                label: item.DistrictName,
+                value: item.DistrictID
               }))}
               onChange={(value) => setDistrict(value)}
             />
@@ -177,10 +196,10 @@ export default function Card({ total, listId }: { total?: number; listId?: numbe
             <Select
               showSearch
               disabled={district === ''}
-              placeholder="Select a City"
-              options={dataAddress[Number(city)]?.districts[Number(district)]?.wards?.map((item: any, index: any) => ({
-                label: item.name,
-                value: index
+              placeholder="Select a ward"
+              options={wardList.map((item: any) => ({
+                label: item.WardName,
+                value: item.WardCode
               }))}
               onChange={(value) => setWard(value)}
             />

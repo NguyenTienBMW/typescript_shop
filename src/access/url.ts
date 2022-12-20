@@ -49,6 +49,9 @@ export const QueryAPI = {
 		ward: (districtId: string) => buildUrl(["ward", districtId]),
 		fee: () => buildUrl(["fee"]),  
 	}, 
+	order: {
+		all: (userId: string) => buildUrl(["order", userId])
+	},
 };
 
 export const Command = {

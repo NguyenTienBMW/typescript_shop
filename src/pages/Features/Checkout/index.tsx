@@ -2,7 +2,7 @@ import { Alert, Checkbox, Input, Radio, Space } from 'antd';
 import React, { useEffect, useState } from 'react'
 import { BannerFooter, Card, notificationSuccess } from '../../../components'
 import Cart from '../Cart'
-import Purchase from '../Purchase';
+import Order from '../Order';
 import './style.scss';
 import { Redirect, useParams, useHistory } from 'react-router-dom';
 import axios from 'axios';
@@ -178,7 +178,7 @@ export default function Checkout() {
           });
         break;
       case 2:
-        history.push(`purchase?id=${JSON.stringify(listId)}`)
+        history.push(`order/${userInfo.id}`)
         break;
       default: notificationError({ message: "Order thất bại", description: "Vui lòng chọn phương thức thanh toán" });
     }

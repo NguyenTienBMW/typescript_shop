@@ -158,7 +158,6 @@ export default function Checkout() {
         axios({
           maxRedirects: 0,
           method: 'post',
-          // url: Command.payment.add(),
           url: "http://localhost:8000/pay",
           headers: {},
           data: { userId, total, listId, address }

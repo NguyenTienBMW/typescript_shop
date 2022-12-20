@@ -30,7 +30,7 @@ export default function Order() {
         shopIdContainer.forEach(item => {
           // console.log("result[String(item)]", String(item))
           data.forEach((itemData: CartModel) => {
-            if (itemData.shop_id === Number(item) && itemData.status == key) {
+            if (itemData.shop_id === Number(item) && itemData.status_order == key) {
               if (!result[String(item)]) result[String(item)] = [];
               result[String(item)] = [
                 ...result[String(item)],
@@ -68,9 +68,10 @@ export default function Order() {
       <div className="container">
 
         <Tabs onChange={callback} type="card">
-          <TabPane tab="Tab 1" key="0"><TabItem cartList1={cartList} /></TabPane>
-          <TabPane tab="Tab 2" key="1"><TabItem cartList1={cartList} /></TabPane>
-          <TabPane tab="Tab 3" key="2"><TabItem cartList1={cartList} /></TabPane>
+          <TabPane tab="Chờ thanh toán" key="0"><TabItem cartList1={cartList} /></TabPane>
+          <TabPane tab="Vận chuyển" key="1"><TabItem cartList1={cartList} /></TabPane>
+          <TabPane tab="Đang giao" key="2"><TabItem cartList1={cartList} /></TabPane>
+          <TabPane tab="Hoàn thành" key="3"><TabItem cartList1={cartList} /></TabPane>
         </Tabs>
         {/* <div className='total-product-container box-container'>
           <span className='total-product'>

@@ -38,7 +38,7 @@ function Header() {
 	const renderMenuUser = () => {
 		return <Menu>
 			<Menu.Item>Tài khoản của tôi</Menu.Item>
-			<Menu.Item>Đơn mua</Menu.Item>
+			<Menu.Item><Link to={`order/${userInfo.id}`}>Đơn mua</Link></Menu.Item>
 			<Menu.Item onClick={() => {
 				localStorage.removeItem('user')
 				setTest(prev => prev + 1)

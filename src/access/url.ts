@@ -50,6 +50,11 @@ export const QueryAPI = {
 		ward: (districtId: string) => buildUrl(["ward", districtId]),
 		fee: () => buildUrl(["fee"]),  
 	}, 
+	shop: {
+		single: (user_id: string) => {
+			return buildUrl(["shop", user_id]);
+		},
+	}
 };
 
 export const Command = {
@@ -74,5 +79,15 @@ export const Command = {
 		services: (userId: string,shopId: string) => buildUrl(["available-services","user",userId,"shop",shopId]),
 		fee: (serviceId: string,userId: string,shopId: string) => buildUrl(["fee",serviceId,"user",userId,"shop",shopId]),
 	},
+	product: {
+		update: (productId: string) => buildUrl(["product","update_product", productId]),
+		add: () => buildUrl(["product", "create_product"]),
+		delete: (productId: string) => buildUrl(["product","delete_product", productId]),
+	},
+	shop: {
+		// update: (productId: string) => buildUrl(["product","update_product", productId]),
+		add: (user_id: string) => buildUrl(["shop", "create_shop", user_id]),
+		// delete: (productId: string) => buildUrl(["product","delete_product", productId]),
+	}
 
 };

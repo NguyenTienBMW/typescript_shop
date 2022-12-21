@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import BannerItem from "../BannerItem";
-import Product_List from "../Product";
+import ProductList from "../Product";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 

@@ -1,10 +1,35 @@
 .breadcrumb-wrap {
 	padding: 100px 0;
 	display: flex;
+	height: 340px;
 	justify-content: center;
 	align-items: center;
 	flex-direction: column;
 	background-color: #f2f2f2;
+	position: relative;
+	color: white;
+	.fake-wrap {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-color: rgba(0,0,0,.6);
+	}
+	.breadcrumb-heading {
+		z-index: 200;
+		color: white;
+	}
+	.information {
+		z-index: 200;
+		display: flex;
+		gap: 10px;
+		color: white;
+		font-size: 18px;
+	}
+	.breadcumb-list {
+		z-index: 200;
+	}
 }
 .breadcrumb-heading {
 	font-size: 46px;

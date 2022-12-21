@@ -17,7 +17,9 @@ export const QueryAPI = {
 		single: (productId: string) => {
 			return buildUrl(["product", productId]);
 		},
-		shopProduct: (userId: string) => buildUrl(["product", "shop", userId])
+		shopProduct: (userId: string) => buildUrl(["product", "shop", userId]),
+		productCategory: (categoryId: string) => buildUrl(["product", "category", categoryId]),
+		search: (key: string) => buildUrl(["product", "search", key])
 	},
 	recommend: {
 		all: () => buildUrl(["recommend"]),
@@ -54,6 +56,7 @@ export const QueryAPI = {
 		single: (user_id: string) => {
 			return buildUrl(["shop", user_id]);
 		},
+		signleWithshopId: (shopId: string) => buildUrl(["shop", "product", shopId]) 
 	}
 };
 

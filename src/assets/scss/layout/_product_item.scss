@@ -1,6 +1,7 @@
 .product {
 	border: 1px solid #ccc;
-	width: 235px;
+	max-width: 235px;
+	width: 100%;
 	// height: 600px;
 	position: relative;
 	.product-img {

@@ -31,5 +31,25 @@
             background-color: #f2f2f2;
             opacity: 0.9;
         }
+        .category-item.active {
+            background-color: #f2f2f2;
+            opacity: 0.9;
+        }
+    }
+
+    .category-list.vertical {
+        flex-direction: column;
+        align-items: flex-start;
+        .category-item {
+            display: flex;
+            flex-direction: row;
+            gap: 15px;
+            width: 100%;
+            justify-content: flex-start;
+            img {
+                height: 50px;
+                width: 50px;
+            }
+        }
     }
 }

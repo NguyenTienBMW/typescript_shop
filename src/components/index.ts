@@ -1,7 +1,7 @@
 import Header from "./Header";
 import Carousel from "./Carousel";
 import Banner from "./Banner";
-import Product_List from "./Product";
+import ProductList from "./Product";
 import BannerItem from "./BannerItem";
 import BannerFooter from "./BannerFooter";
 import ProductItem from "./ProductItem";
@@ -21,7 +21,7 @@ export {
 	Header,
 	Carousel,
 	Banner,
-	Product_List,
+	ProductList,
 	BannerItem,
 	BannerFooter,
 	ProductItem,

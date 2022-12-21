@@ -8,7 +8,7 @@ import {
 } from "react-router-dom";
 import { Footer, Header } from "./components";
 import { UserModel } from "./model/user";
-import { Cart, Checkout, Home, ProductDetail, Purchase } from "./pages/Features";
+import { Cart, Checkout, Home, ProductCategory, ProductDetail, ProductSearch, Purchase, ViewShop } from "./pages/Features";
 import { Login } from "./pages/Features/login";
 import { Register } from "./pages/Features/Register";
 import { AddProduct, TableProduct } from "./pages/Product"
@@ -44,6 +44,15 @@ export default function App() {
 					</Route>
 					<Route path="/list-product">
 						<TableProduct />
+					</Route>
+					<Route path="/product-category/:category">
+						<ProductCategory />
+					</Route>
+					<Route path="/view-shop/:shopId">
+						<ViewShop />
+					</Route>
+					<Route path="/search/:keyword">
+						<ProductSearch />
 					</Route>
 					<Route path="/purchase">
 						<Purchase />

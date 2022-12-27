@@ -1,7 +1,7 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { Command, QueryAPI } from '../../../access'
-import { BannerFooter, BreadCrumb, Card, Contact, Footer, Header, notificationSuccess, Product_List } from '../../../components'
+import { BannerFooter, BreadCrumb, Card, Contact, Footer, Header, notificationSuccess, ProductList } from '../../../components'
 import { Table } from '../../../components/Table'
 import { CartModel, ProductModel } from '../../../model'
 import { UserModel } from '../../../model/user'

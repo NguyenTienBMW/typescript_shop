@@ -16,7 +16,7 @@ import { UserModel } from "../../model/user";
 import { Spin, Skeleton } from 'antd';
 import './style.scss';
 
-export default function Product_List({
+export default function ProductList({
 	recommend,
 	title
 }: {

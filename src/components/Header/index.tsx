@@ -40,10 +40,18 @@ function Header() {
 			<Menu.Item>Tài khoản của tôi</Menu.Item>
 			<Menu.Item><Link to={`order/${userInfo.id}`}>Đơn mua</Link></Menu.Item>
 			<Menu.Item onClick={() => {
+				history.push('/manage-shop')
+				setTest(prev => prev + 1)
+			}}>Shop của tôi</Menu.Item>
+			<Menu.Item onClick={() => {
 				localStorage.removeItem('user')
 				setTest(prev => prev + 1)
 			}}>Đăng xuất</Menu.Item>
 		</Menu>
+	}
+
+	const handleSearch = (value: string) => {
+		history.push(`/search/${value}`)
 	}
 
 	return (
@@ -111,12 +119,19 @@ function Header() {
 							</div>
 							<div className="col-8 header-main-item navigate-wrap">
 								<div className="col-9">
-									<form action="" className="search-wrap">
-										<input type="text" name="" className="search-input-wrap" id="" placeholder="Search for your item's type..." />
+									<div className="search-wrap">
+										<input type="text" name="" className="search-input-wrap" id=""
+											placeholder="Search for your item's type..."
+											onKeyDown={(e: any) => {
+												if (13 === e.keyCode) {
+													handleSearch(e.target.value)
+												}
+											}}
+										/>
 										<button className="search-btn">
 											<i className="fa-solid fa-magnifying-glass search-btn-icon"></i>
 										</button>
-									</form>
+									</div>
 								</div>
 								<div className="col-3" style={{ display: 'flex', justifyContent: 'flex-end' }}>
 									<div className="header-main-icon-list">

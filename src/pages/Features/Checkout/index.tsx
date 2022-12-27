@@ -35,7 +35,9 @@ export default function Checkout() {
   const [checked, setChecked] = useState(0);
   const [error, setError] = useState<string>('');
   const [newDataAddress, setNewDataAddress] = useState<any>([]);
+
   let history = useHistory();
+
 
   useEffect(() => {
     axios.get(QueryAPI.address.allFull())
@@ -417,13 +419,20 @@ const Shipping = ({ userId, shopId }: { userId: string, shopId: string }) => {
 
 const Fee = ({ serviceId, userId, shopId }: { serviceId: string, userId: string, shopId: string }) => {
   const [fee, setFee] = useState<any>();
+  const [vnd, setVnd] = useState<number>();
+
+  useEffect(() => {
+    axios.get('https://v6.exchangerate-api.com/v6/6d92d16a0dc2c771e7a7b697/latest/VND'
+    ).then(({ data }) => setVnd(data.conversion_rates.USD));
+  }, []);
+
   useEffect(() => {
     axios.get(Command.address.fee(serviceId, userId, shopId))
       .then(res => { setFee(res.data.data) })
   }, [serviceId, userId, shopId])
   console.log(fee);
   return fee ? <div>
-    {fee.total}
+    {(fee.total * Number(vnd)).toFixed(2)} USD
   </div>
     : <></>
 }

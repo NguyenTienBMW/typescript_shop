@@ -23,9 +23,9 @@ export default function BreadCrumb({ shop, hideButton }: { shop?: ShopModel, hid
 					</li>
 				</ul> :
 				<div className="information">
-					<div>10 sản phẩm</div>
+					<div>{shop?.totalProduct} Products</div>
 					-
-					<div>4 Đánh giá</div>
+					<div>{shop?.totalRating} Ratings</div>
 				</div> }
 			</div>
 		</section>

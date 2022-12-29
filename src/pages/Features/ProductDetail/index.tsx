@@ -29,6 +29,7 @@ export default function ProductDetail() {
 	const [product, setProduct] = useState<ProductModel>();
 	const [shop, setShop] = useState<ShopModel>();
 	const [commentList, setCommentList] = useState<CommentModel>();
+	console.log("🚀 ~ file: index.tsx:32 ~ ProductDetail ~ commentList", commentList)
 
 	const [quanlity, setQuanlity] = useState(1);
 
@@ -125,7 +126,7 @@ export default function ProductDetail() {
 							<h3 className="product-name">{product?.product_name}</h3>
 							<div>
 								<div className="rating" style={{ display: "flex" }}>
-									<RenderStarComponent numberStar={Math.floor(Number(commentList?.averageRating) / 2)} />
+									<RenderStarComponent numberStar={Number(commentList?.averageRating) / 2} />
 									<a href="#reviews" style={{ color: "#40a9ff", marginLeft: "5px" }}>{commentList?.customerRating} customers reviews</a >
 								</div>
 							</div>

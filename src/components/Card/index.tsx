@@ -116,12 +116,6 @@ export default function Card({ total, listId }: { total?: number; listId?: numbe
             <th></th>
             <th>Tổng thanh toán {listId?.length} sản phẩm</th>
           </tr>
-          <tr>
-            <td>
-              <h6>Shipping</h6>
-            </td>
-            <td>Free shipping</td>
-          </tr>
           <th><h6>Total</h6></th>
           <th><strong>{total}</strong></th>
         </table>

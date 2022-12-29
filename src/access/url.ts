@@ -13,6 +13,7 @@ export const QueryAPI = {
 	},
 	product: {
 		all: () => buildUrl(["product"]),
+		topRate: () =>  buildUrl(["product", "top-rate"]),
 		recommend: (userId: string) => buildUrl(["recommend", userId]),
 		single: (productId: string) => {
 			return buildUrl(["product", productId]);

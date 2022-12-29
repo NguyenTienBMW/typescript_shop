@@ -1,6 +1,6 @@
-import { Button, Form, Input, Modal, Select, Tooltip } from 'antd';
+import { Avatar, Button, Form, Input, Modal, Select, Tooltip } from 'antd';
 import axios from 'axios';
-import { ReactElement, useEffect, useState } from 'react'
+import { ReactElement, useEffect, useRef, useState } from 'react'
 import { Command, QueryAPI } from '../../../access';
 import { CategoryModel, ProductModel } from '../../../model';
 import { UserModel } from '../../../model/user';
@@ -15,10 +15,12 @@ import 'react-quill/dist/quill.snow.css';
 import { notificationSuccess } from '../../../components';
 import { notificationError } from '../../../components/Noti';
 import { storage } from '../../../firebase';
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage"
+import { ref, uploadBytes, getDownloadURL, uploadString } from "firebase/storage"
 import { async } from '@firebase/util';
+import { UserOutlined } from '@ant-design/icons'
 import { ShopModel } from '../../../model/shop';
-
+import Cropper from "react-cropper";
+import "cropperjs/dist/cropper.css";
 
 const modules = {
 	toolbar: [
@@ -77,7 +79,7 @@ export const AddProduct = () => {
 
 	useEffect(() => {
 		if (subPanel !== 'view') return;
-		if(Object.keys(shop ?? {}).length === 0) return;
+		if (Object.keys(shop ?? {}).length === 0) return;
 		axios.get(QueryAPI.product.shopProduct(shop?.id ?? ''))
 			.then(res => {
 				setProductList(res.data)
@@ -127,20 +129,50 @@ export const AddProduct = () => {
 }
 
 
-const CreateShopForm = ({handleCreateSuccess}: {handleCreateSuccess: () => void}) => {
+const CreateShopForm = ({ handleCreateSuccess }: { handleCreateSuccess: () => void }) => {
 	const [src, setSrc] = useState<any>()
 	const [image, setImage] = useState<any>(null)
 	const [loading, setLoading] = useState(false)
 	const [errorImage, setErrorImage] = useState(false)
+	const [singup, setSingup] = useState(false)
+	const [count, setCount] = useState(0)
+	const imageShopRef = useRef<any>()
+
+	const [cropData, setCropData] = useState<any>("#");
+	const [cropper, setCropper] = useState<any>();
 
 	const user: any = localStorage.getItem('user');
 	const userInfo: UserModel = JSON.parse(user);
+
+	const [isModalOpen, setIsModalOpen] = useState(false);
+
+	const showModal = () => {
+		setIsModalOpen(true);
+	};
+
+	const handleOk = () => {
+		setIsModalOpen(false);
+		getCropData();
+	};
+
+	// console.log(cropper)
+
+	const handleCancel = () => {
+		imageShopRef.current.value = null
+		setIsModalOpen(false);
+		setImage(null)
+		setSrc(null)
+		setCropData("#")
+		setCropper(undefined)
+		setCount(prev => prev + 1)
+	};
 
 	function handlerInputImage(e: any) {
 		if (e.target.files[0]) {
 			setErrorImage(false)
 			setImage(e.target.files[0])
-			setSrc(URL.createObjectURL(e.target.files[0]))
+			setSrc(() => URL.createObjectURL(e.target.files[0]))
+			showModal();
 		} else {
 			setImage(null)
 		}
@@ -161,96 +193,171 @@ const CreateShopForm = ({handleCreateSuccess}: {handleCreateSuccess: () => void}
 		setErrorImage(false)
 
 		setLoading(true)
-		if (image) {
+		if (cropData) {
 			const date = new Date();
 			const name = `${image.name}-${date.getFullYear()}-${date.getMonth()}-${date.getDate()}-${date.getDay()}-${date.getHours()}-${date.getHours()}-${date.getMinutes()}-${date.getMilliseconds()}`
-			const imageRef = ref(storage, name);
-			uploadBytes(imageRef, image).then(() => {
-				getDownloadURL(imageRef).then((url) => {
-					axios({
-						method: 'post',
-						url: Command.shop.add(userInfo.id),
-						headers: {},
-						data: {
-							...values,
-							shop_avatar: url
-						}
+			fetch(cropData)
+				.then(res => res.blob())
+				.then(blob => {
+					const file = new File([blob], name, { type: "image/png" })
+					const imageRef = ref(storage, name);
+					uploadBytes(imageRef, file).then(() => {
+						getDownloadURL(imageRef).then((url) => {
+							axios({
+								method: 'post',
+								url: Command.shop.add(userInfo.id),
+								headers: {},
+								data: {
+									...values,
+									shop_avatar: url
+								}
+							})
+								.then((response) => {
+									if (response.data.code !== '404') {
+										notificationSuccess({ description: 'Bạn tạo shop thành công' });
+										handleCreateSuccess()
+										setLoading(false)
+									} else {
+										notificationError({ description: response.data.message });
+									}
+								})
+								.catch((error) => {
+									alert(error)
+								});
+						}).catch(err => {
+							console.log(err.message, "error geting the image url")
+						})
+					}).catch(err => {
+						console.log(err.message)
 					})
-					.then((response) => {
-						if (response.data.code !== '404') {
-							notificationSuccess({ description: 'Bạn tạo shop thành công' });
-							handleCreateSuccess()
-							setLoading(false)
-						} else {
-							notificationError({ description: response.data.message });
-						}
-					})
-					.catch((error) => {
-						alert(error)
-					});
-				}).catch(err => {
-					console.log(err.message, "error geting the image url")
 				})
-			}).catch(err => {
-				console.log(err.message)
-			})
 		}
 	};
 
+	const getCropData = () => {
+		if (typeof cropper !== "undefined") {
+			setCropData(cropper.getCroppedCanvas().toDataURL());
+		}
+	};
 
-	return <Form
-		name="basic"
-		labelCol={{ span: 8 }}
-		wrapperCol={{ span: 16 }}
-		onFinish={onFinish}
-		onFinishFailed={onFinishFailed}
-		autoComplete="off"
-	>
-		<Form.Item
-			label="Shop Name"
-			name="shop_name"
-			rules={[{ required: true, message: 'Please input your username!' }]}
+	if (!singup) {
+		return <div className='shop-introduction'>
+			<h1>wellcome to TT</h1>
+			<span>Để đăng ký bán hàng trên Shopee, bạn cần cung cấp một số thông tin cơ bản.</span>
+			<Button className='btn-sign-up-shop' onClick={() => setSingup(true)}>Sign Up</Button>
+		</div>
+	}
+
+
+
+	return <div className='form-create-shop-container'>
+		<Form
+			name="basic"
+			className='form-create-shop'
+			labelCol={{ span: 8 }}
+			wrapperCol={{ span: 16 }}
+			onFinish={onFinish}
+			onFinishFailed={onFinishFailed}
+			autoComplete="off"
 		>
-			<Input />
-		</Form.Item>
+			<Form.Item
+				label="Shop Name"
+				name="shop_name"
+				rules={[{ required: true, message: 'Please input your username!' }]}
+			>
+				<Input />
+			</Form.Item>
 
-		<Form.Item
-			label="Description"
-			name="shop_description"
-			rules={[{ required: true, message: 'Please input your username!' }]}
-		>
-			<ReactQuill
-				placeholder='Nhập mô tả sản phẩm'
-				modules={modules}
-				formats={formats}
-			/>
-		</Form.Item>
-
-		<div className='ant-form-item'>
-			<div className='ant-row ant-form-item-row'>
-				<div className="ant-col ant-col-8 ant-form-item-label">
-					<label className="ant-form-item-required" title="Description">Image</label>
-				</div>
-				<div className='ant-col ant-col-16 ant-form-item-control'>
-					<input
-						type='file'
-						id='file'
-						onChange={handlerInputImage}
-					/>
-					{errorImage && <div className="ant-form-item-explain-error" >Please input your Image!</div>}
-					<div className="image-item" key={src} style={{ marginTop: '10px' }}>
-						<img src={src} alt="" />
+			<div className='ant-form-item'>
+				<div className='ant-row ant-form-item-row'>
+					<div className="ant-col ant-col-8 ant-form-item-label" style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+						<label className="ant-form-item-required" title="Description">Logo Shop</label>
+					</div>
+					<div className='ant-col ant-col-16 ant-form-item-control'>
+						<input
+							style={{ display: 'none' }}
+							ref={imageShopRef}
+							type='file'
+							id='file'
+							onChange={handlerInputImage}
+						/>
+						{errorImage && <div className="ant-form-item-explain-error" >Please input your Image!</div>}
+						<div className="image-item" key={src} style={{ marginTop: '10px' }}>
+							{/* <img src={src} alt="" /> */}
+							<Avatar onClick={() => imageShopRef.current?.click()} style={{ cursor: 'pointer' }} size={100} src={cropData} icon={<UserOutlined />} />
+							<ul>
+								<li>Recommended image dimensions: width 300px, height 300px</li>
+								<li>Image format accepted: JPG,JPEG,PNG</li>
+							</ul>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
 
-		<Form.Item wrapperCol={{ offset: 8, span: 16 }} className='list-btn-footer'>
-			<Button type="primary" htmlType="submit" disabled={loading}>
-				Create Shop
-			</Button>
-		</Form.Item>
-	</Form>
+			<Form.Item
+				label="Description"
+				name="shop_description"
+				rules={[{ required: true, message: 'Please input your username!' }]}
+			>
+				<ReactQuill
+					placeholder='Nhập mô tả sản phẩm'
+					modules={modules}
+					formats={formats}
+				/>
+			</Form.Item>
+
+			<Form.Item wrapperCol={{ offset: 8, span: 16 }} className='list-btn-footer'>
+				<Button type="primary" htmlType="submit" disabled={loading}>
+					Create Shop
+				</Button>
+			</Form.Item>
+		</Form>
+		<Modal width={900} title="Edit Logo" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+
+			<div className='modal-cropper'>
+				<Cropper
+					className='view-image'
+					key={`${src}${count}`}
+					style={{ height: 400, width: "100%" }}
+					zoomTo={0.5}
+					initialAspectRatio={1}
+					preview=".img-preview"
+					src={src}
+					viewMode={1}
+					minCropBoxHeight={300}
+					minCropBoxWidth={300}
+					max={300}
+					background={false}
+					responsive={true}
+					autoCropArea={1}
+					checkOrientation={false} // https://github.com/fengyuanchen/cropperjs/issues/671
+					onInitialized={(instance) => {
+						setCropper(instance);
+					}}
+					guides={true}
+				/>
+				<div className="box">
+					<h1>Preview</h1>
+					<div
+						className="img-preview"
+						style={{ width: "100%", float: "left", height: "300px" }}
+					/>
+				</div>
+				{/* <div
+					className="box"
+					style={{ width: "50%", float: "right", height: "300px" }}
+				>
+					<h1>
+						<span>Crop</span>
+						<button style={{ float: "right" }} onClick={getCropData}>
+							Crop Image
+						</button>
+					</h1>
+					<img style={{ width: "100%" }} src={cropData} alt="cropped" />
+				</div> */}
+			</div>
+		</Modal>
+	</div>
 };
 
 const AddProductForm = ({ shopId }: { shopId: string }) => {

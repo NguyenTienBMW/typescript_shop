@@ -130,7 +130,7 @@ const CartShop = ({
 	const [checkAll, setCheckAll] = useState(false)
 
 	useEffect(() => {
-		const result = datacheck[shop.shop_id].find(item => {
+		const result = datacheck[shop?.shop_id]?.find(item => {
 			return !item.check
 		})
 		if (!result) {
@@ -142,11 +142,11 @@ const CartShop = ({
 
 	return <div className="shop-cart-container">
 		<div className="shop-wrap">
-			<Checkbox className="check-box" checked={checkAll} onChange={(e) => onCheckAll(e.target.checked, shop.shop_id)} />
+			<Checkbox className="check-box" checked={checkAll} onChange={(e) => onCheckAll(e.target.checked, shop?.shop_id)} />
 			<div className="shop-image">
-				<img src={shop.shop_avatar} alt={shop.shop_name} />
+				<img src={shop?.shop_avatar} alt={shop?.shop_name} />
 			</div>
-			<div className="shop-name">{shop.shop_name}</div>
+			<div className="shop-name">{shop?.shop_name}</div>
 		</div>
 		{productList.map((product, index) => {
 			return <CartItem

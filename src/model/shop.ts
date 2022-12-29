@@ -10,4 +10,6 @@ export const defaultShop = {
     "shop_deleted": '',
     "created_at": '',
     "updated_at": '',
+    totalProduct: '',
+    totalRating: ''
 }

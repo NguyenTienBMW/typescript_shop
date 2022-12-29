@@ -7,6 +7,7 @@ import { CartModel, ProductModel } from '../../../model'
 import { UserModel } from '../../../model/user'
 import Paypal from "../../../assets/images/paypal-mark.jpg"
 import { notificationError } from '../../../components/Noti'
+import { Empty } from 'antd'
 
 
 export default function Cart() {
@@ -67,12 +68,12 @@ export default function Cart() {
       <div className="container">
         <div className="row table-wrap">
           <div className="col-9">
-            {Object.keys(cartList).length > 0 && <Table
+            {Object.keys(cartList).length > 0 ? <Table
               cartList={cartList}
               onDelete={() => setRefresh(prev => prev + 1)}
               onUpdateQuanlity={onUpdateQuanlity}
               onSelect={onSelect}
-            />}
+            /> : <Empty description='No cart'/>}
           </div>
           <div className="col-3">
             <Card total={totalPrice} listId={listIdSelect} />

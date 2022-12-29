@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import Oppo from "../../assets/images/oppo.jpg";
 import Smartphone from "../../assets/images/smartphone.jpg";
 import { ProductModel } from "../../model";
+import { RenderStarComponent } from "../Rating";
 import './style.scss';
 
 type ProductItemProps = {
@@ -10,7 +11,6 @@ type ProductItemProps = {
 }
 
 export default function ProductItem({ data }: ProductItemProps) {
-	// let dataPrice = data?.product_price;
 	let priceFormater = Number(data?.product_price).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })
 
 	return (
@@ -26,11 +26,7 @@ export default function ProductItem({ data }: ProductItemProps) {
 
 				<div className="product-info">
 					<div className="product-star">
-						<i className="fa-solid fa-star"></i>
-						<i className="fa-solid fa-star"></i>
-						<i className="fa-solid fa-star"></i>
-						<i className="fa-solid fa-star"></i>
-						<i className="fa-solid fa-star"></i>
+						<RenderStarComponent numberStar={Number(data?.avg_rating) / 2}/>
 					</div>
 					<div className="product-title">
 						<Link to={`/product-detail/${data?.id}`} className="product-link">

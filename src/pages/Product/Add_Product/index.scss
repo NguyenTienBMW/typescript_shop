@@ -130,12 +130,72 @@
 			gap: 20px;
 		}
 	}
-
-	
 }
-
 
 .ql-editor.ql-blank {
 	height: 18em;
 	background-color: white;
+}
+
+.create-shop-container {
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	.shop-introduction {
+		height: 300px;
+		flex: 1;
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 15px;
+		.btn-sign-up-shop {
+			background-color: #0465d2;
+			color: white;
+		}
+	}
+	.form-create-shop-container {
+		padding: 20px;
+		background-color: #f2f2f2;
+		width: 100%;
+		margin-top: 20px;
+		border-radius: 5px;
+		box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+
+		.image-item {
+			display: flex;
+			align-items: center;
+			gap: 20px;
+			font-size: 12px;
+		}
+		.form-create-shop {
+			width: 80%;
+		}
+		.list-btn-footer {
+			.ant-form-item-control-input-content {
+				display: flex;
+				justify-content: flex-end;
+			}
+		}
+	}
+}
+
+.modal-cropper {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 20px;
+	.view-image {
+		flex: 1;
+	}
+	.box {
+		align-self: flex-start;
+		width: 300px;
+		.img-preview {
+			overflow: hidden;
+		}
+
+	}
 }

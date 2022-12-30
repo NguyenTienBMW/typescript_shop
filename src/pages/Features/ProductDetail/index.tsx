@@ -29,7 +29,6 @@ export default function ProductDetail() {
 	const [product, setProduct] = useState<ProductModel>();
 	const [shop, setShop] = useState<ShopModel>();
 	const [commentList, setCommentList] = useState<CommentModel>();
-	console.log("🚀 ~ file: index.tsx:32 ~ ProductDetail ~ commentList", commentList)
 
 	const [quanlity, setQuanlity] = useState(1);
 
@@ -54,7 +53,7 @@ export default function ProductDetail() {
 	}, [product_id])
 
 	useEffect(() => {
-		if(!product) return
+		if (!product) return
 		axios.get(QueryAPI.shop.signleWithshopId(product?.id_shop))
 			.then(res => {
 				setShop(res.data.data)
@@ -64,7 +63,6 @@ export default function ProductDetail() {
 			})
 	}, [product])
 
-	let priceFormater = Number(product?.product_price).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })
 	const handleQuanlityIncrease = () => {
 		if (quanlity === Number(product?.product_quanlity)) return;
 		setQuanlity(prev => prev + 1)
@@ -109,7 +107,7 @@ export default function ProductDetail() {
 
 	return (
 		<section className="product-detail-section">
-			{shop && <BreadCrumb shop={shop}/>}
+			{shop && <BreadCrumb shop={shop} />}
 			<div className="product-detail">
 				<div className="container">
 					<div className="row">
@@ -130,7 +128,7 @@ export default function ProductDetail() {
 									<a href="#reviews" style={{ color: "#40a9ff", marginLeft: "5px" }}>{commentList?.customerRating} customers reviews</a >
 								</div>
 							</div>
-							<p className="product-price">{`${priceFormater}`}</p>
+							<p className="product-price">{product?.product_price} USD</p>
 							{/* <p className="product-desc">
 								{product?.product_description}
 							</p> */}

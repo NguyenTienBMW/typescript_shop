@@ -11,7 +11,6 @@ type ProductItemProps = {
 }
 
 export default function ProductItem({ data }: ProductItemProps) {
-	let priceFormater = Number(data?.product_price).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })
 
 	return (
 		<>
@@ -26,7 +25,7 @@ export default function ProductItem({ data }: ProductItemProps) {
 
 				<div className="product-info">
 					<div className="product-star">
-						<RenderStarComponent numberStar={Number(data?.avg_rating) / 2}/>
+						<RenderStarComponent numberStar={Number(data?.avg_rating) / 2} />
 					</div>
 					<div className="product-title">
 						<Link to={`/product-detail/${data?.id}`} className="product-link">
@@ -35,7 +34,7 @@ export default function ProductItem({ data }: ProductItemProps) {
 					</div>
 					<div className="product-price">
 						{/* <div className="product-price-old">$15.00</div> */}
-						<div className="product-price-new">{`${priceFormater}`}</div>
+						<div className="product-price-new">{data?.product_price} USD</div>
 					</div>
 				</div>
 				<ul className="product-badge">

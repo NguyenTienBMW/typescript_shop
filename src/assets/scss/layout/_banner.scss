@@ -1,6 +1,7 @@
 .banner-section {
 	margin-top: 40px;
 }
+
 .banner-content {
 	min-height: 215px;
 	background-position: top center;
@@ -10,6 +11,7 @@
 	flex-direction: column;
 	justify-content: space-around;
 }
+
 .banner-cate {
 	text-transform: uppercase;
 	color: #252525;
@@ -17,14 +19,16 @@
 	font-size: 13px;
 	font-weight: 500;
 }
+
 .banner-subtitle {
 	font-size: 22px;
 	line-height: 1.75;
 	color: #252525;
 	font-weight: 500;
 }
-.banner-price {
-}
+
+.banner-price {}
+
 .banner-discount-badge {
 	padding: 4px 0;
 	line-height: 18px;
@@ -32,14 +36,17 @@
 	color: #7a7a7a;
 	font-weight: 500;
 }
+
 .banner-price-wrap {
 	display: flex;
 	align-items: center;
 }
+
 .banner-price-new {
 	color: #ff6000;
 	font-size: 24px;
 }
+
 .banner-price-old {
 	margin-left: 15px;
 	font-size: 20px;
@@ -51,16 +58,27 @@
 .banner2 {
 	margin-top: 100px;
 }
-.banner2-wrap {
-	display: flex;
-}
+
+// .banner2-wrap {
+// 	display: flex;
+// }
+
+// .banner-left {
+// 	height: 65vh;
+// 	width: 25%;
+// }
+// .banner-right {
+// 	width: 75%;
+
+// 	.banner-heading {
+// 		padding: 20px;
+// 	}
+// }
 .banner-left {
-	height: 65vh;
-	width: 25%;
+	height: 100%;
 }
-.banner-right {
-	width: 75%;
-	.banner-heading {
-		padding: 20px;
-	}
+
+.banner2-img {
+	object-fit: cover;
+	height: 100%;
 }

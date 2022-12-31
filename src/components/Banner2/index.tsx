@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import BannerItem from "../BannerItem";
 import ProductList from "../Product";
+import { Col, Divider, Row } from 'antd';
 
 import { Swiper, SwiperSlide } from "swiper/react";
 
@@ -10,11 +11,6 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 // import required modules
 import { Pagination, Navigation, Autoplay } from "swiper";
-import HeadPhone from "../../assets/images/headphone.jpg";
-import SmartPhone from "../../assets/images/smartphone.jpg";
-import Camera from "../../assets/images/camera.jpg";
-import Oppo from "../../assets/images/oppo.jpg";
-import Mayxoay from "../../assets/images/mayxoay.jpg";
 import Banner2_1 from "../../assets/images/banner2.jpg";
 import ProductItem from "../ProductItem";
 import axios from "axios";
@@ -35,33 +31,53 @@ export const Banner2 = () => {
 	}, []);
 	return (
 		<section className="banner2">
-			<div className="banner2-wrap">
-				<div className="banner-left">
-					<img src={Banner2_1} />
-				</div>
-				<div className="banner-right">
-					<h3 className="banner-heading">All Product</h3>
-					<Swiper
-						slidesPerView={3}
-						spaceBetween={20}
-						slidesPerGroup={5}
-						loopFillGroupWithBlank={true}
-						autoplay={{
-							delay: 2000,
-							disableOnInteraction: false,
-						}}
-						modules={[Autoplay]}
-					>
-						{productList.map(product => {
-							return (
-								<SwiperSlide className="swiper-item" key={product.id}>
-									<ProductItem data={product} />
-								</SwiperSlide>
-							);
-						})}
-					</Swiper>
-				</div>
-			</div>
+			{/* <div className="banner2-wrap"> */}
+			<Row gutter={16}>
+				<Col xs={24} sm={6} md={6} lg={6} className="gutter-row">
+					<div className="banner-left">
+						<img src={Banner2_1} className="banner2-img" />
+					</div>
+				</Col>
+				<Col xs={24} sm={18} md={18} lg={18} className="gutter-row">
+					<div className="banner-right">
+						<h3 className="banner-heading">All Product</h3>
+						<Swiper
+							spaceBetween={20}
+							slidesPerGroup={5}
+							loopFillGroupWithBlank={true}
+							autoplay={{
+								delay: 2000,
+								disableOnInteraction: false,
+							}}
+							modules={[Autoplay]}
+							breakpoints={{
+
+								640: {
+									slidesPerView: 3,
+									spaceBetween: 20,
+								},
+								768: {
+									slidesPerView: 3,
+									spaceBetween: 40,
+								},
+								1024: {
+									slidesPerView: 4,
+									spaceBetween: 50,
+								},
+							}}
+						>
+							{productList.map(product => {
+								return (
+									<SwiperSlide className="swiper-item" key={product.id}>
+										<ProductItem data={product} />
+									</SwiperSlide>
+								);
+							})}
+						</Swiper>
+					</div>
+				</Col>
+			</Row>
+			{/* </div> */}
 		</section>
 	);
 }

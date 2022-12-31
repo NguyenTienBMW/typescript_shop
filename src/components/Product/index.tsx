@@ -46,7 +46,6 @@ export default function ProductList({
 		<section className="product-section">
 			<h2 className="product-heading">{title || 'Products Of The Week'}</h2>
 			<Swiper
-				slidesPerView={5}
 				spaceBetween={20}
 				slidesPerGroup={3}
 				loopFillGroupWithBlank={true}
@@ -60,6 +59,22 @@ export default function ProductList({
 				// navigation={true}
 				// modules={[Pagination, Navigation]}
 				modules={[Autoplay]}
+				breakpoints={{
+
+					640: {
+						slidesPerView: 2,
+						spaceBetween: 20,
+					},
+					768: {
+						slidesPerView: 4,
+						spaceBetween: 40,
+					},
+					1024: {
+						slidesPerView: 5,
+						spaceBetween: 50,
+					},
+				}}
+
 			>
 				{loading
 					? <div className="card-loading">

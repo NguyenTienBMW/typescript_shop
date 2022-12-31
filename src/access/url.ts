@@ -92,7 +92,7 @@ export const Command = {
 		delete: (productId: string) => buildUrl(["product","delete_product", productId]),
 	},
 	shop: {
-		// update: (productId: string) => buildUrl(["product","update_product", productId]),
+		update: (shopId: string) => buildUrl(["shop","update_shop", shopId]),
 		add: (user_id: string) => buildUrl(["shop", "create_shop", user_id]),
 		// delete: (productId: string) => buildUrl(["product","delete_product", productId]),
 	}

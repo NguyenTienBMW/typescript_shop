@@ -25,7 +25,7 @@ export default function Card({ total, listId }: { total?: number; listId?: numbe
   const [districtList, setDistrictList] = useState<any>([]);
   const [wardList, setWardList] = useState<any>([]);
   // const [services, setServices] = useState<any>([]);
-
+  const [form] = Form.useForm()
 
   const checkAddress = () => {
     if (userInfo.address) {
@@ -105,6 +105,14 @@ export default function Card({ total, listId }: { total?: number; listId?: numbe
       })
   }, [district])
 
+  useEffect(() => {
+    form.setFieldsValue({
+      city: city ? Number(city) : undefined,
+      district: district ? Number(district) : undefined,
+      ward: ward ? String(ward) : undefined,
+    })
+  }, [district, city, ward])
+
   return (
     <>
       <div className='card-wrap'>
@@ -123,10 +131,10 @@ export default function Card({ total, listId }: { total?: number; listId?: numbe
       </div>
       <Modal title="Add Address" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} className='add-address-model'>
         <Form
+          form={form}
           name="basic"
           labelCol={{ span: 8 }}
           wrapperCol={{ span: 16 }}
-          initialValues={{ remember: true }}
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
           className='form-add-address'
@@ -156,12 +164,16 @@ export default function Card({ total, listId }: { total?: number; listId?: numbe
             <Select
               showSearch
               placeholder="Select a city"
-              options={provinceList.map((item: any) => ({
+              options={provinceList?.map((item: any) => ({
                 label: item.ProvinceName,
                 value: item.ProvinceID
               }))}
               value={city}
-              onChange={(value) => setCity(value)}
+              onChange={(value) => {
+                setCity(value)
+                setDistrict('')
+                setWard('')
+              }}
             />
           </Form.Item>
 
@@ -174,11 +186,15 @@ export default function Card({ total, listId }: { total?: number; listId?: numbe
               showSearch
               disabled={city === ''}
               placeholder="Select a district"
-              options={districtList.map((item: any) => ({
+              options={districtList?.map((item: any) => ({
                 label: item.DistrictName,
                 value: item.DistrictID
               }))}
-              onChange={(value) => setDistrict(value)}
+              value={district}
+              onChange={(value) => {
+                setDistrict(value)
+                setWard('')
+              }}
             />
           </Form.Item>
 
@@ -191,10 +207,11 @@ export default function Card({ total, listId }: { total?: number; listId?: numbe
               showSearch
               disabled={district === ''}
               placeholder="Select a ward"
-              options={wardList.map((item: any) => ({
+              options={wardList?.map((item: any) => ({
                 label: item.WardName,
                 value: item.WardCode
               }))}
+              value={ward}
               onChange={(value) => setWard(value)}
             />
           </Form.Item>

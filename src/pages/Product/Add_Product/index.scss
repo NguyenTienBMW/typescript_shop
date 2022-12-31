@@ -99,6 +99,43 @@
 			color: red;
 		}
 	}
+
+	.form-create-shop {
+		width: 80%;
+		.list-btn-footer {
+			.ant-form-item-control-input-content {
+				display: flex;
+				justify-content: flex-end;
+			}
+		}
+		.image-item {
+			display: flex;
+			align-items: center;
+			gap: 20px;
+			font-size: 12px;
+		}
+
+		.avata-container {
+			border-radius: 50%;
+			overflow: hidden;
+		}
+		.btn-edit-avata {
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			color: black;
+			text-align: center;
+			border-radius: 50%;
+			font-size: 16px;
+			cursor: pointer;
+			background-color: white;
+		}
+		.ql-editor {
+			height: 18em !important;
+			background-color: white;
+		}
+	}
 }
 .edit-product-modal {
 	.ant-modal-body {
@@ -132,11 +169,21 @@
 	}
 }
 
-.ql-editor.ql-blank {
-	height: 18em;
-	background-color: white;
-}
+.form-create-product {
+	width: 80%;
+	padding-top: 20px;
 
+	.list-btn-footer {
+		.ant-form-item-control-input-content {
+			display: flex;
+			justify-content: flex-end;
+		}
+	}
+	.ql-editor {
+		height: 18em !important;
+		background-color: white;
+	}
+}
 .create-shop-container {
 	width: 100%;
 	display: flex;
@@ -180,6 +227,10 @@
 			}
 		}
 	}
+	.ql-editor {
+		height: 18em !important;
+		background-color: white;
+	}
 }
 
 .modal-cropper {
@@ -196,6 +247,27 @@
 		.img-preview {
 			overflow: hidden;
 		}
+	}
+}
 
+
+.generate-container {
+	.box-shop-container {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: 15px;
+		.box-shop {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			background-color: white;
+			box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+			border-radius: 5px;
+			padding: 10px;
+			.title {
+				font-size: 18px;
+				font-weight: 500;
+			}
+		}
 	}
 }

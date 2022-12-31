@@ -21,6 +21,8 @@ import { UserOutlined } from '@ant-design/icons'
 import { ShopModel } from '../../../model/shop';
 import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
+import { relative } from 'path';
+import { HeaderItem } from '../../../components/HeaderItem';
 
 const modules = {
 	toolbar: [
@@ -51,9 +53,9 @@ const formats = [
 	'image',
 ];
 
-type typeSubPanel = 'view' | 'create'
+type typeSubPanel = 'view' | 'create' | 'edit-shop' | 'generate' | 'confirm'
 export const AddProduct = () => {
-	const [subPanel, setSubPanel] = useState<typeSubPanel>('view');
+	const [subPanel, setSubPanel] = useState<typeSubPanel>('generate');
 	const [refresh, setRefresh] = useState(0);
 	const [productList, setProductList] = useState<ProductModel[]>([]);
 	const [shop, setShop] = useState<ShopModel>();
@@ -74,7 +76,14 @@ export const AddProduct = () => {
 			return <ProductList productList={productList} handleUpdateSuccess={handleUpdateSuccess} />
 		} else if (subPanel === 'create') {
 			return <AddProductForm shopId={shop?.id ?? ''} />
+		} else if (subPanel === 'edit-shop') {
+			return <EditShop shopId={shop?.id ?? ''} />
+		} else if (subPanel === 'generate') {
+			return <Generate shopId={shop?.id ?? ''} />
+		} else if (subPanel === 'confirm') {
+			return <Confirm shopId={shop?.id ?? ''} />
 		}
+
 	}
 
 	useEffect(() => {
@@ -116,8 +125,11 @@ export const AddProduct = () => {
 			: <>
 				<div className="side-bar-container">
 					<div className="side-bar-list">
-						<div className={`side-bar-item ${subPanel === 'view' ? 'active' : ''}`} onClick={() => handleSetSubPanel('view')}>view all</div>
+						<div className={`side-bar-item ${subPanel === 'generate' ? 'active' : ''}`} onClick={() => handleSetSubPanel('generate')}>Generate</div>
+						<div className={`side-bar-item ${subPanel === 'confirm' ? 'active' : ''}`} onClick={() => handleSetSubPanel('confirm')}>Confirm</div>
+						<div className={`side-bar-item ${subPanel === 'view' ? 'active' : ''}`} onClick={() => handleSetSubPanel('view')}>View all</div>
 						<div className={`side-bar-item ${subPanel === 'create' ? 'active' : ''}`} onClick={() => handleSetSubPanel('create')}>Create product</div>
+						<div className={`side-bar-item ${subPanel === 'edit-shop' ? 'active' : ''}`} onClick={() => handleSetSubPanel('edit-shop')}>Edit Shop</div>
 					</div>
 				</div>
 				<div className="product-container">
@@ -125,6 +137,293 @@ export const AddProduct = () => {
 				</div>
 			</>
 		}
+	</div>
+}
+
+const Generate = ({ shopId }: { shopId: string }) => {
+	return <div className='generate-container'>
+		<div className='box-shop-container'>
+			<div className='box-shop'>
+				<div className='title'>Rating</div>
+				<div className='value'>123</div>
+			</div>
+			<div className='box-shop'>
+				<div className='title'>Rating</div>
+				<div className='value'>123</div>
+			</div>
+			<div className='box-shop'>
+				<div className='title'>Rating</div>
+				<div className='value'>123</div>
+			</div>
+			<div className='box-shop'>
+				<div className='title'>Rating</div>
+				<div className='value'>123</div>
+			</div>
+
+		</div>
+	</div>
+}
+
+
+const Confirm = ({ shopId }: { shopId: string }) => {
+	return <div className='confirm-container'>
+		<HeaderItem content='Product Top Rate' />
+
+	</div>
+}
+
+const EditShop = ({ shopId }: { shopId: string }) => {
+	const [src, setSrc] = useState<any>()
+	const [image, setImage] = useState<any>(null)
+	const [loading, setLoading] = useState(false)
+	const [errorImage, setErrorImage] = useState(false)
+	const [count, setCount] = useState(0)
+	const imageShopRef = useRef<any>()
+	const [shop, setShop] = useState<ShopModel>()
+
+	const [cropData, setCropData] = useState<any>("#");
+	const [cropper, setCropper] = useState<any>();
+
+	const user: any = localStorage.getItem('user');
+	const userInfo: UserModel = JSON.parse(user);
+	const [form] = Form.useForm()
+
+	const [isModalOpen, setIsModalOpen] = useState(false);
+
+	const showModal = () => {
+		setIsModalOpen(true);
+	};
+
+	const handleOk = () => {
+		setIsModalOpen(false);
+		getCropData();
+	};
+
+	useEffect(() => {
+		axios.get(QueryAPI.shop.signleWithshopId(shopId))
+			.then(res => setShop(res.data.data))
+			.catch(err => alert(err))
+	}, [shopId])
+
+	useEffect(() => {
+		form.setFieldsValue({
+			shop_name: shop?.shop_name ?? undefined,
+			shop_description: shop?.shop_description ?? undefined,
+		})
+		setCropData(shop?.shop_avatar)
+		setSrc(shop?.shop_avatar)
+	}, [shop])
+
+	const handleCancel = () => {
+		imageShopRef.current.value = null
+		setIsModalOpen(false);
+		setImage(null)
+		setSrc(null)
+		setCropData("#")
+		setCropper(undefined)
+		setCount(prev => prev + 1)
+	};
+
+	function handlerInputImage(e: any) {
+		if (e.target.files[0]) {
+			setErrorImage(false)
+			setImage(e.target.files[0])
+			setSrc(() => URL.createObjectURL(e.target.files[0]))
+			showModal();
+		} else {
+			setImage(null)
+		}
+	}
+
+	const onFinishFailed = (errorInfo: any) => {
+		if (!src) {
+			setErrorImage(true)
+		}
+		console.log('Failed:', errorInfo);
+	};
+
+	const onFinish = (values: any) => {
+		console.log("🚀 ~ file: index.tsx:206 ~ onFinish ~ values", values)
+		if (!src) {
+			setErrorImage(true)
+			return;
+		}
+		setErrorImage(false)
+
+		setLoading(true)
+		console.log(cropData)
+		if (cropData) {
+			const date = new Date();
+			if (cropData.includes('https://')) {
+				axios({
+					method: 'post',
+					url: Command.shop.update(shopId),
+					headers: {},
+					data: {
+						...values,
+						shop_avatar: cropData
+					}
+				})
+					.then((response) => {
+						if (response.data.code !== '404') {
+							notificationSuccess({ description: 'Bạn tạo shop thành công' });
+							// handleCreateSuccess()
+							setLoading(false)
+						} else {
+							notificationError({ description: response.data.message });
+						}
+					})
+					.catch((error) => {
+						alert(error)
+					});
+			} else {
+				const name = `${image.name}-${date.getFullYear()}-${date.getMonth()}-${date.getDate()}-${date.getDay()}-${date.getHours()}-${date.getHours()}-${date.getMinutes()}-${date.getMilliseconds()}`
+
+				fetch(cropData)
+					.then(res => res.blob())
+					.then(blob => {
+						const file = new File([blob], name, { type: "image/png" })
+						const imageRef = ref(storage, name);
+						uploadBytes(imageRef, file).then(() => {
+							getDownloadURL(imageRef).then((url) => {
+								console.log("🚀 ~ file: index.tsx:206 ~ getDownloadURL ~ url", url)
+								axios({
+									method: 'post',
+									url: Command.shop.update(shopId),
+									headers: {},
+									data: {
+										...values,
+										shop_avatar: url
+									}
+								})
+									.then((response) => {
+										if (response.data.code !== '404') {
+											notificationSuccess({ description: 'Bạn tạo shop thành công' });
+											// handleCreateSuccess()
+											setLoading(false)
+										} else {
+											notificationError({ description: response.data.message });
+										}
+									})
+									.catch((error) => {
+										alert(error)
+									});
+							}).catch(err => {
+								console.log(err.message, "error geting the image url")
+							})
+						}).catch(err => {
+							console.log(err.message)
+						})
+					})
+			}
+		}
+	};
+
+	const getCropData = () => {
+		if (typeof cropper !== "undefined") {
+			setCropData(cropper.getCroppedCanvas().toDataURL());
+		}
+	};
+
+	return <div className='form-create-shop-container'>
+		<Form
+			form={form}
+			name="basic"
+			className='form-create-shop'
+			labelCol={{ span: 8 }}
+			wrapperCol={{ span: 16 }}
+			onFinish={onFinish}
+			onFinishFailed={onFinishFailed}
+			autoComplete="off"
+		>
+			<Form.Item
+				label="Shop Name"
+				name="shop_name"
+				rules={[{ required: true, message: 'Please input your username!' }]}
+			>
+				<Input />
+			</Form.Item>
+
+			<div className='ant-form-item'>
+				<div className='ant-row ant-form-item-row'>
+					<div className="ant-col ant-col-8 ant-form-item-label" style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+						<label className="ant-form-item-required" title="Description">Logo Shop</label>
+					</div>
+					<div className='ant-col ant-col-16 ant-form-item-control'>
+						<input
+							style={{ display: 'none' }}
+							ref={imageShopRef}
+							type='file'
+							id='file'
+							onChange={handlerInputImage}
+						/>
+						{errorImage && <div className="ant-form-item-explain-error" >Please input your Image!</div>}
+						<div className="image-item" key={src} style={{ marginTop: '10px' }}>
+							{/* <img src={src} alt="" /> */}
+							<div className='avata-container' onClick={() => imageShopRef.current?.click()} style={{ position: 'relative' }}>
+								<Avatar style={{ cursor: 'pointer' }} size={100} src={cropData} icon={<UserOutlined />} />
+								<div className='btn-edit-avata'>Edit</div>
+							</div>
+							<ul>
+								<li>Recommended image dimensions: width 300px, height 300px</li>
+								<li>Image format accepted: JPG,JPEG,PNG</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<Form.Item
+				label="Description"
+				name="shop_description"
+				rules={[{ required: true, message: 'Please input your username!' }]}
+			>
+				<ReactQuill
+					placeholder='Nhập mô tả sản phẩm'
+					modules={modules}
+					formats={formats}
+				/>
+			</Form.Item>
+
+			<Form.Item wrapperCol={{ offset: 8, span: 16 }} className='list-btn-footer'>
+				<Button type="primary" htmlType="submit" disabled={loading}>
+					Create Shop
+				</Button>
+			</Form.Item>
+		</Form>
+		<Modal width={900} title="Edit Logo" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+
+			<div className='modal-cropper'>
+				<Cropper
+					className='view-image'
+					key={`${src}${count}`}
+					style={{ height: 400, width: "100%" }}
+					zoomTo={0.5}
+					initialAspectRatio={1}
+					preview=".img-preview"
+					src={src}
+					viewMode={1}
+					minCropBoxHeight={300}
+					minCropBoxWidth={300}
+					max={300}
+					background={false}
+					responsive={true}
+					autoCropArea={1}
+					checkOrientation={false} // https://github.com/fengyuanchen/cropperjs/issues/671
+					onInitialized={(instance) => {
+						setCropper(instance);
+					}}
+					guides={true}
+				/>
+				<div className="box">
+					<h1>Preview</h1>
+					<div
+						className="img-preview"
+						style={{ width: "100%", float: "left", height: "300px" }}
+					/>
+				</div>
+			</div>
+		</Modal>
 	</div>
 }
 
@@ -203,6 +502,7 @@ const CreateShopForm = ({ handleCreateSuccess }: { handleCreateSuccess: () => vo
 					const imageRef = ref(storage, name);
 					uploadBytes(imageRef, file).then(() => {
 						getDownloadURL(imageRef).then((url) => {
+							console.log("🚀 ~ file: index.tsx:206 ~ getDownloadURL ~ url", url)
 							axios({
 								method: 'post',
 								url: Command.shop.add(userInfo.id),
@@ -343,18 +643,6 @@ const CreateShopForm = ({ handleCreateSuccess }: { handleCreateSuccess: () => vo
 						style={{ width: "100%", float: "left", height: "300px" }}
 					/>
 				</div>
-				{/* <div
-					className="box"
-					style={{ width: "50%", float: "right", height: "300px" }}
-				>
-					<h1>
-						<span>Crop</span>
-						<button style={{ float: "right" }} onClick={getCropData}>
-							Crop Image
-						</button>
-					</h1>
-					<img style={{ width: "100%" }} src={cropData} alt="cropped" />
-				</div> */}
 			</div>
 		</Modal>
 	</div>
@@ -446,6 +734,7 @@ const AddProductForm = ({ shopId }: { shopId: string }) => {
 		onFinish={onFinish}
 		onFinishFailed={onFinishFailed}
 		autoComplete="off"
+		className='form-create-product'
 	>
 		<Form.Item
 			label="Product Name"

@@ -33,12 +33,12 @@ export const Banner2 = () => {
 		<section className="banner2">
 			{/* <div className="banner2-wrap"> */}
 			<Row gutter={16}>
-				<Col xs={24} sm={6} md={6} lg={6} className="gutter-row">
+				<Col xs={24} sm={12} md={12} lg={6} className="gutter-row">
 					<div className="banner-left">
 						<img src={Banner2_1} className="banner2-img" />
 					</div>
 				</Col>
-				<Col xs={24} sm={18} md={18} lg={18} className="gutter-row">
+				<Col xs={24} sm={12} md={12} lg={18} className="gutter-row">
 					<div className="banner-right">
 						<h3 className="banner-heading">All Product</h3>
 						<Swiper
@@ -53,11 +53,11 @@ export const Banner2 = () => {
 							breakpoints={{
 
 								640: {
-									slidesPerView: 3,
+									slidesPerView: 1,
 									spaceBetween: 20,
 								},
 								768: {
-									slidesPerView: 3,
+									slidesPerView: 2,
 									spaceBetween: 40,
 								},
 								1024: {

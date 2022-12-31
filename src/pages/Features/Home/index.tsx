@@ -9,13 +9,13 @@ function Home() {
 			<Banner />
 			<Category />
 			<div className="container">
-				<ProductList recommend title="Recommend"/>
+				<ProductList recommend title="Recommend" />
 			</div>
 			<BannerFooter />
 			<div className="container">
 				<ProductList />
 			</div>
-			<Label />
+			{/* <Label /> */}
 			<div className="container">
 				<Banner2 />
 			</div>

@@ -1,5 +1,5 @@
 import { Alert, Checkbox, Input, Radio, Space } from 'antd';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { BannerFooter, Card, notificationSuccess } from '../../../components'
 import Cart from '../Cart'
 import Order from '../Order';
@@ -25,7 +25,6 @@ export default function Checkout() {
   const [cartList, setCartList] = useState<Record<string, CartModel[]>>({})
   const [address, setAddress] = useState<AddressModel>()
   const [refresh, setRefresh] = useState(0)
-  const [dataAddress, setDataAddress] = useState<any>([]);
   const [city, setCity] = useState('');
   const [district, setDistrict] = useState('');
   const [ward, setWard] = useState('');
@@ -34,29 +33,44 @@ export default function Checkout() {
   const [line, setLine] = useState('');
   const [checked, setChecked] = useState(0);
   const [error, setError] = useState<string>('');
-  const [newDataAddress, setNewDataAddress] = useState<any>([]);
+  const [priceShip, setPriceShip] = useState('');
+  const [total, setTotal] = useState(0);
+
+  const [provinceList, setProvinceList] = useState<any>([]);
+  const [districtList, setDistrictList] = useState<any>([]);
+  const [wardList, setWardList] = useState<any>([]);
 
   let history = useHistory();
 
+  const [form] = Form.useForm()
 
-  useEffect(() => {
-    axios.get(QueryAPI.address.allFull())
-      .then(res => {
-        setDataAddress(res.data)
-      })
-  }, [])
 
   useEffect(() => {
     axios.get(QueryAPI.province.province())
       .then(res => {
-        setNewDataAddress(res.data.data)
+        setProvinceList(res.data.data)
       })
   }, [])
 
   useEffect(() => {
+    if (!city) return
+    axios.get(QueryAPI.province.district(city))
+      .then(res => {
+        setDistrictList(res.data.data)
+      })
+  }, [city])
+
+  useEffect(() => {
+    if (!district) return
+    axios.get(QueryAPI.province.ward(district))
+      .then(res => {
+        setWardList(res.data.data)
+      })
+  }, [district])
+
+  useEffect(() => {
     axios.get(QueryAPI.address.all(userInfo.id))
       .then(res => {
-        console.log("res", res.data)
         const { city_name, district_name, ward_name, full_name, phone, address, city, district, ward } = res.data;
         setAddress(res.data)
         setCity(String(city))
@@ -102,15 +116,19 @@ export default function Checkout() {
       })
   }, [JSON.stringify(listId)])
 
-  const total = Object.values(cartList).reduce((prev, curr) => {
-    return prev.concat(curr)
-  }, []).reduce((prev, curr) => {
-    if (listId.includes(curr.product_id)) {
-      return prev + (curr.quanlity * curr.product_price)
-    } else {
-      return prev + 0
-    }
-  }, 0)
+  useEffect(() => {
+    const total = Object.values(cartList).reduce((prev, curr) => {
+      return prev.concat(curr)
+    }, []).reduce((prev, curr) => {
+      if (listId.includes(curr.product_id)) {
+        return prev + (curr.quanlity * curr.product_price)
+      } else {
+        return prev + 0
+      }
+    }, 0)
+    setTotal(total + Number(priceShip))
+
+  }, [cartList, priceShip])
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -184,6 +202,21 @@ export default function Checkout() {
       default: notificationError({ message: "Order thất bại", description: "Vui lòng chọn phương thức thanh toán" });
     }
   }
+
+  useEffect(() => {
+    form.setFieldsValue({
+      city: city ? Number(city) : undefined,
+      district: district ? Number(district) : undefined,
+      ward: ward ? String(ward) : undefined,
+    })
+  }, [district, city, ward])
+
+  const getPriceShip = (value: string) => {
+    if(value) {
+      setPriceShip(value)
+    }
+  }
+
   return (
     <div className='checkout-container'>
       <div className="container">
@@ -232,7 +265,7 @@ export default function Checkout() {
                   </div>
                 })}
               </div>
-              <Shipping userId={userInfo.id} shopId={item[0].shop_id.toString()} />
+              <Shipping getPriceShip={getPriceShip} userId={userInfo.id} shopId={item[0].shop_id.toString()} />
             </>
           })}
 
@@ -241,7 +274,7 @@ export default function Checkout() {
               Tổng số tiền ({Object.keys(cartList)?.length} sản phẩm)
             </span>
             <span className='total-price'>
-              {total}
+              {total ?? 0}
             </span>
           </div>
         </div>
@@ -259,7 +292,7 @@ export default function Checkout() {
           <div className='total-payment'>
             <div className='total-item'>
               <div>Tổng thanh toán</div>
-              <div>{total}</div>
+              <div>{total ?? 0}</div>
             </div>
             {/* <div className='total-item'>
               <div>Tổng tiền</div>
@@ -275,6 +308,7 @@ export default function Checkout() {
       <Modal title="Update Address" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} className='add-address-model'>
         <Form
           name="basic"
+          form={form}
           labelCol={{ span: 8 }}
           wrapperCol={{ span: 16 }}
           initialValues={{
@@ -282,7 +316,7 @@ export default function Checkout() {
             phone: phone,
             city: Number(city),
             district: Number(district),
-            ward: Number(ward),
+            ward: String(ward),
             address: line
           }}
           onFinish={onFinish}
@@ -313,17 +347,17 @@ export default function Checkout() {
           >
             <Select
               showSearch
-              placeholder="Select a City"
-              options={dataAddress.map((item: any, index: any) => ({
-                label: item.name,
-                value: index
+              placeholder="Select a city"
+              options={provinceList?.map((item: any) => ({
+                label: item.ProvinceName,
+                value: item.ProvinceID
               }))}
               value={city}
-              onChange={(value1) => {
-                setCity(value1)
+              onChange={(value) => {
+                setCity(value);
                 setDistrict('')
-                setWard('')
                 setLine('')
+                setWard('')
               }}
             />
           </Form.Item>
@@ -334,18 +368,17 @@ export default function Checkout() {
             rules={[{ required: true, message: 'Please input your district!' }]}
           >
             <Select
-              value={district}
               showSearch
               disabled={city === ''}
-              placeholder="Select a District"
-              options={dataAddress[Number(city)]?.districts.map((item: any, index: any) => ({
-                label: item.name,
-                value: index
+              placeholder="Select a district"
+              options={districtList?.map((item: any) => ({
+                label: item.DistrictName,
+                value: item.DistrictID
               }))}
               onChange={(value) => {
                 setDistrict(value)
-                setWard('')
                 setLine('')
+                setWard('')
               }}
             />
           </Form.Item>
@@ -357,17 +390,14 @@ export default function Checkout() {
           >
             <Select
               showSearch
-              value={ward}
               disabled={district === ''}
-              placeholder="Select a City"
-              options={dataAddress[Number(city)]?.districts[Number(district)]?.wards?.map((item: any, index: any) => ({
-                label: item.name,
-                value: index
+              placeholder="Select a ward"
+              options={wardList?.map((item: any) => ({
+                label: item.WardName,
+                value: item.WardCode
               }))}
-              onChange={(value) => {
-                setWard(value)
-                setLine('')
-              }}
+              value={String(ward)}
+              onChange={(value) => { setWard(value); setLine(''); }}
             />
           </Form.Item>
 
@@ -397,29 +427,32 @@ export default function Checkout() {
     </div>
   )
 }
-const Shipping = ({ userId, shopId }: { userId: string, shopId: string }) => {
+const Shipping = ({ userId, shopId, getPriceShip }: { userId: string, shopId: string, getPriceShip?: (value: string) => void }) => {
   const [service, setService] = useState<any[]>([]);
+  const [value, setValue] = useState<any>();
   useEffect(() => {
     axios.get(Command.address.services(userId, shopId))
-      .then(res => { setService(res.data.data) })
+      .then(res => { setService(res.data.data); setValue(res.data.data?.[0]?.service_id) })
   }, [userId, shopId])
+
   return <div className='payment-container box-container' style={{ marginTop: "0" }}>
     <div>Phương thức vận chuyển</div>
-    <Radio.Group className='payment-list'>
+    <Radio.Group className='payment-list' value={value} onChange={(e) => {
+      setValue(e.target.value);
+    }}>
       {service.map(payment =>
-        <Radio value={payment.service_id} style={{ display: "flex", alignItems: "center" }}>
-          {payment.short_name}
-          <Fee serviceId={payment.service_id} userId={userId} shopId={shopId} />
-        </Radio>
+        <Fee onClick={getPriceShip} defaultValue={value} payment={payment} userId={userId} shopId={shopId} />
       )}
 
     </Radio.Group>
   </div>
 }
 
-const Fee = ({ serviceId, userId, shopId }: { serviceId: string, userId: string, shopId: string }) => {
+const Fee = ({ userId, shopId, onClick, payment,  defaultValue}: { payment: any, defaultValue: string, userId: string, shopId: string, onClick?: (value: string) => void }) => {
   const [fee, setFee] = useState<any>();
   const [vnd, setVnd] = useState<number>();
+  const { short_name, service_id } = payment
+  const radioRef = useRef<any>()
 
   useEffect(() => {
     axios.get('https://v6.exchangerate-api.com/v6/6d92d16a0dc2c771e7a7b697/latest/VND'
@@ -427,12 +460,22 @@ const Fee = ({ serviceId, userId, shopId }: { serviceId: string, userId: string,
   }, []);
 
   useEffect(() => {
-    axios.get(Command.address.fee(serviceId, userId, shopId))
+    axios.get(Command.address.fee(service_id, userId, shopId))
       .then(res => { setFee(res.data.data) })
-  }, [serviceId, userId, shopId])
-  console.log(fee);
-  return fee ? <div>
-    {(fee.total * Number(vnd)).toFixed(2)} USD
-  </div>
-    : <></>
+  }, [service_id, userId, shopId])
+
+  const total = (fee?.total * Number(vnd)).toFixed(2)
+  useEffect(() => {
+    if(defaultValue === service_id) {
+      onClick?.(total)
+    }
+  }, [fee, total])
+
+  return <Radio ref={radioRef} onClick={() => onClick?.(total)} value={payment.service_id} style={{ display: "flex", alignItems: "center" }}>
+    {short_name}
+    {fee ? <div >
+      {total} USD
+    </div>
+      : <></>}
+  </Radio>
 }

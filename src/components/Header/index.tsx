@@ -115,7 +115,7 @@ function Header() {
 					<div className="container">
 						<div className="row header-main">
 							<div className="col-2 header-main-item">
-								<img src={Logo} />
+								<Link to={'/'}><img src={Logo} /></Link>
 							</div>
 							<div className="col-8 header-main-item navigate-wrap">
 								<div className="col-9">

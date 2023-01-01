@@ -37,7 +37,7 @@ function Header() {
 
 	const renderMenuUser = () => {
 		return <Menu>
-			<Menu.Item>Tài khoản của tôi</Menu.Item>
+			<Menu.Item><Link to="/manage-account">Tài khoản của tôi</Link></Menu.Item>
 			<Menu.Item><Link to={`order/${userInfo.id}`}>Đơn mua</Link></Menu.Item>
 			<Menu.Item onClick={() => {
 				history.push('/manage-shop')

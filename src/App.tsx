@@ -8,6 +8,7 @@ import {
 } from "react-router-dom";
 import { Footer, Header } from "./components";
 import { UserModel } from "./model/user";
+import { Account } from "./pages/Account";
 import { Cart, Checkout, Home, ProductCategory, ProductDetail, ProductSearch, Order, ViewShop } from "./pages/Features";
 import { Login } from "./pages/Features/login";
 import { Register } from "./pages/Features/Register";
@@ -41,6 +42,9 @@ export default function App() {
 					</Route>
 					<Route path="/manage-shop">
 						<AddProduct />
+					</Route>
+					<Route path="/manage-account">
+						<Account />
 					</Route>
 					<Route path="/list-product">
 						<TableProduct />

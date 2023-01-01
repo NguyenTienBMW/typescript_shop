@@ -35,6 +35,8 @@ export default function Checkout() {
   const [error, setError] = useState<string>('');
   const [priceShip, setPriceShip] = useState('');
   const [total, setTotal] = useState(0);
+  const [totalPr, setTotalPr] = useState(0);
+  const [totalFee, setTotalFee] = useState(0);
 
   const [provinceList, setProvinceList] = useState<any>([]);
   const [districtList, setDistrictList] = useState<any>([]);
@@ -121,12 +123,16 @@ export default function Checkout() {
       return prev.concat(curr)
     }, []).reduce((prev, curr) => {
       if (listId.includes(curr.product_id)) {
-        return prev + (curr.quanlity * curr.product_price)
+        console.log("Number(priceShip)", Number(priceShip))
+        console.log(cartList)
+        setTotalFee(prev => prev + Number(priceShip))
+        return prev + (curr.quanlity * curr.product_price + Number(priceShip))
       } else {
         return prev + 0
       }
     }, 0)
-    setTotal(total + Number(priceShip))
+    setTotalPr(total)
+    setTotal(total)
 
   }, [cartList, priceShip])
 
@@ -175,12 +181,14 @@ export default function Checkout() {
     switch (checked) {
       case 1:
         const userId = userInfo.id;
+        console.log("FE", userId, priceShip, totalPr, listId, address)
+        console.log("totalFee", totalFee)
         axios({
           maxRedirects: 0,
           method: 'post',
           url: "http://localhost:8000/pay",
           headers: {},
-          data: { userId, total, listId, address }
+          data: { userId, priceShip, totalPr, listId, address }
         })
           .then((response) => {
             console.log(response);
@@ -212,7 +220,7 @@ export default function Checkout() {
   }, [district, city, ward])
 
   const getPriceShip = (value: string) => {
-    if(value) {
+    if (value) {
       setPriceShip(value)
     }
   }
@@ -274,7 +282,7 @@ export default function Checkout() {
               Tổng số tiền ({Object.keys(cartList)?.length} sản phẩm)
             </span>
             <span className='total-price'>
-              {total ?? 0}
+              {total.toFixed(2) ?? 0}
             </span>
           </div>
         </div>
@@ -292,7 +300,7 @@ export default function Checkout() {
           <div className='total-payment'>
             <div className='total-item'>
               <div>Tổng thanh toán</div>
-              <div>{total ?? 0}</div>
+              <div>{total.toFixed(2) ?? 0}</div>
             </div>
             {/* <div className='total-item'>
               <div>Tổng tiền</div>
@@ -448,7 +456,7 @@ const Shipping = ({ userId, shopId, getPriceShip }: { userId: string, shopId: st
   </div>
 }
 
-const Fee = ({ userId, shopId, onClick, payment,  defaultValue}: { payment: any, defaultValue: string, userId: string, shopId: string, onClick?: (value: string) => void }) => {
+const Fee = ({ userId, shopId, onClick, payment, defaultValue }: { payment: any, defaultValue: string, userId: string, shopId: string, onClick?: (value: string) => void }) => {
   const [fee, setFee] = useState<any>();
   const [vnd, setVnd] = useState<number>();
   const { short_name, service_id } = payment
@@ -466,7 +474,7 @@ const Fee = ({ userId, shopId, onClick, payment,  defaultValue}: { payment: any,
 
   const total = (fee?.total * Number(vnd)).toFixed(2)
   useEffect(() => {
-    if(defaultValue === service_id) {
+    if (defaultValue === service_id) {
       onClick?.(total)
     }
   }, [fee, total])

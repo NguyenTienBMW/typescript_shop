@@ -64,7 +64,6 @@ export default function ProductDetail() {
 			})
 	}, [product])
 
-	let priceFormater = Number(product?.product_price).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })
 	const handleQuanlityIncrease = () => {
 		if (quanlity === Number(product?.product_quanlity)) return;
 		setQuanlity(prev => prev + 1)
@@ -130,7 +129,7 @@ export default function ProductDetail() {
 									<a href="#reviews" style={{ color: "#40a9ff", marginLeft: "5px" }}>{commentList?.customerRating} customers reviews</a >
 								</div>
 							</div>
-							<p className="product-price">{`${priceFormater}`}</p>
+							<p className="product-price">{`${product?.product_price}$`}</p>
 							{/* <p className="product-desc">
 								{product?.product_description}
 							</p> */}

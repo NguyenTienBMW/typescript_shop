@@ -33,8 +33,8 @@ export default function Checkout() {
   const [line, setLine] = useState('');
   const [checked, setChecked] = useState(0);
   const [error, setError] = useState<string>('');
-  const [priceShip, setPriceShip] = useState('');
   const [total, setTotal] = useState(0);
+  const [totalShip, settotalShip] = useState(0);
 
   const [provinceList, setProvinceList] = useState<any>([]);
   const [districtList, setDistrictList] = useState<any>([]);
@@ -126,9 +126,9 @@ export default function Checkout() {
         return prev + 0
       }
     }, 0)
-    setTotal(total + Number(priceShip))
+    setTotal(total)
 
-  }, [cartList, priceShip])
+  }, [cartList])
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -211,11 +211,13 @@ export default function Checkout() {
     })
   }, [district, city, ward])
 
-  const getPriceShip = (value: string) => {
+  const handleTotalShip = (value: Record<string, number>) => {
     if(value) {
-      setPriceShip(value)
+      const data = Object.values(value).reduce((prev, cur) => prev + cur, 0)
+      settotalShip(data)
     }
   }
+
 
   return (
     <div className='checkout-container'>
@@ -239,44 +241,9 @@ export default function Checkout() {
             <div className='quanlity'>Quanlity</div>
             <div className='total'>Total</div>
           </div>
-          {Object.keys(cartList).length > 0 && Object.values(cartList).map((item) => {
-            return <>
-              <div className='shop box-container'>
-                <span>{item[0].shop_name}</span>
-              </div>
-              <div className='product-list box-container'>
-                {item.map((item1) => {
-                  return <div className="product-item">
-                    <div className='info-container'>
-                      <div className="product-image">
-                        <img
-                          src={item1.product_image}
-                          className="pro-img"
-                          alt="pro-img"
-                        />
-                      </div>
-                      <div className="product-name">
-                        <h5 className="truncate-2">{item1.product_name}</h5>
-                      </div>
-                    </div>
-                    <div className="product-price">{item1.product_price}</div>
-                    <div className="product-quanlity">{item1.quanlity}</div>
-                    <div className="product-total-price">{Number(item1.quanlity) * Number(item1.product_price)}</div>
-                  </div>
-                })}
-              </div>
-              <Shipping getPriceShip={getPriceShip} userId={userInfo.id} shopId={item[0].shop_id.toString()} />
-            </>
-          })}
+          <CartList cartList={cartList} handleTotalShip={handleTotalShip}/>
 
-          <div className='total-product-container box-container'>
-            <span className='total-product'>
-              Tổng số tiền ({Object.keys(cartList)?.length} sản phẩm)
-            </span>
-            <span className='total-price'>
-              {total ?? 0}
-            </span>
-          </div>
+
         </div>
 
 
@@ -292,12 +259,8 @@ export default function Checkout() {
           <div className='total-payment'>
             <div className='total-item'>
               <div>Tổng thanh toán</div>
-              <div>{total ?? 0}</div>
+              <div>{(total + totalShip).toFixed(2) ?? 0}</div>
             </div>
-            {/* <div className='total-item'>
-              <div>Tổng tiền</div>
-              <div>0</div>
-            </div> */}
           </div>
           <div className='btn-order-container box' >
             <button className='btn-payment' onClick={handleSubmit}>Order</button>
@@ -427,6 +390,95 @@ export default function Checkout() {
     </div>
   )
 }
+
+const CartList = ({ cartList, handleTotalShip }: { cartList: Record<string, CartModel[]>, handleTotalShip: (value: Record<string, number>) => void }) => {
+  const [total, setTotal] = useState(0)
+  const [ship, setShip] = useState<Record<string, number>>({})
+
+  
+  const handleTotalOrder = (price: number) => {
+    setTotal(prev => prev + price)
+  }
+
+  const handlegetShip = (value: number, shopId: string) => {
+    if(value) {
+      setShip((prev) => {
+        prev[shopId] = Number(value)
+        return {...prev}
+      })
+    }
+  }
+
+  useEffect(() => {
+    handleTotalShip(ship)
+  }, [ship])
+
+  return <>
+    {Object.keys(cartList).length > 0 && Object.values(cartList).map((item) => {
+      return <CartItem key={JSON.stringify(item)} shop={item} handleTotalOrder={handleTotalOrder} handlegetShip={handlegetShip} />
+    })}
+  </>
+}
+
+const CartItem = ({ shop, handleTotalOrder, handlegetShip }: { shop: CartModel[], handleTotalOrder: (value: number) => void, handlegetShip: (value: number, shopId: string) => void }) => {
+  const [priceShip, setPriceShip] = useState('');
+  const [total, setTotal] = useState(0);
+  const user: any = localStorage.getItem('user');
+  const userInfo: UserModel = JSON.parse(user);
+
+  const getPriceShip = (value: string) => {
+    if (value) {
+      setPriceShip(value)
+    }
+  }
+
+  useEffect(() => {
+    const totalProduct = shop.reduce((prev, cur) => {
+      return prev + (Number(cur.quanlity) * Number(cur.product_price))
+    }, 0)
+    setTotal(totalProduct + Number(priceShip))
+    handleTotalOrder(totalProduct + Number(priceShip))
+    handlegetShip(Number(priceShip), String(shop[0].shop_id))
+  }, [priceShip, shop])
+
+  return <>
+    <div className='shop box-container'>
+      <span>{shop[0].shop_name}</span>
+    </div>
+    <div className='product-list box-container'>
+      {shop.map((item1) => {
+        return <div className="product-item">
+          <div className='info-container'>
+            <div className="product-image">
+              <img
+                src={item1.product_image}
+                className="pro-img"
+                alt="pro-img"
+              />
+            </div>
+            <div className="product-name">
+              <h5 className="truncate-2">{item1.product_name}</h5>
+            </div>
+          </div>
+          <div className="product-price">{item1.product_price}</div>
+          <div className="product-quanlity">{item1.quanlity}</div>
+          <div className="product-total-price">{Number(item1.quanlity) * Number(item1.product_price)}</div>
+        </div>
+      })}
+    </div>
+    <Shipping getPriceShip={getPriceShip} userId={userInfo.id} shopId={shop[0].shop_id.toString()} />
+    <div className='total-product-container box-container'>
+      <span className='total-product'>
+        Tổng số tiền ({Object.keys(shop)?.length} sản phẩm)
+      </span>
+      <span className='total-price'>
+        {total}
+      </span>
+    </div>
+  </>
+}
+
+
 const Shipping = ({ userId, shopId, getPriceShip }: { userId: string, shopId: string, getPriceShip?: (value: string) => void }) => {
   const [service, setService] = useState<any[]>([]);
   const [value, setValue] = useState<any>();
@@ -448,7 +500,7 @@ const Shipping = ({ userId, shopId, getPriceShip }: { userId: string, shopId: st
   </div>
 }
 
-const Fee = ({ userId, shopId, onClick, payment,  defaultValue}: { payment: any, defaultValue: string, userId: string, shopId: string, onClick?: (value: string) => void }) => {
+const Fee = ({ userId, shopId, onClick, payment, defaultValue }: { payment: any, defaultValue: string, userId: string, shopId: string, onClick?: (value: string) => void }) => {
   const [fee, setFee] = useState<any>();
   const [vnd, setVnd] = useState<number>();
   const { short_name, service_id } = payment
@@ -466,7 +518,7 @@ const Fee = ({ userId, shopId, onClick, payment,  defaultValue}: { payment: any,
 
   const total = (fee?.total * Number(vnd)).toFixed(2)
   useEffect(() => {
-    if(defaultValue === service_id) {
+    if (defaultValue === service_id) {
       onClick?.(total)
     }
   }, [fee, total])

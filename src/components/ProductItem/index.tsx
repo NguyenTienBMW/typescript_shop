@@ -35,7 +35,7 @@ export default function ProductItem({ data }: ProductItemProps) {
 					</div>
 					<div className="product-price">
 						{/* <div className="product-price-old">$15.00</div> */}
-						<div className="product-price-new">{`${priceFormater}`}</div>
+						<div className="product-price-new">{`${data?.product_price}$`}</div>
 					</div>
 				</div>
 				<ul className="product-badge">

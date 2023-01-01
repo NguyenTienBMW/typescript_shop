@@ -128,7 +128,7 @@ export default function ProductDetail() {
 									<a href="#reviews" style={{ color: "#40a9ff", marginLeft: "5px" }}>{commentList?.customerRating} customers reviews</a >
 								</div>
 							</div>
-							<p className="product-price">{product?.product_price} USD</p>
+							<p className="product-price">{`${product?.product_price}$`}</p>
 							{/* <p className="product-desc">
 								{product?.product_description}
 							</p> */}

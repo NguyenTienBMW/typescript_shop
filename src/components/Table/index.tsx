@@ -47,17 +47,19 @@ export const Table = ({
 			return prev.concat(cur)
 		}, []).filter(item => item.check).map(item => item.product_id)
 
-		const total = Object.values(cartList).reduce((prev, curr) => {
+		let total = Object.values(cartList).reduce((prev, curr) => {
 			return prev.concat(curr)
 		}, []).reduce((prev, curr) => {
 			if (listIdSelect.includes(curr.product_id)) {
+				console.log("curr.quanlity * curr.product_price", curr.product_price, curr.quanlity)
+
 				return prev + (curr.quanlity * curr.product_price)
 			} else {
 				return prev + 0
 			}
 		}, 0)
-
-		onSelect(listIdSelect, total)
+		let newTotal = Number(total).toFixed(2);
+		onSelect(listIdSelect, Number(newTotal))
 	}, [datacheck, cartList])
 
 	const onCheckItem = (itemIndex: number, shopId: number, check: boolean) => {

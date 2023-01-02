@@ -176,12 +176,14 @@ export default function Checkout() {
     switch (checked) {
       case 1:
         const userId = userInfo.id;
+        const newTotalPrice = total.toFixed(2);
+        console.log("send...", userId, totalShip, newTotalPrice, listId, address)
         axios({
           maxRedirects: 0,
           method: 'post',
           url: "http://localhost:8000/pay",
           headers: {},
-          data: { userId, total, listId, address }
+          data: { userId, totalShip, newTotalPrice, listId, address }
         })
           .then((response) => {
             console.log(response);
@@ -473,7 +475,7 @@ const CartItem = ({ shop, handleTotalOrder, handlegetShip }: { shop: CartModel[]
         Tổng số tiền ({Object.keys(shop)?.length} sản phẩm)
       </span>
       <span className='total-price'>
-        {total}
+        {total.toFixed(2)}
       </span>
     </div>
   </>
@@ -508,8 +510,11 @@ const Fee = ({ userId, shopId, onClick, payment, defaultValue }: { payment: any,
   const radioRef = useRef<any>()
 
   useEffect(() => {
-    axios.get('https://v6.exchangerate-api.com/v6/6d92d16a0dc2c771e7a7b697/latest/VND'
-    ).then(({ data }) => setVnd(data.conversion_rates.USD));
+    axios.get('https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/2022-11-24/currencies/vnd.json'
+    ).then(({ data }) => {
+      console.log("data", data)
+      setVnd(data.vnd.usd)
+    });
   }, []);
 
   useEffect(() => {

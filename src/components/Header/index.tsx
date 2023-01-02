@@ -54,6 +54,12 @@ function Header() {
 		history.push(`/search/${value}`)
 	}
 
+	useEffect(() => {
+		window.addEventListener('storage', () => {
+			setTest(prev => prev + 1)
+		})
+	}, [])
+
 	return (
 		<>
 			<div className="page-header">

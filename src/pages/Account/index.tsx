@@ -1,4 +1,4 @@
-import { Avatar, Button, Form, Input, Modal, Radio, Select, Tooltip } from 'antd';
+import { Avatar, Button, DatePicker, Form, Input, Modal, Radio, Select, Tooltip } from 'antd';
 import axios from 'axios';
 import { ReactElement, useEffect, useRef, useState } from 'react'
 import './index.scss'
@@ -166,11 +166,14 @@ const Generate = () => {
   }, [])
 
   useEffect(() => {
+    const date = new Date(account?.date_of_birth ?? '');
+    const day = `${date.getFullYear()}-${date.getMonth() + 1 < 10 ? `0${date.getMonth() + 1}` : date.getMonth() + 1}-${date.getDate()}`
+
     form.setFieldsValue({
       name: account?.name ?? undefined,
       avatar: account?.avatar ?? undefined,
       gender: Number(account?.gender) ?? undefined,
-      date_of_birth: account?.date_of_birth ?? undefined,
+      date_of_birth: day,
       description: account?.description ?? undefined,
     })
   }, [account])
@@ -186,8 +189,6 @@ const Generate = () => {
   }
 
   const onFinish = (values: any) => {
-    console.log(values)
-    console.log("🚀 ~ file: index.tsx:194 ~ onFinish ~ cropData", cropData)
     if (cropData.length > 10) {
       const date = new Date();
       if (cropData.includes('https://')) {
@@ -345,7 +346,8 @@ const Generate = () => {
         label="Date_of_birth"
         name="date_of_birth"
       >
-        <Input />
+        {/* <DatePicker /> */}
+        <Input type="date" />
       </Form.Item>
 
       <Form.Item
@@ -405,8 +407,8 @@ const UpdatePassword = () => {
   const [refresh, setRefresh] = useState(0)
 
   const onFinish = (data: any) => {
-    const {password, passwordNew, passwordNewConfirm} = data
-    if(passwordNew !== passwordNewConfirm) {
+    const { password, passwordNew, passwordNewConfirm } = data
+    if (passwordNew !== passwordNewConfirm) {
       setError(true)
       return;
     }
@@ -420,22 +422,22 @@ const UpdatePassword = () => {
         password: passwordNew
       }
     })
-    .then((response) => {
-      if (response.data.code !== '404') {
-        notificationSuccess({ description: 'Bạn thay đổi mật khẩu thành công' });
-        setRefresh(prev => prev + 1)
-        form.setFieldsValue({
-          password: passwordNew,
-          passwordNew: undefined,
-          passwordNewConfirm: undefined
-        })
-      } else {
-        notificationError({ description: response.data.message });
-      }
-    })
-    .catch((error) => {
-      alert(error)
-    });
+      .then((response) => {
+        if (response.data.code !== '404') {
+          notificationSuccess({ description: 'Bạn thay đổi mật khẩu thành công' });
+          setRefresh(prev => prev + 1)
+          form.setFieldsValue({
+            password: passwordNew,
+            passwordNew: undefined,
+            passwordNewConfirm: undefined
+          })
+        } else {
+          notificationError({ description: response.data.message });
+        }
+      })
+      .catch((error) => {
+        alert(error)
+      });
   }
 
   useEffect(() => {
@@ -498,5 +500,224 @@ const UpdatePassword = () => {
 }
 
 const UpdateAddress = () => {
-  return <></>
+  const user: any = localStorage.getItem('user');
+  const userInfo: UserModel = JSON.parse(user);
+
+  const [city, setCity] = useState('');
+  const [district, setDistrict] = useState('');
+  const [ward, setWard] = useState('');
+  const [line, setLine] = useState('');
+  const [phone, setPhone] = useState('');
+  const [name, setName] = useState('');
+  const [provinceList, setProvinceList] = useState<any>([]);
+  const [districtList, setDistrictList] = useState<any>([]);
+  const [wardList, setWardList] = useState<any>([]);
+  // const [services, setServices] = useState<any>([]);
+  const [form] = Form.useForm()
+
+  const onFinishFailed = (errorInfo: any) => {
+    console.log('Failed:', errorInfo);
+  };
+
+  const onFinish = (values: any) => {
+    if (userInfo.address) {
+      axios({
+        method: 'post',
+        url: Command.address.update(userInfo.id),
+        headers: {},
+        data: values
+      })
+        .then((response) => {
+          if (response.data.code !== '404') {
+            notificationSuccess({ description: 'Bạn đã đổi địa chỉ thành công' });
+            // handleSetAddress();
+          } else {
+            notificationError({ description: response.data.message });
+          }
+        }, (error) => {
+          alert(error)
+        });
+    } else {
+      axios({
+        method: 'post',
+        url: Command.address.add(userInfo.id),
+        headers: {},
+        data: values
+      })
+        .then((response) => {
+          if (response.data.code !== '404') {
+            notificationSuccess({ description: 'Bạn đã thêm địa chỉ thành công' });
+            handleSetAddress();
+          } else {
+            notificationError({ description: response.data.message });
+          }
+        }, (error) => {
+          alert(error)
+        });
+    }
+  };
+  useEffect(() => {
+    if (userInfo.address) {
+      axios.get(QueryAPI.address.all(userInfo.id))
+        .then(res => {
+          const { full_name, phone, address, city, district, ward } = res.data;
+          setCity(String(city))
+          setDistrict(String(district))
+          setWard(String(ward))
+          setPhone(phone)
+          setName(full_name)
+          setLine(address)
+
+          form.setFieldsValue({
+            phone: phone,
+            name: full_name,
+          })
+        })
+        .catch(err => {
+          alert(err)
+        })
+    }
+  }, [])
+
+  const handleSetAddress = () => {
+    axios.get(QueryAPI.user.single(userInfo.id))
+      .then(res => {
+        localStorage.setItem('user', JSON.stringify(res.data));
+      })
+  }
+  useEffect(() => {
+    axios.get(QueryAPI.province.province())
+      .then(res => {
+        setProvinceList(res.data.data)
+      })
+  }, [])
+
+  useEffect(() => {
+    if (!city) return
+    axios.get(QueryAPI.province.district(city))
+      .then(res => {
+        setDistrictList(res.data.data)
+      })
+  }, [city])
+
+  useEffect(() => {
+    if (!district) return
+    axios.get(QueryAPI.province.ward(district))
+      .then(res => {
+        setWardList(res.data.data)
+      })
+  }, [district])
+
+  useEffect(() => {
+    form.setFieldsValue({
+      address: line,
+      city: city ? Number(city) : undefined,
+      district: district ? Number(district) : undefined,
+      ward: ward ? String(ward) : undefined,
+    })
+  }, [district, city, ward])
+
+  return <div className='form-view-info-container'>
+    <Form
+      form={form}
+      name="basic"
+      labelCol={{ span: 8 }}
+      wrapperCol={{ span: 16 }}
+      onFinish={onFinish}
+      onFinishFailed={onFinishFailed}
+      autoComplete="off"
+      className='form-view-info'
+    >
+      <Form.Item
+        label="Full Name"
+        name="name"
+        rules={[{ required: true, message: 'Please input your name!' }]}
+      >
+        <Input placeholder='Full Name' />
+      </Form.Item>
+
+      <Form.Item
+        label="Phone"
+        name="phone"
+        rules={[{ required: true, message: 'Please input your phone!' }]}
+      >
+        <Input placeholder='Phone' />
+      </Form.Item>
+
+      <Form.Item
+        label="City"
+        name="city"
+        rules={[{ required: true, message: 'Please input your city!' }]}
+      >
+        <Select
+          showSearch
+          placeholder="Select a city"
+          options={provinceList?.map((item: any) => ({
+            label: item.ProvinceName,
+            value: item.ProvinceID
+          }))}
+          value={city}
+          onChange={(value) => {
+            setCity(value)
+            setDistrict('')
+            setWard('')
+          }}
+        />
+      </Form.Item>
+
+      <Form.Item
+        label="District"
+        name="district"
+        rules={[{ required: true, message: 'Please input your district!' }]}
+      >
+        <Select
+          showSearch
+          disabled={city === ''}
+          placeholder="Select a district"
+          options={districtList?.map((item: any) => ({
+            label: item.DistrictName,
+            value: item.DistrictID
+          }))}
+          value={district}
+          onChange={(value) => {
+            setDistrict(value)
+            setWard('')
+          }}
+        />
+      </Form.Item>
+
+      <Form.Item
+        label="Ward"
+        name="ward"
+        rules={[{ required: true, message: 'Please input your ward!' }]}
+      >
+        <Select
+          showSearch
+          disabled={district === ''}
+          placeholder="Select a ward"
+          options={wardList?.map((item: any) => ({
+            label: item.WardName,
+            value: item.WardCode
+          }))}
+          value={ward}
+          onChange={(value) => setWard(value)}
+        />
+      </Form.Item>
+
+      <Form.Item
+        label="Address"
+        name="address"
+        rules={[{ required: true, message: 'Please input your address!' }]}
+      >
+        <Input placeholder='address' />
+      </Form.Item>
+
+
+      <Form.Item wrapperCol={{ offset: 8, span: 16 }} className='list-btn-footer'>
+        <Button type="primary" htmlType="submit">
+          Submit
+        </Button>
+      </Form.Item>
+    </Form>
+  </div>
 }

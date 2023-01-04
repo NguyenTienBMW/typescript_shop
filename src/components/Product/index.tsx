@@ -18,10 +18,12 @@ import './style.scss';
 
 export default function ProductList({
 	recommend,
-	title
+	title,
+	url = QueryAPI.product.all()
 }: {
 	recommend?: boolean,
-	title?: string
+	title?: string,
+	url?: string
 }) {
 	const user: any = localStorage.getItem('user');
 	const userInfo: UserModel = JSON.parse(user);
@@ -31,7 +33,7 @@ export default function ProductList({
 
 	useEffect(() => {
 		setLoading(true)
-		axios.get(recommend ? QueryAPI.product.recommend(userInfo.id) : QueryAPI.product.all())
+		axios.get(recommend ? QueryAPI.product.recommend(userInfo.id) : url)
 			.then(res => {
 				setLoading(false)
 				setProductList(res.data)
@@ -49,15 +51,6 @@ export default function ProductList({
 				spaceBetween={20}
 				slidesPerGroup={3}
 				loopFillGroupWithBlank={true}
-				// autoplay={{
-				// 	delay: 2500,
-				// 	disableOnInteraction: false,
-				// }}
-				// pagination={{
-				// 	clickable: true,
-				// }}
-				// navigation={true}
-				// modules={[Pagination, Navigation]}
 				modules={[Autoplay]}
 				breakpoints={{
 

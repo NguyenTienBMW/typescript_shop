@@ -46,7 +46,7 @@ export const Login = () => {
                 autoComplete="off"
                 className='form-login'
             >
-                <h3 className='title'>Đăng Nhập</h3>
+                <h3 className='title'>Log in</h3>
                 <Form.Item
                     label="Username"
                     name="username"

@@ -10,7 +10,7 @@ import { notificationError } from '../../../components/Noti'
 import { Empty } from 'antd'
 
 
-export default function Cart() {
+export default function Cart({updateTotalCart} : {updateTotalCart: () => void}) {
   const user: any = localStorage.getItem('user');
   const userInfo: UserModel = JSON.parse(user);
   const [cartList, setCartList] = useState<Record<string, CartModel[]>>({})
@@ -70,7 +70,7 @@ export default function Cart() {
           <div className="col-9">
             {Object.keys(cartList).length > 0 ? <Table
               cartList={cartList}
-              onDelete={() => setRefresh(prev => prev + 1)}
+              onDelete={() => {setRefresh(prev => prev + 1); updateTotalCart()}}
               onUpdateQuanlity={onUpdateQuanlity}
               onSelect={onSelect}
             /> : <Empty description='No cart'/>}

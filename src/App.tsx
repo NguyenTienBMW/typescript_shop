@@ -18,12 +18,15 @@ export default function App() {
 	const user: any = localStorage.getItem('user');
 	const userInfo: UserModel = JSON.parse(user);
 	const location = window.location.pathname;
+	const [refresh, setRefresh] = useState(0)
+	const updateTotalCart = () => {
+		setRefresh(prev => prev + 1)
+	}
 
-	console.log('vo')
 	return (
 		<>
 			<Router>
-				{(!location.includes('login') && !location.includes('register')) ? <Header /> : <></>}
+				{(!location.includes('login') && !location.includes('register')) ? <Header refresh={refresh}/> : <></>}
 				<Switch>
 					<Route path="/login">
 						<Login />
@@ -32,10 +35,10 @@ export default function App() {
 						<Register />
 					</Route>
 					<Route path="/product-detail/:product_id">
-						<ProductDetail />
+						<ProductDetail updateTotalCart={updateTotalCart} />
 					</Route>
 					<Route path="/cart">
-						<Cart />
+						<Cart updateTotalCart={updateTotalCart} />
 					</Route>
 					<Route path="/checkout">
 						<Checkout />

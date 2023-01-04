@@ -22,7 +22,7 @@ import { RenderStarComponent } from "../../../components"
 import { CommentModel } from "../../../model/comment";
 import { UserModel } from "../../../model/user";
 
-export default function ProductDetail() {
+export default function ProductDetail({updateTotalCart} : {updateTotalCart: () => void}) {
 	const user: any = localStorage.getItem('user');
 	const userInfo: UserModel = JSON.parse(user);
 	const { product_id } = useParams<any>();
@@ -98,6 +98,7 @@ export default function ProductDetail() {
 			.then((response) => {
 				if (response.statusText === 'OK') {
 					notificationSuccess({ description: 'Bạn đã thêm sản phẩm vào giỏ hàng thành công' });
+					updateTotalCart()
 					setQuanlity(1);
 				}
 			}, (error) => {

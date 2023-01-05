@@ -18,11 +18,12 @@ import { CategoryModel } from '../../model'
 import { Dropdown, Menu } from 'antd'
 import { ShoppingCartOutlined } from '@ant-design/icons'
 
-function Header() {
+function Header({refresh} :{refresh: number}) {
 	const user: any = localStorage.getItem('user');
 	const userInfo: UserModel = JSON.parse(user);
 	const history = useHistory();
 	const [categories, setCategoryList] = useState<CategoryModel[]>([])
+	const [cartTotal, setTotalCart] = useState<number>(0)
 	const [test, setTest] = useState(0)
 
 	useEffect(() => {
@@ -35,24 +36,41 @@ function Header() {
 			})
 	}, [])
 
+	useEffect(() => {
+		axios.get(QueryAPI.cart.all(userInfo.id))
+			.then(res => {
+				setTotalCart(res.data?.length)
+			})
+			.catch(err => {
+				console.log(err)
+			})
+	}, [refresh])
+
 	const renderMenuUser = () => {
 		return <Menu>
-			<Menu.Item><Link to="/manage-account">Tài khoản của tôi</Link></Menu.Item>
+			<Menu.Item><Link to="/manage-account">Account</Link></Menu.Item>
 			<Menu.Item><Link to={`order/${userInfo.id}`}>Đơn mua</Link></Menu.Item>
 			<Menu.Item onClick={() => {
 				history.push('/manage-shop')
 				setTest(prev => prev + 1)
-			}}>Shop của tôi</Menu.Item>
+			}}>Shop</Menu.Item>
 			<Menu.Item onClick={() => {
 				localStorage.removeItem('user')
 				setTest(prev => prev + 1)
-			}}>Đăng xuất</Menu.Item>
+				history.push('/login')
+			}}>Log out</Menu.Item>
 		</Menu>
 	}
 
 	const handleSearch = (value: string) => {
 		history.push(`/search/${value}`)
 	}
+
+	useEffect(() => {
+		window.addEventListener('storage', () => {
+			setTest(prev => prev + 1)
+		})
+	}, [])
 
 	return (
 		<>
@@ -165,8 +183,9 @@ function Header() {
 								<Link to={'/'}>Home</Link>
 							</div>
 							<div className="cart-icon">
-								<Link to={'/cart'}>
+								<Link to={'/cart'} style={{position: 'relative'}}>
 									<ShoppingCartOutlined />
+									{cartTotal ? <span style={{position: 'absolute', top: '-10px',fontSize: '18px', color: 'white', backgroundColor: 'red', borderRadius: '50%', padding: '0 6px'}}>{cartTotal}</span> : <></>}
 								</Link>
 							</div>
 						</div>

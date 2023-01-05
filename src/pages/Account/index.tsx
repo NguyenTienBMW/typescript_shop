@@ -1,4 +1,4 @@
-import { Avatar, Button, Form, Input, Modal, Select, Tooltip } from 'antd';
+import { Avatar, Button, DatePicker, Form, Input, Modal, Radio, Select, Tooltip } from 'antd';
 import axios from 'axios';
 import { ReactElement, useEffect, useRef, useState } from 'react'
 import './index.scss'
@@ -53,9 +53,9 @@ const formats = [
   'image',
 ];
 
-type typeSubPanel = 'view' | 'create' | 'edit-shop' | 'generate' | 'confirm'
+type typeSubPanel = 'profile' | 'address' | 'password'
 export const Account = () => {
-  const [subPanel, setSubPanel] = useState<typeSubPanel>('generate');
+  const [subPanel, setSubPanel] = useState<typeSubPanel>('profile');
   const [refresh, setRefresh] = useState(0);
   const [productList, setProductList] = useState<ProductModel[]>([]);
   const [shop, setShop] = useState<ShopModel>();
@@ -67,36 +67,17 @@ export const Account = () => {
     setSubPanel(value)
   }
 
-  const handleUpdateSuccess = () => {
-    setRefresh(prev => prev + 1)
-  }
-
   const renderPanel = () => {
-    if (subPanel === 'view') {
-      return <ProductList productList={productList} handleUpdateSuccess={handleUpdateSuccess} />
-    } else if (subPanel === 'create') {
-      return <AddProductForm shopId={shop?.id ?? ''} />
-    } else if (subPanel === 'edit-shop') {
-      return <EditShop shopId={shop?.id ?? ''} />
-    } else if (subPanel === 'generate') {
+    if (subPanel === 'profile') {
       return <Generate />
-    } else if (subPanel === 'confirm') {
-      return <Confirm shopId={shop?.id ?? ''} />
+    } else if (subPanel === 'address') {
+      return <UpdateAddress />
+    } else if (subPanel === 'password') {
+      return <UpdatePassword />
     }
 
   }
 
-  useEffect(() => {
-    if (subPanel !== 'view') return;
-    if (Object.keys(shop ?? {}).length === 0) return;
-    axios.get(QueryAPI.product.shopProduct(shop?.id ?? ''))
-      .then(res => {
-        setProductList(res.data)
-      })
-      .catch(err => {
-        console.log(err)
-      })
-  }, [subPanel, refresh, shop])
 
   useEffect(() => {
     axios.get(QueryAPI.user.single(userInfo.id))
@@ -114,25 +95,14 @@ export const Account = () => {
       })
   }, [refresh])
 
-  const renderCreateShop = () => {
-    return <CreateShopForm handleCreateSuccess={() => setRefresh(prev => prev + 1)} />
-  }
-
   return <div className="container shop-container">
     {
-      // checkShop
-      //   ? <div className='create-shop-container'>
-      //     {renderCreateShop()}
-      //   </div>
-      //   : 
       <>
         <div className="side-bar-container">
           <div className="side-bar-list">
-            <div className={`side-bar-item ${subPanel === 'generate' ? 'active' : ''}`} onClick={() => handleSetSubPanel('generate')}>Generate</div>
-            <div className={`side-bar-item ${subPanel === 'confirm' ? 'active' : ''}`} onClick={() => handleSetSubPanel('confirm')}>Confirm</div>
-            <div className={`side-bar-item ${subPanel === 'view' ? 'active' : ''}`} onClick={() => handleSetSubPanel('view')}>View all</div>
-            <div className={`side-bar-item ${subPanel === 'create' ? 'active' : ''}`} onClick={() => handleSetSubPanel('create')}>Create product</div>
-            <div className={`side-bar-item ${subPanel === 'edit-shop' ? 'active' : ''}`} onClick={() => handleSetSubPanel('edit-shop')}>Edit Shop</div>
+            <div className={`side-bar-item ${subPanel === 'profile' ? 'active' : ''}`} onClick={() => handleSetSubPanel('profile')}>Profile</div>
+            <div className={`side-bar-item ${subPanel === 'password' ? 'active' : ''}`} onClick={() => handleSetSubPanel('password')}>Password</div>
+            <div className={`side-bar-item ${subPanel === 'address' ? 'active' : ''}`} onClick={() => handleSetSubPanel('address')}>Address</div>
           </div>
         </div>
         <div className="product-container">
@@ -144,137 +114,35 @@ export const Account = () => {
 }
 
 const Generate = () => {
-  const [shop, setShop] = useState<UserModel>()
+  const [account, setAccount] = useState<UserModel>()
   const user: any = localStorage.getItem('user');
   const userInfo: UserModel = JSON.parse(user);
   const [form] = Form.useForm()
 
 
-  useEffect(() => {
-    axios.get(QueryAPI.user.single(userInfo.id))
-      .then(res => {
-        console.log(res.data);
-        setShop(res.data)
-      })
-      .catch(err => alert(err))
-  }, [])
-  useEffect(() => {
-    form.setFieldsValue({
-      email: shop?.email ?? undefined,
-      description: shop?.description ?? undefined,
-      date_of_birth: shop?.date_of_birth ?? undefined,
-      gender: shop?.gender ?? undefined,
-      name: shop?.name ?? undefined,
-      avatar: shop?.avatar ?? undefined,
-    })
-    // setCropData(shop?.shop_avatar)
-    // setSrc(shop?.shop_avatar)
-  }, [shop])
-  return <div className='form-view-info-container'>
-    <Form
-      form={form}
-      name="basic"
-      className='form-view-info'
-      labelCol={{ span: 8 }}
-      wrapperCol={{ span: 16 }}
-      autoComplete="off"
-    >
-      <Form.Item
-        label="Name"
-        name="name"
-      >
-        <Input disabled={true} />
-      </Form.Item>
-      <Form.Item
-        label="Email"
-        name="email"
-      >
-        <Input disabled={true} />
-      </Form.Item>
-      <Form.Item
-        label="Description"
-        name="description"
-      >
-        <Input disabled={true} />
-      </Form.Item>
-      <Form.Item
-        label="Date_of_birth"
-        name="date_of_birth"
-      >
-        <Input disabled={true} />
-      </Form.Item>
-
-
-      {/* <div className='ant-form-item'>
-        <div className='ant-row ant-form-item-row'>
-          <div className="ant-col ant-col-8 ant-form-item-label" style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
-            <label className="ant-form-item-required" title="Description">Logo Shop</label>
-          </div>
-          <div className='ant-col ant-col-16 ant-form-item-control'>
-            <Avatar style={{ cursor: 'pointer' }} size={100} src={shop?.avatar} />
-          </div>
-        </div>
-      </div> */}
-
-      <Form.Item
-        label="Description"
-        name="shop_description"
-      >
-        <Input disabled={true} />
-      </Form.Item>
-    </Form>
-  </div>
-}
-
-
-const Confirm = ({ shopId }: { shopId: string }) => {
-  return <div className='confirm-container'>
-    <HeaderItem content='Product Top Rate' />
-
-  </div>
-}
-
-const EditShop = ({ shopId }: { shopId: string }) => {
   const [src, setSrc] = useState<any>()
   const [image, setImage] = useState<any>(null)
-  const [loading, setLoading] = useState(false)
-  const [errorImage, setErrorImage] = useState(false)
   const [count, setCount] = useState(0)
   const imageShopRef = useRef<any>()
-  const [shop, setShop] = useState<ShopModel>()
 
   const [cropData, setCropData] = useState<any>("#");
   const [cropper, setCropper] = useState<any>();
-
-  const user: any = localStorage.getItem('user');
-  const userInfo: UserModel = JSON.parse(user);
-  const [form] = Form.useForm()
-
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const showModal = () => {
     setIsModalOpen(true);
   };
 
+  const getCropData = () => {
+    if (typeof cropper !== "undefined") {
+      setCropData(cropper.getCroppedCanvas().toDataURL());
+    }
+  };
+
   const handleOk = () => {
     setIsModalOpen(false);
     getCropData();
   };
-
-  useEffect(() => {
-    axios.get(QueryAPI.shop.signleWithshopId(shopId))
-      .then(res => setShop(res.data.data))
-      .catch(err => alert(err))
-  }, [shopId])
-
-  useEffect(() => {
-    form.setFieldsValue({
-      shop_name: shop?.shop_name ?? undefined,
-      shop_description: shop?.shop_description ?? undefined,
-    })
-    setCropData(shop?.shop_avatar)
-    setSrc(shop?.shop_avatar)
-  }, [shop])
 
   const handleCancel = () => {
     imageShopRef.current.value = null
@@ -286,9 +154,32 @@ const EditShop = ({ shopId }: { shopId: string }) => {
     setCount(prev => prev + 1)
   };
 
+
+  useEffect(() => {
+    axios.get(QueryAPI.user.single(userInfo.id))
+      .then(res => {
+        console.log(res.data);
+        setAccount(res.data)
+        res.data.avatar && setCropData(res.data.avatar)
+      })
+      .catch(err => alert(err))
+  }, [])
+
+  useEffect(() => {
+    const date = new Date(account?.date_of_birth ?? '');
+    const day = `${date.getFullYear()}-${date.getMonth() + 1 < 10 ? `0${date.getMonth() + 1}` : date.getMonth() + 1}-${date.getDate()}`
+
+    form.setFieldsValue({
+      name: account?.name ?? undefined,
+      avatar: account?.avatar ?? undefined,
+      gender: Number(account?.gender) ?? undefined,
+      date_of_birth: day,
+      description: account?.description ?? undefined,
+    })
+  }, [account])
+
   function handlerInputImage(e: any) {
     if (e.target.files[0]) {
-      setErrorImage(false)
       setImage(e.target.files[0])
       setSrc(() => URL.createObjectURL(e.target.files[0]))
       showModal();
@@ -297,40 +188,23 @@ const EditShop = ({ shopId }: { shopId: string }) => {
     }
   }
 
-  const onFinishFailed = (errorInfo: any) => {
-    if (!src) {
-      setErrorImage(true)
-    }
-    console.log('Failed:', errorInfo);
-  };
-
   const onFinish = (values: any) => {
-    console.log("🚀 ~ file: index.tsx:206 ~ onFinish ~ values", values)
-    if (!src) {
-      setErrorImage(true)
-      return;
-    }
-    setErrorImage(false)
-
-    setLoading(true)
-    console.log(cropData)
-    if (cropData) {
+    if (cropData.length > 10) {
       const date = new Date();
       if (cropData.includes('https://')) {
         axios({
           method: 'post',
-          url: Command.shop.update(shopId),
+          url: Command.user.update(userInfo.id),
           headers: {},
           data: {
             ...values,
-            shop_avatar: cropData
+            avatar: cropData
           }
         })
           .then((response) => {
             if (response.data.code !== '404') {
               notificationSuccess({ description: 'Bạn tạo shop thành công' });
-              // handleCreateSuccess()
-              setLoading(false)
+              handleSuccess()
             } else {
               notificationError({ description: response.data.message });
             }
@@ -351,18 +225,17 @@ const EditShop = ({ shopId }: { shopId: string }) => {
                 console.log("🚀 ~ file: index.tsx:206 ~ getDownloadURL ~ url", url)
                 axios({
                   method: 'post',
-                  url: Command.shop.update(shopId),
+                  url: Command.user.update(userInfo.id),
                   headers: {},
                   data: {
                     ...values,
-                    shop_avatar: url
+                    avatar: url
                   }
                 })
                   .then((response) => {
                     if (response.data.code !== '404') {
                       notificationSuccess({ description: 'Bạn tạo shop thành công' });
-                      // handleCreateSuccess()
-                      setLoading(false)
+                      handleSuccess()
                     } else {
                       notificationError({ description: response.data.message });
                     }
@@ -378,30 +251,53 @@ const EditShop = ({ shopId }: { shopId: string }) => {
             })
           })
       }
+    } else {
+      axios({
+        method: 'post',
+        url: Command.user.update(userInfo.id),
+        headers: {},
+        data: {
+          ...values,
+        }
+      })
+        .then((response) => {
+          if (response.data.code !== '404') {
+            notificationSuccess({ description: 'Bạn Update account thành công' });
+            handleSuccess()
+          } else {
+            notificationError({ description: response.data.message });
+          }
+        })
+        .catch((error) => {
+          alert(error)
+        });
     }
   };
 
-  const getCropData = () => {
-    if (typeof cropper !== "undefined") {
-      setCropData(cropper.getCroppedCanvas().toDataURL());
-    }
-  };
+  const handleSuccess = () => {
+    axios.get(QueryAPI.user.single(userInfo.id))
+      .then(res => {
+        localStorage.setItem('user', JSON.stringify(res.data));
+        setCount(prev => prev + 1)
+        window.dispatchEvent(new Event("storage"));
+      })
+  }
 
-  return <div className='form-create-shop-container'>
+  return <div className='form-view-info-container'>
     <Form
       form={form}
       name="basic"
-      className='form-create-shop'
+      className='form-view-info'
       labelCol={{ span: 8 }}
       wrapperCol={{ span: 16 }}
-      onFinish={onFinish}
-      onFinishFailed={onFinishFailed}
       autoComplete="off"
+      onFinish={onFinish}
+      onFinishFailed={() => { }}
     >
       <Form.Item
-        label="Shop Name"
-        name="shop_name"
-        rules={[{ required: true, message: 'Please input your username!' }]}
+        label="Name"
+        name="name"
+        rules={[{ required: true, message: 'Please input your name!' }]}
       >
         <Input />
       </Form.Item>
@@ -419,7 +315,6 @@ const EditShop = ({ shopId }: { shopId: string }) => {
               id='file'
               onChange={handlerInputImage}
             />
-            {errorImage && <div className="ant-form-item-explain-error" >Please input your Image!</div>}
             <div className="image-item" key={src} style={{ marginTop: '10px' }}>
               {/* <img src={src} alt="" /> */}
               <div className='avata-container' onClick={() => imageShopRef.current?.click()} style={{ position: 'relative' }}>
@@ -435,242 +330,35 @@ const EditShop = ({ shopId }: { shopId: string }) => {
         </div>
       </div>
 
+
+      <Form.Item
+        label="Gender"
+        name="gender"
+        rules={[{ required: true, message: 'Please input your gender!' }]}
+      >
+        <Radio.Group>
+          <Radio value={1}>Nam</Radio>
+          <Radio value={2}>Nu</Radio>
+          <Radio value={3}>Khac</Radio>
+        </Radio.Group>
+      </Form.Item>
+      <Form.Item
+        label="Date_of_birth"
+        name="date_of_birth"
+      >
+        {/* <DatePicker /> */}
+        <Input type="date" />
+      </Form.Item>
+
       <Form.Item
         label="Description"
-        name="shop_description"
-        rules={[{ required: true, message: 'Please input your username!' }]}
-      >
-        <ReactQuill
-          placeholder='Nhập mô tả sản phẩm'
-          modules={modules}
-          formats={formats}
-        />
-      </Form.Item>
-
-      <Form.Item wrapperCol={{ offset: 8, span: 16 }} className='list-btn-footer'>
-        <Button type="primary" htmlType="submit" disabled={loading}>
-          Create Shop
-        </Button>
-      </Form.Item>
-    </Form>
-    <Modal width={900} title="Edit Logo" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-
-      <div className='modal-cropper'>
-        <Cropper
-          className='view-image'
-          key={`${src}${count}`}
-          style={{ height: 400, width: "100%" }}
-          zoomTo={0.5}
-          initialAspectRatio={1}
-          preview=".img-preview"
-          src={src}
-          viewMode={1}
-          minCropBoxHeight={300}
-          minCropBoxWidth={300}
-          max={300}
-          background={false}
-          responsive={true}
-          autoCropArea={1}
-          checkOrientation={false} // https://github.com/fengyuanchen/cropperjs/issues/671
-          onInitialized={(instance) => {
-            setCropper(instance);
-          }}
-          guides={true}
-        />
-        <div className="box">
-          <h1>Preview</h1>
-          <div
-            className="img-preview"
-            style={{ width: "100%", float: "left", height: "300px" }}
-          />
-        </div>
-      </div>
-    </Modal>
-  </div>
-}
-
-
-const CreateShopForm = ({ handleCreateSuccess }: { handleCreateSuccess: () => void }) => {
-  const [src, setSrc] = useState<any>()
-  const [image, setImage] = useState<any>(null)
-  const [loading, setLoading] = useState(false)
-  const [errorImage, setErrorImage] = useState(false)
-  // const [singup, setSingup] = useState(false)
-  const [count, setCount] = useState(0)
-  const imageShopRef = useRef<any>()
-
-  const [cropData, setCropData] = useState<any>("#");
-  const [cropper, setCropper] = useState<any>();
-
-  const user: any = localStorage.getItem('user');
-  const userInfo: UserModel = JSON.parse(user);
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const showModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleOk = () => {
-    setIsModalOpen(false);
-    getCropData();
-  };
-
-  // console.log(cropper)
-
-  const handleCancel = () => {
-    imageShopRef.current.value = null
-    setIsModalOpen(false);
-    setImage(null)
-    setSrc(null)
-    setCropData("#")
-    setCropper(undefined)
-    setCount(prev => prev + 1)
-  };
-
-  function handlerInputImage(e: any) {
-    if (e.target.files[0]) {
-      setErrorImage(false)
-      setImage(e.target.files[0])
-      setSrc(() => URL.createObjectURL(e.target.files[0]))
-      showModal();
-    } else {
-      setImage(null)
-    }
-  }
-
-  const onFinishFailed = (errorInfo: any) => {
-    if (!src) {
-      setErrorImage(true)
-    }
-    console.log('Failed:', errorInfo);
-  };
-
-  const onFinish = (values: any) => {
-    if (!src) {
-      setErrorImage(true)
-      return;
-    }
-    setErrorImage(false)
-
-    setLoading(true)
-    if (cropData) {
-      const date = new Date();
-      const name = `${image.name}-${date.getFullYear()}-${date.getMonth()}-${date.getDate()}-${date.getDay()}-${date.getHours()}-${date.getHours()}-${date.getMinutes()}-${date.getMilliseconds()}`
-      fetch(cropData)
-        .then(res => res.blob())
-        .then(blob => {
-          const file = new File([blob], name, { type: "image/png" })
-          const imageRef = ref(storage, name);
-          uploadBytes(imageRef, file).then(() => {
-            getDownloadURL(imageRef).then((url) => {
-              console.log("🚀 ~ file: index.tsx:206 ~ getDownloadURL ~ url", url)
-              axios({
-                method: 'post',
-                url: Command.shop.add(userInfo.id),
-                headers: {},
-                data: {
-                  ...values,
-                  shop_avatar: url
-                }
-              })
-                .then((response) => {
-                  if (response.data.code !== '404') {
-                    notificationSuccess({ description: 'Bạn tạo shop thành công' });
-                    handleCreateSuccess()
-                    setLoading(false)
-                  } else {
-                    notificationError({ description: response.data.message });
-                  }
-                })
-                .catch((error) => {
-                  alert(error)
-                });
-            }).catch(err => {
-              console.log(err.message, "error geting the image url")
-            })
-          }).catch(err => {
-            console.log(err.message)
-          })
-        })
-    }
-  };
-
-  const getCropData = () => {
-    if (typeof cropper !== "undefined") {
-      setCropData(cropper.getCroppedCanvas().toDataURL());
-    }
-  };
-
-  // if (!singup) {
-  //   return <div className='shop-introduction'>
-  //     <h1>wellcome to TT</h1>
-  //     <span>Để đăng ký bán hàng trên Shopee, bạn cần cung cấp một số thông tin cơ bản.</span>
-  //     <Button className='btn-sign-up-shop' onClick={() => setSingup(true)}>Sign Up</Button>
-  //   </div>
-  // }
-
-
-
-  return <div className='form-create-shop-container'>
-    <Form
-      name="basic"
-      className='form-create-shop'
-      labelCol={{ span: 8 }}
-      wrapperCol={{ span: 16 }}
-      onFinish={onFinish}
-      onFinishFailed={onFinishFailed}
-      autoComplete="off"
-    >
-      <Form.Item
-        label="Shop Name"
-        name="shop_name"
-        rules={[{ required: true, message: 'Please input your username!' }]}
+        name="description"
       >
         <Input />
       </Form.Item>
-
-      <div className='ant-form-item'>
-        <div className='ant-row ant-form-item-row'>
-          <div className="ant-col ant-col-8 ant-form-item-label" style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
-            <label className="ant-form-item-required" title="Description">Logo Shop</label>
-          </div>
-          <div className='ant-col ant-col-16 ant-form-item-control'>
-            <input
-              style={{ display: 'none' }}
-              ref={imageShopRef}
-              type='file'
-              id='file'
-              onChange={handlerInputImage}
-            />
-            {errorImage && <div className="ant-form-item-explain-error" >Please input your Image!</div>}
-            <div className="image-item" key={src} style={{ marginTop: '10px' }}>
-              {/* <img src={src} alt="" /> */}
-              <Avatar onClick={() => imageShopRef.current?.click()} style={{ cursor: 'pointer' }} size={100} src={cropData} icon={<UserOutlined />} />
-              <ul>
-                <li>Recommended image dimensions: width 300px, height 300px</li>
-                <li>Image format accepted: JPG,JPEG,PNG</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <Form.Item
-        label="Description"
-        name="shop_description"
-        rules={[{ required: true, message: 'Please input your username!' }]}
-      >
-        <ReactQuill
-          placeholder='Nhập mô tả sản phẩm'
-          modules={modules}
-          formats={formats}
-        />
-      </Form.Item>
-
       <Form.Item wrapperCol={{ offset: 8, span: 16 }} className='list-btn-footer'>
-        <Button type="primary" htmlType="submit" disabled={loading}>
-          Create Shop
+        <Button type="primary" htmlType="submit">
+          Save
         </Button>
       </Form.Item>
     </Form>
@@ -708,354 +396,158 @@ const CreateShopForm = ({ handleCreateSuccess }: { handleCreateSuccess: () => vo
       </div>
     </Modal>
   </div>
-};
-
-const AddProductForm = ({ shopId }: { shopId: string }) => {
-  const [category, setCategory] = useState<CategoryModel[]>();
-  const [src, setSrc] = useState<any>()
-  const [image, setImage] = useState<any>(null)
-  const [loading, setLoading] = useState(false)
-  const [errorImage, setErrorImage] = useState(false)
-
-
-  useEffect(() => {
-    axios.get(QueryAPI.category.all())
-      .then((res) => {
-        setCategory(res.data)
-      })
-  }, [])
-
-  function handlerInputImage(e: any) {
-    if (e.target.files[0]) {
-      setErrorImage(false)
-      setImage(e.target.files[0])
-      setSrc(URL.createObjectURL(e.target.files[0]))
-    } else {
-      setImage(null)
-    }
-  }
-
-  const onFinishFailed = (errorInfo: any) => {
-    if (!src) {
-      setErrorImage(true)
-    }
-    console.log('Failed:', errorInfo);
-  };
-
-  const onFinish = (values: any) => {
-    console.log("🚀 ~ file: index.tsx:132 ~ onFinish ~ values", values)
-    if (!src) {
-      setErrorImage(true)
-      return;
-    }
-    setErrorImage(false)
-
-    setLoading(true)
-    if (image) {
-      const date = new Date();
-      const name = `${image.name}-${date.getFullYear()}-${date.getMonth()}-${date.getDate()}-${date.getDay()}-${date.getHours()}-${date.getHours()}-${date.getMinutes()}-${date.getMilliseconds()}`
-      const imageRef = ref(storage, name);
-      uploadBytes(imageRef, image).then(() => {
-        getDownloadURL(imageRef).then((url) => {
-          console.log("🚀 ~ file: index.tsx:145 ~ getDownloadURL ~ url", url)
-          axios({
-            method: 'post',
-            url: Command.product.add(),
-            headers: {},
-            data: {
-              ...values,
-              shop_id: shopId,
-              product_image: url
-            }
-          })
-            .then((response) => {
-              if (response.data.code !== '404') {
-                notificationSuccess({ description: 'Bạn đã thêm săn phẩm thành công' });
-                setLoading(false)
-              } else {
-                notificationError({ description: response.data.message });
-              }
-            })
-            .catch((error) => {
-              alert(error)
-            });
-        }).catch(err => {
-          console.log(err.message, "error geting the image url")
-        })
-      }).catch(err => {
-        console.log(err.message)
-      })
-    }
-  };
-
-
-  return <Form
-    name="basic"
-    labelCol={{ span: 8 }}
-    wrapperCol={{ span: 16 }}
-    onFinish={onFinish}
-    onFinishFailed={onFinishFailed}
-    autoComplete="off"
-    className='form-create-product'
-  >
-    <Form.Item
-      label="Product Name"
-      name="product_name"
-      rules={[{ required: true, message: 'Please input your username!' }]}
-    >
-      <Input />
-    </Form.Item>
-
-    <Form.Item
-      label="Category"
-      name="id_category"
-      rules={[{ required: true, message: 'Please input your username!' }]}
-    >
-      <Select options={category?.map(item => ({
-        value: item.id,
-        label: item.display_category
-      }))} />
-    </Form.Item>
-
-    <Form.Item
-      label="Price"
-      name="product_price"
-      rules={[{ required: true, message: 'Please input your username!' }]}
-    >
-      <Input />
-    </Form.Item>
-
-    <Form.Item
-      label="Quanlity"
-      name="product_quanlity"
-      rules={[{ required: true, message: 'Please input your username!' }]}
-    >
-      <Input />
-    </Form.Item>
-
-    <Form.Item
-      label="Description"
-      name="product_description"
-      rules={[{ required: true, message: 'Please input your username!' }]}
-    >
-      <ReactQuill
-        placeholder='Nhập mô tả sản phẩm'
-        modules={modules}
-        formats={formats}
-      />
-    </Form.Item>
-
-    <div className='ant-form-item'>
-      <div className='ant-row ant-form-item-row'>
-        <div className="ant-col ant-col-8 ant-form-item-label">
-          <label className="ant-form-item-required" title="Description">Image</label>
-        </div>
-        <div className='ant-col ant-col-16 ant-form-item-control'>
-          <input
-            type='file'
-            id='file'
-            onChange={handlerInputImage}
-          />
-          {errorImage && <div className="ant-form-item-explain-error" >Please input your Image!</div>}
-          <div className="image-item" key={src} style={{ marginTop: '10px' }}>
-            <img src={src} alt="" />
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <Form.Item wrapperCol={{ offset: 8, span: 16 }} className='list-btn-footer'>
-      <Button type="primary" htmlType="submit" disabled={loading}>
-        Add Product
-      </Button>
-    </Form.Item>
-  </Form>
-};
-
-interface DataType {
-  key: React.Key;
-  name: ReactElement;
-  price: string;
-  quanlity: string;
-  description: ReactElement;
-  createdDate: string;
-  updatedDate: string;
-  category: string;
-  action: ReactElement
 }
 
-const ProductList = ({ productList, handleUpdateSuccess
-}: {
-  productList: ProductModel[],
-  handleUpdateSuccess: () => void
-}) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [productEdit, setProductEdit] = useState<ProductModel>();
-  const [category, setCategory] = useState<CategoryModel[]>();
-  const [defaultImage, setDefaultImage] = useState<any>()
-  const [src, setSrc] = useState<any>()
-  const [loading, setLoading] = useState(false)
-  const [image, setImage] = useState<any>(null)
+const UpdatePassword = () => {
+  const user: any = localStorage.getItem('user');
+  const userInfo: UserModel = JSON.parse(user);
+  const [form] = Form.useForm()
+  const [account, setAccount] = useState<UserModel>()
+  const [error, setError] = useState(false)
+  const [refresh, setRefresh] = useState(0)
 
-  const columns: ColumnsType<DataType> = [
-    {
-      title: 'Name',
-      dataIndex: 'name',
-      width: '200px'
-    },
-    {
-      title: 'Category',
-      dataIndex: 'category',
-    },
-    {
-      title: 'Price',
-      dataIndex: 'price',
-    },
-    {
-      title: 'Quanlity',
-      dataIndex: 'quanlity',
-    },
-    {
-      title: 'Description',
-      dataIndex: 'description',
-    },
-    {
-      title: 'Updated date',
-      dataIndex: 'updatedDate',
-    },
-    {
-      title: 'Created date',
-      dataIndex: 'createdDate',
-    },
-    {
-      title: 'Action',
-      dataIndex: 'action',
-    },
-  ];
+  const onFinish = (data: any) => {
+    const { password, passwordNew, passwordNewConfirm } = data
+    if (passwordNew !== passwordNewConfirm) {
+      setError(true)
+      return;
+    }
 
-  const showModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleOk = () => {
-    setIsModalOpen(false);
-  };
-
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
-
-  const handleDeleteProduct = (productId: string) => {
+    setError(false)
     axios({
       method: 'post',
-      url: Command.product.delete(productId),
+      url: Command.user.password(userInfo.id),
       headers: {},
-      data: {}
+      data: {
+        password: passwordNew
+      }
     })
       .then((response) => {
         if (response.data.code !== '404') {
-          notificationSuccess({ description: 'Bạn đã xoá săn phẩm thành công' });
-          handleUpdateSuccess()
-          handleCancel();
+          notificationSuccess({ description: 'Bạn thay đổi mật khẩu thành công' });
+          setRefresh(prev => prev + 1)
+          form.setFieldsValue({
+            password: passwordNew,
+            passwordNew: undefined,
+            passwordNewConfirm: undefined
+          })
         } else {
           notificationError({ description: response.data.message });
         }
-      }, (error) => {
+      })
+      .catch((error) => {
         alert(error)
       });
   }
 
-  const data: DataType[] = productList.map(product => {
-    return {
-      key: product.id,
-      name: <div className='name-container'>
-        <img src={product.product_image} alt={product.product_name} />
-        <b>{product.product_name}</b>
-      </div>,
-      category: product.display_category,
-      price: product.product_price,
-      quanlity: product.product_quanlity,
-      description: <div dangerouslySetInnerHTML={{ __html: product.product_description }}></div>,
-      updatedDate: moment(product.updated_at).format('YYYY-MM-DD, h:mm:ss a'),
-      createdDate: moment(product.created_at).format('YYYY-MM-DD, h:mm:ss a'),
-      action: <div className='list-action-button'>
-        <Tooltip title="Edit">
-          <button className='edit-btn' style={{ cursor: 'pointer' }} onClick={() => {
-            showModal()
-            setDefaultImage(product?.product_image)
-            setProductEdit(product)
-          }}><EditOutlined /> Edit</button>
-        </Tooltip>
-        <Tooltip title="Delete">
-          <button className='delete-btn' style={{ cursor: 'pointer' }} onClick={() => handleDeleteProduct(product.id)}><DeleteOutlined /> Delete</button>
-        </Tooltip>
-      </div>
-    }
-  })
+  useEffect(() => {
+    axios.get(QueryAPI.user.single(userInfo.id))
+      .then(res => {
+        setAccount(res.data)
+      })
+      .catch(err => alert(err))
+  }, [])
 
   useEffect(() => {
-    axios.get(QueryAPI.category.all())
-      .then((res) => {
-        setCategory(res.data)
-      })
-  }, [])
+    form.setFieldsValue({
+      password: account?.password ?? undefined,
+      passwordNew: undefined,
+      passwordNewConfirm: undefined
+    })
+  }, [account])
+
+  return <div className='form-view-info-container'>
+    <Form
+      name="basic"
+      form={form}
+      initialValues={{ remember: true }}
+      onFinish={onFinish}
+      labelCol={{ span: 8 }}
+      wrapperCol={{ span: 16 }}
+      onFinishFailed={() => { }}
+      autoComplete="off"
+      className='form-view-info'
+    >
+      <Form.Item
+        label="Password"
+        name="password"
+        rules={[{ required: true, message: 'Please input your password!' }]}
+      >
+        <Input.Password />
+      </Form.Item>
+      <Form.Item
+        label="New Password"
+        name="passwordNew"
+        rules={[{ required: true, message: 'Please input your new password!' }]}
+      >
+        <Input.Password />
+      </Form.Item>
+      <Form.Item
+        label="New Password Confirm"
+        name="passwordNewConfirm"
+        rules={[{ required: true, message: 'Please input your confirm password!' }]}
+      >
+        <Input.Password />
+      </Form.Item>
+      {error && <div className='error-form'>chưa khớp</div>}
+      <Form.Item wrapperCol={{ offset: 8, span: 16 }} className='list-btn-footer'>
+        <Button type="primary" htmlType="submit">
+          Save
+        </Button>
+      </Form.Item>
+    </Form>
+  </div>
+}
+
+const UpdateAddress = () => {
+  const user: any = localStorage.getItem('user');
+  const userInfo: UserModel = JSON.parse(user);
+
+  const [city, setCity] = useState('');
+  const [district, setDistrict] = useState('');
+  const [ward, setWard] = useState('');
+  const [line, setLine] = useState('');
+  const [phone, setPhone] = useState('');
+  const [name, setName] = useState('');
+  const [provinceList, setProvinceList] = useState<any>([]);
+  const [districtList, setDistrictList] = useState<any>([]);
+  const [wardList, setWardList] = useState<any>([]);
+  // const [services, setServices] = useState<any>([]);
+  const [form] = Form.useForm()
 
   const onFinishFailed = (errorInfo: any) => {
     console.log('Failed:', errorInfo);
   };
 
   const onFinish = (values: any) => {
-    console.log(image)
-    setLoading(true)
-    if (image) {
-      const date = new Date();
-      const name = `${image.name}-${date.getFullYear()}-${date.getMonth()}-${date.getDate()}-${date.getDay()}-${date.getHours()}-${date.getHours()}-${date.getMinutes()}-${date.getMilliseconds()}`
-      const imageRef = ref(storage, name);
-      uploadBytes(imageRef, image).then(() => {
-        getDownloadURL(imageRef).then((url) => {
-          axios({
-            method: 'post',
-            url: Command.product.update(productEdit?.id ?? ''),
-            headers: {},
-            data: {
-              ...values,
-              product_image: url
-            }
-          })
-            .then((response) => {
-              if (response.data.code !== '404') {
-                notificationSuccess({ description: 'Bạn đã update săn phẩm thành công' });
-                handleUpdateSuccess()
-                handleCancel();
-                setLoading(false)
-              } else {
-                notificationError({ description: response.data.message });
-              }
-            }, (error) => {
-              alert(error)
-            });
-        }).catch(err => {
-          console.log(err.message, "error geting the image url")
-        })
-      }).catch(err => {
-        console.log(err.message)
-      })
-    } else {
+    if (userInfo.address) {
       axios({
         method: 'post',
-        url: Command.product.update(productEdit?.id ?? ''),
+        url: Command.address.update(userInfo.id),
         headers: {},
-        data: {
-          ...values,
-          product_image: defaultImage
-        }
+        data: values
       })
         .then((response) => {
           if (response.data.code !== '404') {
-            notificationSuccess({ description: 'Bạn đã update săn phẩm thành công' });
-            handleUpdateSuccess()
-            handleCancel();
-            setLoading(false)
+            notificationSuccess({ description: 'Bạn đã đổi địa chỉ thành công' });
+            // handleSetAddress();
+          } else {
+            notificationError({ description: response.data.message });
+          }
+        }, (error) => {
+          alert(error)
+        });
+    } else {
+      axios({
+        method: 'post',
+        url: Command.address.add(userInfo.id),
+        headers: {},
+        data: values
+      })
+        .then((response) => {
+          if (response.data.code !== '404') {
+            notificationSuccess({ description: 'Bạn đã thêm địa chỉ thành công' });
+            handleSetAddress();
           } else {
             notificationError({ description: response.data.message });
           }
@@ -1064,103 +556,168 @@ const ProductList = ({ productList, handleUpdateSuccess
         });
     }
   };
+  useEffect(() => {
+    if (userInfo.address) {
+      axios.get(QueryAPI.address.all(userInfo.id))
+        .then(res => {
+          const { full_name, phone, address, city, district, ward } = res.data;
+          setCity(String(city))
+          setDistrict(String(district))
+          setWard(String(ward))
+          setPhone(phone)
+          setName(full_name)
+          setLine(address)
 
-  function handlerInputImage(e: any) {
-    if (e.target.files[0]) {
-      setImage(e.target.files[0])
-      setSrc(URL.createObjectURL(e.target.files[0]))
-    } else {
-      setImage(null)
+          form.setFieldsValue({
+            phone: phone,
+            name: full_name,
+          })
+        })
+        .catch(err => {
+          alert(err)
+        })
     }
+  }, [])
+
+  const handleSetAddress = () => {
+    axios.get(QueryAPI.user.single(userInfo.id))
+      .then(res => {
+        localStorage.setItem('user', JSON.stringify(res.data));
+      })
   }
+  useEffect(() => {
+    axios.get(QueryAPI.province.province())
+      .then(res => {
+        setProvinceList(res.data.data)
+      })
+  }, [])
 
+  useEffect(() => {
+    if (!city) return
+    axios.get(QueryAPI.province.district(city))
+      .then(res => {
+        setDistrictList(res.data.data)
+      })
+  }, [city])
 
-  return <>
-    <Table columns={columns} dataSource={data} />;
-    <Modal key={productEdit?.id} width={600} title="Edit product" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} className='edit-product-modal'>
-      <Form
-        name="basic"
-        labelCol={{ span: 8 }}
-        wrapperCol={{ span: 16 }}
-        initialValues={productEdit}
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
-        autoComplete="off"
+  useEffect(() => {
+    if (!district) return
+    axios.get(QueryAPI.province.ward(district))
+      .then(res => {
+        setWardList(res.data.data)
+      })
+  }, [district])
+
+  useEffect(() => {
+    form.setFieldsValue({
+      address: line,
+      city: city ? Number(city) : undefined,
+      district: district ? Number(district) : undefined,
+      ward: ward ? String(ward) : undefined,
+    })
+  }, [district, city, ward])
+
+  return <div className='form-view-info-container'>
+    <Form
+      form={form}
+      name="basic"
+      labelCol={{ span: 8 }}
+      wrapperCol={{ span: 16 }}
+      onFinish={onFinish}
+      onFinishFailed={onFinishFailed}
+      autoComplete="off"
+      className='form-view-info'
+    >
+      <Form.Item
+        label="Full Name"
+        name="name"
+        rules={[{ required: true, message: 'Please input your name!' }]}
       >
-        <Form.Item
-          label="Product Name"
-          name="product_name"
-          rules={[{ required: true, message: 'Please input your username!' }]}
-        >
-          <Input />
-        </Form.Item>
+        <Input placeholder='Full Name' />
+      </Form.Item>
 
-        <Form.Item
-          label="Price"
-          name="id_category"
-          rules={[{ required: true, message: 'Please input your username!' }]}
-        >
-          <Select options={category?.map(item => ({
-            value: item.id,
-            label: item.display_category
-          }))} />
-        </Form.Item>
+      <Form.Item
+        label="Phone"
+        name="phone"
+        rules={[{ required: true, message: 'Please input your phone!' }]}
+      >
+        <Input placeholder='Phone' />
+      </Form.Item>
 
-        <Form.Item
-          label="Price"
-          name="product_price"
-          rules={[{ required: true, message: 'Please input your username!' }]}
-        >
-          <Input />
-        </Form.Item>
-
-        <Form.Item
-          label="Quanlity"
-          name="product_quanlity"
-          rules={[{ required: true, message: 'Please input your username!' }]}
-        >
-          <Input />
-        </Form.Item>
-
-        <Form.Item
-          label="Description"
-          name="product_description"
-          rules={[{ required: true, message: 'Please input your username!' }]}
-        >
-          <ReactQuill
-            // defaultValue={data && data.description}
-            placeholder='Nhập mô tả sản phẩm'
-            // onChange={handleChangeEditor}
-            // onBlur={handleBlurEditor}
-            modules={modules}
-            formats={formats}
-          />
-        </Form.Item>
-
-        <div className="ant-col ant-col-8 ant-form-item-label">
-          <label className="ant-form-item-required" title="Description">Image</label>
-        </div>
-        <input
-          type='file'
-          id='file'
-          onChange={handlerInputImage}
+      <Form.Item
+        label="City"
+        name="city"
+        rules={[{ required: true, message: 'Please input your city!' }]}
+      >
+        <Select
+          showSearch
+          placeholder="Select a city"
+          options={provinceList?.map((item: any) => ({
+            label: item.ProvinceName,
+            value: item.ProvinceID
+          }))}
+          value={city}
+          onChange={(value) => {
+            setCity(value)
+            setDistrict('')
+            setWard('')
+          }}
         />
-        <div className="image-item" key={src ?? defaultImage} style={{ marginTop: '10px' }}>
-          <img src={src ?? defaultImage} alt="" />
-        </div>
+      </Form.Item>
 
-        <Form.Item wrapperCol={{ offset: 8, span: 16 }} className='list-btn-footer'>
-          <Button type="ghost" onClick={handleCancel}>
-            Cancel
-          </Button>
-          <Button type="primary" htmlType="submit" disabled={loading}>
-            Submit
-          </Button>
-        </Form.Item>
-      </Form>
-    </Modal>
-  </>
+      <Form.Item
+        label="District"
+        name="district"
+        rules={[{ required: true, message: 'Please input your district!' }]}
+      >
+        <Select
+          showSearch
+          disabled={city === ''}
+          placeholder="Select a district"
+          options={districtList?.map((item: any) => ({
+            label: item.DistrictName,
+            value: item.DistrictID
+          }))}
+          value={district}
+          onChange={(value) => {
+            setDistrict(value)
+            setWard('')
+          }}
+        />
+      </Form.Item>
 
+      <Form.Item
+        label="Ward"
+        name="ward"
+        rules={[{ required: true, message: 'Please input your ward!' }]}
+      >
+        <Select
+          showSearch
+          disabled={district === ''}
+          placeholder="Select a ward"
+          options={wardList?.map((item: any) => ({
+            label: item.WardName,
+            value: item.WardCode
+          }))}
+          value={ward}
+          onChange={(value) => setWard(value)}
+        />
+      </Form.Item>
+
+      <Form.Item
+        label="Address"
+        name="address"
+        rules={[{ required: true, message: 'Please input your address!' }]}
+      >
+        <Input placeholder='address' />
+      </Form.Item>
+
+
+      <Form.Item wrapperCol={{ offset: 8, span: 16 }} className='list-btn-footer'>
+        <Button type="primary" htmlType="submit">
+          Submit
+        </Button>
+      </Form.Item>
+    </Form>
+  </div>
 }
-
-// const AddPro

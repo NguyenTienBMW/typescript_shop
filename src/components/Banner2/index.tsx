@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import BannerItem from "../BannerItem";
 import ProductList from "../Product";
-import { Col, Divider, Row } from 'antd';
+import { Button, Col, Divider, Row } from 'antd';
 
 import { Swiper, SwiperSlide } from "swiper/react";
 
@@ -16,12 +16,14 @@ import ProductItem from "../ProductItem";
 import axios from "axios";
 import { QueryAPI } from "../../access";
 import { ProductModel } from "../../model";
+import { useHistory } from "react-router-dom";
 
-export const Banner2 = () => {
+export const Banner2 = ({ idCategory, title, image = Banner2_1 }: { idCategory: string, title: string, image?: string }) => {
 	const [productList, setProductList] = useState<ProductModel[]>([]);
+	const history = useHistory()
 	useEffect(() => {
 		axios
-			.get(QueryAPI.product.all())
+			.get(QueryAPI.product.productCategory(idCategory))
 			.then(res => {
 				setProductList(res.data);
 			})
@@ -34,13 +36,16 @@ export const Banner2 = () => {
 			{/* <div className="banner2-wrap"> */}
 			<Row gutter={16}>
 				<Col xs={24} sm={12} md={12} lg={6} className="gutter-row">
-					<div className="banner-left">
-						<img src={Banner2_1} className="banner2-img" />
+					<div className="banner-left" style={{ height: '500px' }}>
+						<img src={image} className="banner2-img" />
 					</div>
 				</Col>
 				<Col xs={24} sm={12} md={12} lg={18} className="gutter-row">
 					<div className="banner-right">
-						<h3 className="banner-heading">All Product</h3>
+						<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+							<h3 className="banner-heading" style={{ marginBottom: '10px', marginTop: '10px' }}>{title}</h3>
+							<Button onClick={() => history.push(`product-category/${idCategory}`)}>View all</Button>
+						</div>
 						<Swiper
 							spaceBetween={20}
 							slidesPerGroup={5}

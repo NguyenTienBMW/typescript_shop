@@ -37,11 +37,11 @@ export default function ProductItem({ data }: ProductItemProps) {
 						<div className="product-price-new">{`${data?.product_price}$`}</div>
 					</div>
 				</div>
-				<ul className="product-badge">
+				{/* <ul className="product-badge">
 					<li className="product-badge-item">Sale!</li>
 					<li className="product-badge-item product-discount">20%</li>
 					<li className="product-badge-item">Oppo</li>
-				</ul>
+				</ul> */}
 			</div>
 		</>
 	);

@@ -1,0 +1,36 @@
+.form-view-info {
+    width: 80%;
+    .list-btn-footer {
+        .ant-form-item-control-input-content {
+            display: flex;
+            justify-content: flex-end;
+        }
+    }
+    .image-item {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        font-size: 12px;
+    }
+
+    .avata-container {
+        border-radius: 50%;
+        overflow: hidden;
+    }
+    .btn-edit-avata {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        color: black;
+        text-align: center;
+        border-radius: 50%;
+        font-size: 16px;
+        cursor: pointer;
+        background-color: white;
+    }
+    .ql-editor {
+        height: 18em !important;
+        background-color: white;
+    }
+}

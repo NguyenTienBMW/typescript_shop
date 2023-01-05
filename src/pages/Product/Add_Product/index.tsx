@@ -75,7 +75,7 @@ export const AddProduct = () => {
 		if (subPanel === 'view') {
 			return <ProductList productList={productList} handleUpdateSuccess={handleUpdateSuccess} />
 		} else if (subPanel === 'create') {
-			return <AddProductForm shopId={shop?.id ?? ''} />
+			return <AddProductForm shopId={shop?.id ?? ''} handleAddSuccess={() => setSubPanel('view')}/>
 		} else if (subPanel === 'edit-shop') {
 			return <EditShop shopId={shop?.id ?? ''} />
 		} else if (subPanel === 'generate') {
@@ -625,7 +625,7 @@ const CreateShopForm = ({ handleCreateSuccess }: { handleCreateSuccess: () => vo
 					src={src}
 					viewMode={1}
 					minCropBoxHeight={300}
-					minCropBoxWidth={300}
+					minCropBoxWidth={500}
 					max={300}
 					background={false}
 					responsive={true}
@@ -648,7 +648,7 @@ const CreateShopForm = ({ handleCreateSuccess }: { handleCreateSuccess: () => vo
 	</div>
 };
 
-const AddProductForm = ({ shopId }: { shopId: string }) => {
+const AddProductForm = ({ shopId, handleAddSuccess }: { shopId: string, handleAddSuccess: () => void }) => {
 	const [category, setCategory] = useState<CategoryModel[]>();
 	const [src, setSrc] = useState<any>()
 	const [image, setImage] = useState<any>(null)
@@ -710,6 +710,7 @@ const AddProductForm = ({ shopId }: { shopId: string }) => {
 							if (response.data.code !== '404') {
 								notificationSuccess({ description: 'Bạn đã thêm săn phẩm thành công' });
 								setLoading(false)
+								handleAddSuccess();
 							} else {
 								notificationError({ description: response.data.message });
 							}

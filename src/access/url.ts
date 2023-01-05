@@ -69,6 +69,8 @@ export const Command = {
 	user: {
 		register: () => buildUrl(["register"]),
 		login: () => buildUrl(["login"]),
+		update: (userId: string) => buildUrl(["user", "update_user", userId]),
+		password: (userId: string) => buildUrl(["user", "update_password", userId])
 	},
 	comment: {
 		add: () => buildUrl(["rate", "create_rate"]),

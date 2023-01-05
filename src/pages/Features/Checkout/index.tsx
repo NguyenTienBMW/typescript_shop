@@ -173,16 +173,16 @@ export default function Checkout() {
 
   };
   const handleSubmit = () => {
+
     switch (checked) {
       case 1:
         const userId = userInfo.id;
         const newTotalPrice = total.toFixed(2);
         console.log("send...", userId, totalShip, newTotalPrice, listId, address)
         axios({
-          maxRedirects: 0,
           method: 'post',
           url: "http://localhost:8000/pay",
-          headers: {},
+          headers: { 'Content-Type': 'application/json; charset=utf-8' },
           data: { userId, totalShip, newTotalPrice, listId, address }
         })
           .then((response) => {

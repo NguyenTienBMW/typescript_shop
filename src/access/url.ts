@@ -54,7 +54,8 @@ export const QueryAPI = {
 		fee: () => buildUrl(["fee"]),  
 	}, 
 	order: {
-		all: (userId: string) => buildUrl(["order", userId])
+		all: (userId: string) => buildUrl(["order", userId]),
+		product_order: (order_id: string) => buildUrl(["order","product_order",order_id])
 	},
 	shop: {
 		single: (user_id: string) => {

@@ -200,7 +200,27 @@ export default function Checkout() {
           });
         break;
       case 2:
+        // const user_id = userInfo.id;
+        // const totalPrice = total.toFixed(2);
+        // axios({
+        //   method: 'post',
+        //   url: "http://localhost:8000/order/order_method",
+        //   headers: { 'Content-Type': 'application/json; charset=utf-8' },
+        //   data: { user_id, totalShip, totalPrice, listId, address }
+        // })
+        //   .then((response) => {
+        //     console.log(response);
+        //     if (response.data.code !== '404') {
+        //       setError('')
         history.push(`order/${userInfo.id}`)
+
+        //   } else {
+        //     notificationError({ description: response.data.message });
+        //     setError(response.data.message)
+        //   }
+        // }, (error) => {
+        //   alert(error)
+        // });
         break;
       default: notificationError({ message: "Order thất bại", description: "Vui lòng chọn phương thức thanh toán" });
     }

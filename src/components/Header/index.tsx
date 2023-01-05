@@ -18,7 +18,7 @@ import { CategoryModel } from '../../model'
 import { Dropdown, Menu } from 'antd'
 import { ShoppingCartOutlined } from '@ant-design/icons'
 
-function Header({refresh} :{refresh: number}) {
+function Header({ refresh }: { refresh: number }) {
 	const user: any = localStorage.getItem('user');
 	const userInfo: UserModel = JSON.parse(user);
 	const history = useHistory();
@@ -183,9 +183,9 @@ function Header({refresh} :{refresh: number}) {
 								<Link to={'/'}>Home</Link>
 							</div>
 							<div className="cart-icon">
-								<Link to={'/cart'} style={{position: 'relative'}}>
+								<Link to={'/cart'} style={{ position: 'relative' }}>
 									<ShoppingCartOutlined />
-									{cartTotal ? <span style={{position: 'absolute', top: '-10px',fontSize: '18px', color: 'white', backgroundColor: 'red', borderRadius: '50%', padding: '0 6px'}}>{cartTotal}</span> : <></>}
+									{cartTotal ? <span style={{ position: 'absolute', top: '-3px', fontSize: '14px', color: 'white', backgroundColor: 'red', borderRadius: '50%', padding: '0 6px', right: '-9px' }}>{cartTotal}</span> : <></>}
 								</Link>
 							</div>
 						</div>

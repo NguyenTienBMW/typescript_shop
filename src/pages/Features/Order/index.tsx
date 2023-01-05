@@ -95,9 +95,10 @@ const ItemRow = ({ orderId }: { orderId: string }) => {
         <div className="product-name">
           {/* <Link to={`/product-detail/${Item.id}`}> */}
           <h5 className="truncate-2">{Item.product_name}</h5>
+          <p>Quanlity: {Item.quanlity}</p>
           {/* </Link> */}
         </div>
-        <div className="product-price">{Item.price} X {Item.quanlity} </div>
+        <div className="product-price">{Item.price} $</div>
       </div>
     </div>
 

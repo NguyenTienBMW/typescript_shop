@@ -11,7 +11,7 @@ import {
 	useParams
 } from "react-router-dom";
 import { LogoutOutlined } from '@ant-design/icons'
-import Logo from "../../assets/images/logo.png";
+import Logo from "../../assets/images/t-shop1.png";
 import { UserModel } from "../../model/user";
 import { QueryAPI } from "../../access";
 import { CategoryModel } from '../../model'

@@ -15,7 +15,7 @@ import { notificationError } from '../../../components/Noti';
 import Paypal from "../../../assets/images/paypal-mark.jpg"
 const Router = require('react-router');
 
-export default function Checkout() {
+export default function Checkout({ updateTotalCart }: { updateTotalCart: () => void }) {
   const user: any = localStorage.getItem('user');
   const userInfo: UserModel = JSON.parse(user);
   let data = window.location.href.split('?id=')[1]
@@ -200,27 +200,27 @@ export default function Checkout() {
           });
         break;
       case 2:
-        // const user_id = userInfo.id;
-        // const totalPrice = total.toFixed(2);
-        // axios({
-        //   method: 'post',
-        //   url: "http://localhost:8000/order/order_method",
-        //   headers: { 'Content-Type': 'application/json; charset=utf-8' },
-        //   data: { user_id, totalShip, totalPrice, listId, address }
-        // })
-        //   .then((response) => {
-        //     console.log(response);
-        //     if (response.data.code !== '404') {
-        //       setError('')
-        history.push(`order/${userInfo.id}`)
-
-        //   } else {
-        //     notificationError({ description: response.data.message });
-        //     setError(response.data.message)
-        //   }
-        // }, (error) => {
-        //   alert(error)
-        // });
+        const user_id = userInfo.id;
+        const totalPrice = total.toFixed(2);
+        axios({
+          method: 'post',
+          url: "http://localhost:8000/order/order_method",
+          headers: { 'Content-Type': 'application/json; charset=utf-8' },
+          data: { user_id, totalShip, totalPrice, listId, address }
+        })
+          .then((response) => {
+            console.log("vô 123", response)
+            if (response.data.code !== '404') {
+              setError('')
+              updateTotalCart();
+              history.push(`order/${userInfo.id}`)
+            } else {
+              notificationError({ description: response.data.message });
+              setError(response.data.message)
+            }
+          }, (error) => {
+            alert(error)
+          });
         break;
       default: notificationError({ message: "Order thất bại", description: "Vui lòng chọn phương thức thanh toán" });
     }

@@ -1,9 +1,9 @@
 import React from "react";
 import { Col, Divider, Row } from 'antd';
-import LogoFooter from "../../assets/images/logo_footer.png";
+import LogoFooter from "../../assets/images/t-shop2.png";
 export default function Footer() {
 	return (
-		<div className="container" style={{marginTop: '50px'}}>
+		<div className="container" style={{ marginTop: '50px' }}>
 			<Row gutter={16}>
 				<Col xs={24} sm={12} md={12} lg={6} className="gutter-row">
 					<img src={LogoFooter} alt="" className="footer-heading" />

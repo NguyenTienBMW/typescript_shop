@@ -62,6 +62,12 @@ export const QueryAPI = {
 			return buildUrl(["shop", user_id]);
 		},
 		signleWithshopId: (shopId: string) => buildUrl(["shop", "product", shopId]) 
+	},
+	chatbot: {
+		send: (content: string) => {
+			return buildUrl(["chatbot", content]);
+		},
+		 
 	}
 };
 

@@ -7,6 +7,7 @@ import {
 	Redirect
 } from "react-router-dom";
 import { Footer, Header } from "./components";
+import { Chatbot } from "./components/Chatbot";
 import { UserModel } from "./model/user";
 import { Account } from "./pages/Account";
 import { Cart, Checkout, Home, ProductCategory, ProductDetail, ProductSearch, Order, ViewShop } from "./pages/Features";
@@ -26,7 +27,7 @@ export default function App() {
 	return (
 		<>
 			<Router>
-				{(!location.includes('login') && !location.includes('register')) ? <Header refresh={refresh}/> : <></>}
+				{(!location.includes('login') && !location.includes('register')) ? <Header refresh={refresh} /> : <></>}
 				<Switch>
 					<Route path="/login">
 						<Login />
@@ -41,7 +42,7 @@ export default function App() {
 						<Cart updateTotalCart={updateTotalCart} />
 					</Route>
 					<Route path="/checkout">
-						<Checkout />
+						<Checkout updateTotalCart={updateTotalCart} />
 					</Route>
 					<Route path="/manage-shop">
 						<AddProduct />
@@ -70,6 +71,7 @@ export default function App() {
 				</Switch>
 				{(!location.includes('login') && !location.includes('register')) ? <Footer /> : <></>}
 			</Router>
+			<Chatbot />
 		</>
 	);
 }

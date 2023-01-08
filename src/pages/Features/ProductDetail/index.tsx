@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
+import { Tabs } from 'antd';
 import {
 	BreadCrumb,
 	ProductList,
@@ -22,7 +22,7 @@ import { RenderStarComponent } from "../../../components"
 import { CommentModel } from "../../../model/comment";
 import { UserModel } from "../../../model/user";
 
-export default function ProductDetail({updateTotalCart} : {updateTotalCart: () => void}) {
+export default function ProductDetail({ updateTotalCart }: { updateTotalCart: () => void }) {
 	const user: any = localStorage.getItem('user');
 	const userInfo: UserModel = JSON.parse(user);
 	const { product_id } = useParams<any>();
@@ -130,9 +130,6 @@ export default function ProductDetail({updateTotalCart} : {updateTotalCart: () =
 								</div>
 							</div>
 							<p className="product-price">{`${product?.product_price}$`}</p>
-							{/* <p className="product-desc">
-								{product?.product_description}
-							</p> */}
 							<hr className="sprate-block" />
 							<div className="product-buy">
 								<div className="product-quanlity">
@@ -153,12 +150,16 @@ export default function ProductDetail({updateTotalCart} : {updateTotalCart: () =
 						</div>
 					</div>
 					<div className="product-describe">
-						<Tabs>
-							<TabList>
-								<Tab>Description</Tab>
-								{/* <Tab>Additional information</Tab> */}
-							</TabList>
-						</Tabs>
+						<Tabs
+							defaultActiveKey="1"
+							items={[
+								{
+									label: `Description`,
+									key: '1',
+									children: `${product?.product_description}`,
+								}
+							]}
+						/>
 					</div>
 					<div className="comment-container" id="reviews">
 						<Comment />

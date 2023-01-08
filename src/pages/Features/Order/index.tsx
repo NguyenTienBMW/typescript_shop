@@ -75,6 +75,8 @@ const TabItem = ({ cartList1 }: { cartList1: OrderModel[] }) => {
         <div className='product-container'>
           <ItemRow key={Item.id} orderId={Item.id.toString()} />
         </div>
+        <div className='total-price'>Ship: {(Item.totalShip).toFixed(2)} $</div>
+        <div className='total-price'>Total: {(Item.totalPrice + Item.totalShip).toFixed(2)} $</div>
         <div className='order-price'>
           <p>{moment(Item.update_at).format('YYYY-MM-DD, h:mm:ss a')}</p>
           <div className='type-payment'>{Item.payment_method === 0 ? 'Paypal' : "Payment on delivery"}</div>
@@ -111,7 +113,7 @@ const ItemRow = ({ orderId }: { orderId: string }) => {
           <p>Quanlity: {Item.quanlity}</p>
           {/* </Link> */}
         </div>
-        <div className="product-price">{Item.price} $</div>
+        <div className="product-price" style={{display: 'flex', justifyContent: 'flex-end'}}>{Item.price} $</div>
       </div>
     </div>
 

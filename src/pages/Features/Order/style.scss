@@ -1,101 +1,32 @@
-.shop-cart-container {
+.order-shop-container {
   display: flex;
-  border: solid 1px rgb(226, 226, 226);
   flex-direction: column;
   background-color: #f2f2f2;
-
-  .check-box {
-    margin-right: 10px;
-    align-self: center;
+  border: solid 1px rgb(226, 226, 226);
+  border-radius: 5px;
+  .title-shop {
+    padding: 5px 15px;
+    font-weight: bold;
   }
-
-  .shop-wrap {
-    padding: 10px 15px;
+  .order-price {
+    width: 100%;
+    justify-content: flex-end;
     display: flex;
-    gap: 10px;
     flex-direction: row;
+    padding-right: 15px;
+    padding-bottom: 15px;
+    gap: 10px;
     align-items: center;
-    border-bottom: solid 1px rgb(226, 226, 226);
-
-    .shop-image {
-      height: 30px;
-      width: 30px;
-      border-radius: 50%;
-      overflow: hidden;
-    }
-
-    .shop-name {
-      font-weight: 500;
-      font-size: 16px;
-    }
   }
 
-  .shop-cart-item {
-    padding: 15px;
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-
-    .product-image {
-      height: 80px;
-      width: 80px;
-      border: solid 1px #007aff;
-
-      img {
-        object-fit: cover;
-        height: 100%;
-        width: 100%;
-      }
-    }
-
-    .product-name {
-      flex: 3;
-
-      h5 {
-        font-size: 16px;
-      }
-    }
-
-    .product-price {
-      flex: 1;
-      align-self: center;
-      text-align: center;
-      margin-top: 0;
-    }
-
-    .product-quanlity {
-      align-self: center;
-      flex: 1;
-
-      .input-quanlity {
-        width: 70px;
-        padding: 0;
-      }
-    }
-
-    .product-total-price {
-      flex: 1;
-      align-self: center;
-      text-align: center;
-      color: #007aff;
-    }
-
-    .action-delete {
-      text-align: center;
-      align-self: center;
-      width: 50px;
-
-      button {
-        cursor: pointer;
-      }
-    }
-  }
-
-  .shop-cart-item~.shop-cart-item {
-    border-top: solid 1px rgb(226, 226, 226);
+  .type-payment {
+    padding: 10px 15px;
+    background-color: #007aff;
+    border-radius: 2px;
+    color: white;
   }
 }
 
-.shop-cart-container~.shop-cart-container {
+.order-shop-container ~ .order-shop-container {
   margin-top: 20px;
 }

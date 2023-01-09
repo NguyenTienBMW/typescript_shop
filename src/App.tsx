@@ -27,7 +27,7 @@ export default function App() {
 	return (
 		<>
 			<Router>
-				{(!location.includes('login') && !location.includes('register')) ? <Header refresh={refresh} /> : <></>}
+				{(!location.includes('login') && !location.includes('register')) ? <Header refresh={refresh} handleRefresh={updateTotalCart} /> : <></>}
 				<Switch>
 					<Route path="/login">
 						<Login />

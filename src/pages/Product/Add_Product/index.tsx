@@ -75,7 +75,7 @@ export const AddProduct = () => {
 		if (subPanel === 'view') {
 			return <ProductList productList={productList} handleUpdateSuccess={handleUpdateSuccess} />
 		} else if (subPanel === 'create') {
-			return <AddProductForm shopId={shop?.id ?? ''} handleAddSuccess={() => setSubPanel('view')}/>
+			return <AddProductForm shopId={shop?.id ?? ''} handleAddSuccess={() => setSubPanel('view')} />
 		} else if (subPanel === 'edit-shop') {
 			return <EditShop shopId={shop?.id ?? ''} />
 		} else if (subPanel === 'generate') {
@@ -542,8 +542,8 @@ const CreateShopForm = ({ handleCreateSuccess }: { handleCreateSuccess: () => vo
 
 	if (!singup) {
 		return <div className='shop-introduction'>
-			<h1>wellcome to TT</h1>
-			<span>Để đăng ký bán hàng trên Shopee, bạn cần cung cấp một số thông tin cơ bản.</span>
+			<h1>Welcome to Tshop</h1>
+			<span>To register to sell on TShop, you need to provide some basic information.</span>
 			<Button className='btn-sign-up-shop' onClick={() => setSingup(true)}>Sign Up</Button>
 		</div>
 	}

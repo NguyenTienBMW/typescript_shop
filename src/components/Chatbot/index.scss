@@ -383,9 +383,11 @@ Bounce
   border-radius: 50%;
   outline: none;
   cursor: pointer;
+  border: 1px solid #0465D2;
 
   .chat-icon {
     font-size: 30px;
+    color: #0465D2;
   }
 }
 

@@ -65,7 +65,7 @@ export const Chatbot = () => {
       </Button>
     })
   );
-  return <div style={{ position: "relative" }}>
+  return <div style={{ position: "relative", zIndex: "1" }}>
     {!visible && <button className="btn-chat" onClick={() => setVisible(true)}>
       <i className="chat-icon fa-brands fa-facebook-messenger"></i>
     </button>

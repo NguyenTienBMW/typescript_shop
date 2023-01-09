@@ -18,7 +18,7 @@ import { CategoryModel } from '../../model'
 import { Dropdown, Menu } from 'antd'
 import { ShoppingCartOutlined } from '@ant-design/icons'
 
-function Header({ refresh }: { refresh: number }) {
+function Header({ refresh, handleRefresh }: { refresh: number, handleRefresh: () => void }) {
 	const user: any = localStorage.getItem('user');
 	const userInfo: UserModel = JSON.parse(user);
 	const history = useHistory();
@@ -49,7 +49,7 @@ function Header({ refresh }: { refresh: number }) {
 	const renderMenuUser = () => {
 		return <Menu>
 			<Menu.Item><Link to="/manage-account">Account</Link></Menu.Item>
-			<Menu.Item><Link to={`order/${userInfo.id}`}>Đơn mua</Link></Menu.Item>
+			<Menu.Item><Link to={`order/${userInfo.id}`}>Purchase form</Link></Menu.Item>
 			<Menu.Item onClick={() => {
 				history.push('/manage-shop')
 				setTest(prev => prev + 1)
@@ -58,6 +58,7 @@ function Header({ refresh }: { refresh: number }) {
 				localStorage.removeItem('user')
 				setTest(prev => prev + 1)
 				history.push('/login')
+				handleRefresh();
 			}}>Log out</Menu.Item>
 		</Menu>
 	}
@@ -165,9 +166,9 @@ function Header({ refresh }: { refresh: number }) {
 												</Dropdown>
 											</div>
 											: <>
-												<a href="/login">Đăng nhập</a>
+												<a href="/login">Login</a>
 												<span>|</span>
-												<a href="/register">Đăng ký</a>
+												<a href="/register">Register</a>
 											</>
 										}
 									</div>

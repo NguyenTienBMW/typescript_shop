@@ -10,6 +10,7 @@ import { Tabs } from 'antd';
 import Item from 'antd/lib/list/Item';
 import { Link } from 'react-router-dom';
 import { ProOrderModel } from '../../../model/product_order';
+import moment from 'moment';
 
 
 const TabPane = Tabs.TabPane;
@@ -45,12 +46,16 @@ export default function Order() {
   return (
     <div className='checkout-container'>
       <div className="container">
-        <Tabs onChange={callback} type="card">
-          <TabPane tab="Chờ xác nhận" key="0"><TabItem cartList1={order} /></TabPane>
+        <div style={{marginTop: '30px'}}>
+          <h4 style={{marginBottom: '10px'}}>List Order ({order.length})</h4>
+          <TabItem cartList1={order} />
+        </div>
+        {/* <Tabs onChange={callback} type="card">
+          <TabPane tab="Chờ xác nhận" key="0"></TabPane>
           <TabPane tab="Vận chuyển" key="1"><TabItem cartList1={order} /></TabPane>
           <TabPane tab="Đang giao" key="2"><TabItem cartList1={order} /></TabPane>
           <TabPane tab="Hoàn thành" key="3"><TabItem cartList1={order} /></TabPane>
-        </Tabs>
+        </Tabs> */}
         {/* <div className='total-product-container box-container'>
           <span className='total-product'>
             Tổng số tiền ({Object.keys(cartList)?.length} sản phẩm)
@@ -64,10 +69,20 @@ export default function Order() {
   )
 }
 const TabItem = ({ cartList1 }: { cartList1: OrderModel[] }) => {
-  return <>{cartList1.map(Item => {
-    return <><ItemRow key={Item.id} orderId={Item.id.toString()} /></>
-  })}
-  </>
+  return <>{
+    cartList1.map(Item => {
+      return <div className='order-shop-container'>
+        <div className='product-container'>
+          <ItemRow key={Item.id} orderId={Item.id.toString()} />
+        </div>
+        <div className='total-price'>Ship: {(Item.totalShip).toFixed(2)} $</div>
+        <div className='total-price'>Total: {(Item.totalPrice + Item.totalShip).toFixed(2)} $</div>
+        <div className='order-price'>
+          <p>{moment(Item.update_at).format('YYYY-MM-DD, h:mm:ss a')}</p>
+          <div className='type-payment'>{Item.payment_method === 0 ? 'Paypal' : "Payment on delivery"}</div>
+        </div>
+      </div>
+    })}</>
 }
 const ItemRow = ({ orderId }: { orderId: string }) => {
   const [productOrder, setProductOrder] = useState<ProOrderModel[]>([])
@@ -83,7 +98,7 @@ const ItemRow = ({ orderId }: { orderId: string }) => {
 
   return <>{productOrder.map(Item => {
     console.log("item", Item)
-    return <div className='shop-cart-container' key={Item.id}>
+    return <div className='shop-cart-container' style={{ marginTop: '0', border: 'none' }} key={Item.id}>
       <div className="shop-cart-item">
         <div className="product-image">
           <img
@@ -98,7 +113,7 @@ const ItemRow = ({ orderId }: { orderId: string }) => {
           <p>Quanlity: {Item.quanlity}</p>
           {/* </Link> */}
         </div>
-        <div className="product-price">{Item.price} $</div>
+        <div className="product-price" style={{display: 'flex', justifyContent: 'flex-end'}}>{Item.price} $</div>
       </div>
     </div>
 

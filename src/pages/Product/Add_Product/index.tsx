@@ -53,9 +53,9 @@ const formats = [
 	'image',
 ];
 
-type typeSubPanel = 'view' | 'create' | 'edit-shop' | 'generate' | 'confirm'
+type typeSubPanel = 'view' | 'create' | 'edit-shop'
 export const AddProduct = () => {
-	const [subPanel, setSubPanel] = useState<typeSubPanel>('generate');
+	const [subPanel, setSubPanel] = useState<typeSubPanel>('view');
 	const [refresh, setRefresh] = useState(0);
 	const [productList, setProductList] = useState<ProductModel[]>([]);
 	const [shop, setShop] = useState<ShopModel>();
@@ -78,12 +78,7 @@ export const AddProduct = () => {
 			return <AddProductForm shopId={shop?.id ?? ''} handleAddSuccess={() => setSubPanel('view')} />
 		} else if (subPanel === 'edit-shop') {
 			return <EditShop shopId={shop?.id ?? ''} />
-		} else if (subPanel === 'generate') {
-			return <Generate shopId={shop?.id ?? ''} />
-		} else if (subPanel === 'confirm') {
-			return <Confirm shopId={shop?.id ?? ''} />
 		}
-
 	}
 
 	useEffect(() => {
@@ -125,8 +120,6 @@ export const AddProduct = () => {
 			: <>
 				<div className="side-bar-container">
 					<div className="side-bar-list">
-						<div className={`side-bar-item ${subPanel === 'generate' ? 'active' : ''}`} onClick={() => handleSetSubPanel('generate')}>Generate</div>
-						<div className={`side-bar-item ${subPanel === 'confirm' ? 'active' : ''}`} onClick={() => handleSetSubPanel('confirm')}>Confirm</div>
 						<div className={`side-bar-item ${subPanel === 'view' ? 'active' : ''}`} onClick={() => handleSetSubPanel('view')}>View all</div>
 						<div className={`side-bar-item ${subPanel === 'create' ? 'active' : ''}`} onClick={() => handleSetSubPanel('create')}>Create product</div>
 						<div className={`side-bar-item ${subPanel === 'edit-shop' ? 'active' : ''}`} onClick={() => handleSetSubPanel('edit-shop')}>Edit Shop</div>
@@ -164,13 +157,6 @@ const Generate = ({ shopId }: { shopId: string }) => {
 	</div>
 }
 
-
-const Confirm = ({ shopId }: { shopId: string }) => {
-	return <div className='confirm-container'>
-		<HeaderItem content='Product Top Rate' />
-
-	</div>
-}
 
 const EditShop = ({ shopId }: { shopId: string }) => {
 	const [src, setSrc] = useState<any>()

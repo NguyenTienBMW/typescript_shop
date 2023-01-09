@@ -71,7 +71,7 @@ export default function App() {
 				</Switch>
 				{(!location.includes('login') && !location.includes('register')) ? <Footer /> : <></>}
 			</Router>
-			<Chatbot />
+			{userInfo.id && <Chatbot />}
 		</>
 	);
 }

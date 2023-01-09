@@ -11,7 +11,7 @@ const { TextArea } = Input;
 export const Chatbot = () => {
   const contentListHistory: any = localStorage.getItem('contentListChat');
   const [open, setOpen] = useState(false);
-  const [visible, setVisible] = useState(true);
+  const [visible, setVisible] = useState(false);
   const [content, setContent] = useState("");
   const messageContentRef = useRef<any>();
   const [listContent, setListContent] = useState<ContentList[]>(() => JSON.parse(contentListHistory) ?? []);

@@ -17,6 +17,7 @@ import axios, { Axios } from "axios";
 import { Command, QueryAPI } from "../../../access";
 import { ProductModel, ShopModel } from "../../../model";
 import './style.scss'
+import ReactQuill from 'react-quill';
 import { Rate } from 'antd';
 import { RenderStarComponent } from "../../../components"
 import { CommentModel } from "../../../model/comment";
@@ -97,7 +98,7 @@ export default function ProductDetail({ updateTotalCart }: { updateTotalCart: ()
 		})
 			.then((response) => {
 				if (response.statusText === 'OK') {
-					notificationSuccess({ description: 'Bạn đã thêm sản phẩm vào giỏ hàng thành công' });
+					notificationSuccess({ description: 'You have successfully added the product to your cart' });
 					updateTotalCart()
 					setQuanlity(1);
 				}
@@ -156,7 +157,13 @@ export default function ProductDetail({ updateTotalCart }: { updateTotalCart: ()
 								{
 									label: `Description`,
 									key: '1',
-									children: `${product?.product_description}`,
+									// children: <><div className="desc" dangerouslySetInnerHTML={{ __html: `${product?.product_description.toString()}` }}></div></>,
+									children: <ReactQuill
+										value={product?.product_description}
+										readOnly={true}
+										className="desc"
+										theme={"bubble"}
+									/>,
 								}
 							]}
 						/>

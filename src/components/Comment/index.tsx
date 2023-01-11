@@ -101,7 +101,7 @@ const WriteCommentComponent = ({
     disable
 }: {
     onSuccess: () => void,
-    disable: boolean
+    disable: boolean,
 }) => {
     const [rating, setRating] = useState<number>(0);
     const [content, setContent] = useState<string>('');
@@ -123,7 +123,7 @@ const WriteCommentComponent = ({
         })
             .then((response) => {
                 if (response.statusText === 'OK') {
-                    notificationSuccess({ description: 'Bạn đã thêm comment thành công' });
+                    notificationSuccess({ description: 'You have successfully added a comment' });
                     setRating(0);
                     setContent('');
                     onSuccess();
@@ -136,7 +136,7 @@ const WriteCommentComponent = ({
     return <div className="write-comment">
         <h4>Write Comment</h4>
         {disable
-            ? <div>Bạn đã comment sản phẩm này</div>
+            ? <div>You have commented on this product.</div>
             : userInfo ? <>
                 <StarRating rating={rating} handleRating={(value) => setRating(value)} />
                 <ListRecommendComment handleContent={(value) => setContent(value)} />
@@ -151,7 +151,7 @@ const WriteCommentComponent = ({
                     <button disabled={!rating || !content} style={(!rating || !content) ? { backgroundColor: 'gray', cursor: 'not-allowed' } : {}} onClick={handleSubmitComment}>Comment</button>
                 </div>
             </>
-                : <a href="/login">Đăng nhập để comment</a>}
+                : <a href="/login">Login to comment</a>}
     </div>
 }
 

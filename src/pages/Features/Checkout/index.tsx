@@ -156,7 +156,7 @@ export default function Checkout({ updateTotalCart }: { updateTotalCart: () => v
     })
       .then((response) => {
         if (response.data.code !== '404') {
-          notificationSuccess({ description: 'Bạn đã đổi địa chỉ thành công' });
+          notificationSuccess({ description: 'You have successfully changed your address' });
           // handleSetAddress();
           handleCancel();
           setRefresh(prev => prev + 1)
@@ -248,7 +248,7 @@ export default function Checkout({ updateTotalCart }: { updateTotalCart: () => v
         <div className='address-container box-container'>
           <div className='address-title'>
             <i className="fa-sharp fa-solid fa-location-dot"></i>
-            <span>Địa chỉ nhận hàng</span>
+            <span>Delivery address</span>
           </div>
           <div className='address-user'>
             <b>{address?.full_name} ({address?.phone})</b>
@@ -272,16 +272,16 @@ export default function Checkout({ updateTotalCart }: { updateTotalCart: () => v
 
 
         <div className='payment-container box-container'>
-          <div>Phương thức thanh toán</div>
+          <div>Mode of payment</div>
           <Radio.Group className='payment-list' onChange={onChange} value={checked}>
             <Radio value={1} style={{ display: "flex", alignItems: "center" }}><img src={Paypal} style={{ maxHeight: "52px" }} alt="Pay with PayPal" /></Radio>
-            <Radio value={2}>Thanh toán khi nhận hàng</Radio>
+            <Radio value={2}>Payment after arrival of goods</Radio>
             {/* <Radio value={3}>C</Radio>
             <Radio value={4}>D</Radio> */}
           </Radio.Group>
           <div className='total-payment'>
             <div className='total-item'>
-              <div>Tổng thanh toán</div>
+              <div>Total payment</div>
               <div>{(total + totalShip).toFixed(2) ?? 0}</div>
             </div>
           </div>
@@ -492,7 +492,7 @@ const CartItem = ({ shop, handleTotalOrder, handlegetShip }: { shop: CartModel[]
     <Shipping getPriceShip={getPriceShip} userId={userInfo.id} shopId={shop[0].shop_id.toString()} />
     <div className='total-product-container box-container'>
       <span className='total-product'>
-        Tổng số tiền ({Object.keys(shop)?.length} sản phẩm)
+        Total amount  ({Object.keys(shop)?.length > 1 ? ` ${Object.keys(shop)?.length} products ` : `${Object.keys(shop)?.length} product `})
       </span>
       <span className='total-price'>
         {total.toFixed(2)}
@@ -511,7 +511,7 @@ const Shipping = ({ userId, shopId, getPriceShip }: { userId: string, shopId: st
   }, [userId, shopId])
 
   return <div className='payment-container box-container' style={{ marginTop: "0" }}>
-    <div>Phương thức vận chuyển</div>
+    <div>Modes of transportation:</div>
     <Radio.Group className='payment-list' value={value} onChange={(e) => {
       setValue(e.target.value);
     }}>
@@ -550,7 +550,7 @@ const Fee = ({ userId, shopId, onClick, payment, defaultValue }: { payment: any,
   }, [fee, total])
 
   return <Radio ref={radioRef} onClick={() => onClick?.(total)} value={payment.service_id} style={{ display: "flex", alignItems: "center" }}>
-    {short_name}
+    {short_name == "Chuyển phát thương mại điện tử" ? "E-commerce delivery" : "Traditional delivery"}
     {fee ? <div >
       {total} USD
     </div>

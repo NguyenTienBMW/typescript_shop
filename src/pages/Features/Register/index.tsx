@@ -23,7 +23,7 @@ export const Register = () => {
         })
             .then((response) => {
                 if (response.data.code !== '404') {
-                    notificationSuccess({ description: 'Bạn đã đăng ký tài khoản thành công' });
+                    notificationSuccess({ description: 'You have successfully registered an account' });
                     history.push('/login')
                     setError('')
                 } else {

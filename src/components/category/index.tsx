@@ -22,7 +22,7 @@ export const Category = ({ type }: { type?: 'vertical' | 'horizontal' }) => {
 
     return <div className="category-container">
         <div className="container category-wrap">
-            <h2 className="product-heading">Danh mục</h2>
+            <h2 className="product-heading">Categories</h2>
             <ul className={`category-list ${type === 'vertical' ? 'vertical' : ''}`}>
                 {categoryList.map(categoryItem => {
                     return <Link to={`/product-category/${categoryItem.id}`} className={`category-item ${Number(categoryItem.id) === Number(category) ? 'active' : ''}`}>

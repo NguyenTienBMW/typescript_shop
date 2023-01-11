@@ -16,13 +16,10 @@ import { notificationSuccess } from '../../../components';
 import { notificationError } from '../../../components/Noti';
 import { storage } from '../../../firebase';
 import { ref, uploadBytes, getDownloadURL, uploadString } from "firebase/storage"
-import { async } from '@firebase/util';
 import { UserOutlined } from '@ant-design/icons'
 import { ShopModel } from '../../../model/shop';
 import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
-import { relative } from 'path';
-import { HeaderItem } from '../../../components/HeaderItem';
 
 const modules = {
 	toolbar: [
@@ -229,7 +226,6 @@ const EditShop = ({ shopId }: { shopId: string }) => {
 	};
 
 	const onFinish = (values: any) => {
-		console.log("🚀 ~ file: index.tsx:206 ~ onFinish ~ values", values)
 		if (!src) {
 			setErrorImage(true)
 			return;
@@ -252,7 +248,7 @@ const EditShop = ({ shopId }: { shopId: string }) => {
 				})
 					.then((response) => {
 						if (response.data.code !== '404') {
-							notificationSuccess({ description: 'Bạn tạo shop thành công' });
+							notificationSuccess({ description: 'You have successfully created a shop' });
 							// handleCreateSuccess()
 							setLoading(false)
 						} else {
@@ -272,7 +268,6 @@ const EditShop = ({ shopId }: { shopId: string }) => {
 						const imageRef = ref(storage, name);
 						uploadBytes(imageRef, file).then(() => {
 							getDownloadURL(imageRef).then((url) => {
-								console.log("🚀 ~ file: index.tsx:206 ~ getDownloadURL ~ url", url)
 								axios({
 									method: 'post',
 									url: Command.shop.update(shopId),
@@ -284,7 +279,7 @@ const EditShop = ({ shopId }: { shopId: string }) => {
 								})
 									.then((response) => {
 										if (response.data.code !== '404') {
-											notificationSuccess({ description: 'Bạn tạo shop thành công' });
+											notificationSuccess({ description: 'You have successfully created a shop' });
 											// handleCreateSuccess()
 											setLoading(false)
 										} else {
@@ -325,7 +320,7 @@ const EditShop = ({ shopId }: { shopId: string }) => {
 			<Form.Item
 				label="Shop Name"
 				name="shop_name"
-				rules={[{ required: true, message: 'Please input your username!' }]}
+				rules={[{ required: true, message: 'Please input shop name!' }]}
 			>
 				<Input />
 			</Form.Item>
@@ -362,10 +357,10 @@ const EditShop = ({ shopId }: { shopId: string }) => {
 			<Form.Item
 				label="Description"
 				name="shop_description"
-				rules={[{ required: true, message: 'Please input your username!' }]}
+				rules={[{ required: true, message: 'Please input shop description!' }]}
 			>
 				<ReactQuill
-					placeholder='Nhập mô tả sản phẩm'
+					placeholder='Type product description'
 					modules={modules}
 					formats={formats}
 				/>
@@ -440,7 +435,6 @@ const CreateShopForm = ({ handleCreateSuccess }: { handleCreateSuccess: () => vo
 		getCropData();
 	};
 
-	// console.log(cropper)
 
 	const handleCancel = () => {
 		imageShopRef.current.value = null
@@ -488,7 +482,6 @@ const CreateShopForm = ({ handleCreateSuccess }: { handleCreateSuccess: () => vo
 					const imageRef = ref(storage, name);
 					uploadBytes(imageRef, file).then(() => {
 						getDownloadURL(imageRef).then((url) => {
-							console.log("🚀 ~ file: index.tsx:206 ~ getDownloadURL ~ url", url)
 							axios({
 								method: 'post',
 								url: Command.shop.add(userInfo.id),
@@ -500,7 +493,7 @@ const CreateShopForm = ({ handleCreateSuccess }: { handleCreateSuccess: () => vo
 							})
 								.then((response) => {
 									if (response.data.code !== '404') {
-										notificationSuccess({ description: 'Bạn tạo shop thành công' });
+										notificationSuccess({ description: 'You have successfully created a shop' });
 										handleCreateSuccess()
 										setLoading(false)
 									} else {
@@ -583,10 +576,10 @@ const CreateShopForm = ({ handleCreateSuccess }: { handleCreateSuccess: () => vo
 			<Form.Item
 				label="Description"
 				name="shop_description"
-				rules={[{ required: true, message: 'Please input your username!' }]}
+				rules={[{ required: true, message: 'Please input shop description!' }]}
 			>
 				<ReactQuill
-					placeholder='Nhập mô tả sản phẩm'
+					placeholder='Type product description'
 					modules={modules}
 					formats={formats}
 				/>
@@ -667,7 +660,6 @@ const AddProductForm = ({ shopId, handleAddSuccess }: { shopId: string, handleAd
 	};
 
 	const onFinish = (values: any) => {
-		console.log("🚀 ~ file: index.tsx:132 ~ onFinish ~ values", values)
 		if (!src) {
 			setErrorImage(true)
 			return;
@@ -681,7 +673,6 @@ const AddProductForm = ({ shopId, handleAddSuccess }: { shopId: string, handleAd
 			const imageRef = ref(storage, name);
 			uploadBytes(imageRef, image).then(() => {
 				getDownloadURL(imageRef).then((url) => {
-					console.log("🚀 ~ file: index.tsx:145 ~ getDownloadURL ~ url", url)
 					axios({
 						method: 'post',
 						url: Command.product.add(),
@@ -694,7 +685,7 @@ const AddProductForm = ({ shopId, handleAddSuccess }: { shopId: string, handleAd
 					})
 						.then((response) => {
 							if (response.data.code !== '404') {
-								notificationSuccess({ description: 'Bạn đã thêm săn phẩm thành công' });
+								notificationSuccess({ description: 'You have successfully added a product' });
 								setLoading(false)
 								handleAddSuccess();
 							} else {
@@ -726,7 +717,7 @@ const AddProductForm = ({ shopId, handleAddSuccess }: { shopId: string, handleAd
 		<Form.Item
 			label="Product Name"
 			name="product_name"
-			rules={[{ required: true, message: 'Please input your username!' }]}
+			rules={[{ required: true, message: 'Please input product name!' }]}
 		>
 			<Input />
 		</Form.Item>
@@ -734,7 +725,7 @@ const AddProductForm = ({ shopId, handleAddSuccess }: { shopId: string, handleAd
 		<Form.Item
 			label="Category"
 			name="id_category"
-			rules={[{ required: true, message: 'Please input your username!' }]}
+			rules={[{ required: true, message: 'Please input category!' }]}
 		>
 			<Select options={category?.map(item => ({
 				value: item.id,
@@ -745,7 +736,7 @@ const AddProductForm = ({ shopId, handleAddSuccess }: { shopId: string, handleAd
 		<Form.Item
 			label="Price"
 			name="product_price"
-			rules={[{ required: true, message: 'Please input your username!' }]}
+			rules={[{ required: true, message: 'Please input price!' }]}
 		>
 			<Input />
 		</Form.Item>
@@ -753,7 +744,7 @@ const AddProductForm = ({ shopId, handleAddSuccess }: { shopId: string, handleAd
 		<Form.Item
 			label="Quanlity"
 			name="product_quanlity"
-			rules={[{ required: true, message: 'Please input your username!' }]}
+			rules={[{ required: true, message: 'Please input quanlity!' }]}
 		>
 			<Input />
 		</Form.Item>
@@ -761,10 +752,10 @@ const AddProductForm = ({ shopId, handleAddSuccess }: { shopId: string, handleAd
 		<Form.Item
 			label="Description"
 			name="product_description"
-			rules={[{ required: true, message: 'Please input your username!' }]}
+			rules={[{ required: true, message: 'Please input product description!' }]}
 		>
 			<ReactQuill
-				placeholder='Nhập mô tả sản phẩm'
+				placeholder='Type product description'
 				modules={modules}
 				formats={formats}
 			/>
@@ -879,7 +870,7 @@ const ProductList = ({ productList, handleUpdateSuccess
 		})
 			.then((response) => {
 				if (response.data.code !== '404') {
-					notificationSuccess({ description: 'Bạn đã xoá săn phẩm thành công' });
+					notificationSuccess({ description: 'You have successfully deleted the product' });
 					handleUpdateSuccess()
 					handleCancel();
 				} else {
@@ -949,7 +940,7 @@ const ProductList = ({ productList, handleUpdateSuccess
 					})
 						.then((response) => {
 							if (response.data.code !== '404') {
-								notificationSuccess({ description: 'Bạn đã update săn phẩm thành công' });
+								notificationSuccess({ description: 'You have successfully updated the product' });
 								handleUpdateSuccess()
 								handleCancel();
 								setLoading(false)
@@ -977,7 +968,7 @@ const ProductList = ({ productList, handleUpdateSuccess
 			})
 				.then((response) => {
 					if (response.data.code !== '404') {
-						notificationSuccess({ description: 'Bạn đã update săn phẩm thành công' });
+						notificationSuccess({ description: 'You have successfully updated the product' });
 						handleUpdateSuccess()
 						handleCancel();
 						setLoading(false)
@@ -1015,15 +1006,15 @@ const ProductList = ({ productList, handleUpdateSuccess
 				<Form.Item
 					label="Product Name"
 					name="product_name"
-					rules={[{ required: true, message: 'Please input your username!' }]}
+					rules={[{ required: true, message: 'Please input product name!' }]}
 				>
 					<Input />
 				</Form.Item>
 
 				<Form.Item
-					label="Price"
+					label="Category"
 					name="id_category"
-					rules={[{ required: true, message: 'Please input your username!' }]}
+					rules={[{ required: true, message: 'Please input category!' }]}
 				>
 					<Select options={category?.map(item => ({
 						value: item.id,
@@ -1034,7 +1025,7 @@ const ProductList = ({ productList, handleUpdateSuccess
 				<Form.Item
 					label="Price"
 					name="product_price"
-					rules={[{ required: true, message: 'Please input your username!' }]}
+					rules={[{ required: true, message: 'Please input price!' }]}
 				>
 					<Input />
 				</Form.Item>
@@ -1042,7 +1033,7 @@ const ProductList = ({ productList, handleUpdateSuccess
 				<Form.Item
 					label="Quanlity"
 					name="product_quanlity"
-					rules={[{ required: true, message: 'Please input your username!' }]}
+					rules={[{ required: true, message: 'Please input quanlity!' }]}
 				>
 					<Input />
 				</Form.Item>
@@ -1050,11 +1041,11 @@ const ProductList = ({ productList, handleUpdateSuccess
 				<Form.Item
 					label="Description"
 					name="product_description"
-					rules={[{ required: true, message: 'Please input your username!' }]}
+					rules={[{ required: true, message: 'Please input product description!' }]}
 				>
 					<ReactQuill
 						// defaultValue={data && data.description}
-						placeholder='Nhập mô tả sản phẩm'
+						placeholder='Type product description'
 						// onChange={handleChangeEditor}
 						// onBlur={handleBlurEditor}
 						modules={modules}

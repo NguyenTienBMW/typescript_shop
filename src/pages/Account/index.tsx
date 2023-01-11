@@ -203,7 +203,7 @@ const Generate = () => {
         })
           .then((response) => {
             if (response.data.code !== '404') {
-              notificationSuccess({ description: 'Bạn tạo shop thành công' });
+              notificationSuccess({ description: 'You have successfully created a shop' });
               handleSuccess()
             } else {
               notificationError({ description: response.data.message });
@@ -234,7 +234,7 @@ const Generate = () => {
                 })
                   .then((response) => {
                     if (response.data.code !== '404') {
-                      notificationSuccess({ description: 'Bạn tạo shop thành công' });
+                      notificationSuccess({ description: 'You have successfully created a shop' });
                       handleSuccess()
                     } else {
                       notificationError({ description: response.data.message });
@@ -262,7 +262,7 @@ const Generate = () => {
       })
         .then((response) => {
           if (response.data.code !== '404') {
-            notificationSuccess({ description: 'Bạn Update account thành công' });
+            notificationSuccess({ description: 'You have successfully updated your account' });
             handleSuccess()
           } else {
             notificationError({ description: response.data.message });
@@ -424,7 +424,7 @@ const UpdatePassword = () => {
     })
       .then((response) => {
         if (response.data.code !== '404') {
-          notificationSuccess({ description: 'Bạn thay đổi mật khẩu thành công' });
+          notificationSuccess({ description: 'You have successfully changed your password' });
           setRefresh(prev => prev + 1)
           form.setFieldsValue({
             password: passwordNew,
@@ -529,7 +529,7 @@ const UpdateAddress = () => {
       })
         .then((response) => {
           if (response.data.code !== '404') {
-            notificationSuccess({ description: 'Bạn đã đổi địa chỉ thành công' });
+            notificationSuccess({ description: 'You have successfully changed your address' });
             // handleSetAddress();
           } else {
             notificationError({ description: response.data.message });
@@ -546,7 +546,7 @@ const UpdateAddress = () => {
       })
         .then((response) => {
           if (response.data.code !== '404') {
-            notificationSuccess({ description: 'Bạn đã thêm địa chỉ thành công' });
+            notificationSuccess({ description: 'You have successfully added the address' });
             handleSetAddress();
           } else {
             notificationError({ description: response.data.message });

@@ -19,7 +19,7 @@ export const Login = () => {
         })
             .then((response) => {
                 if (response.data.code !== '404') {
-                    notificationSuccess({ description: 'Bạn đã đăng nhập thành công' });
+                    notificationSuccess({ description: 'Successful login' });
                     window.location.href = '/'
                     setError('')
                     localStorage.setItem('user', JSON.stringify(response.data));

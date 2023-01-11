@@ -25,6 +25,7 @@ function Header({ refresh, handleRefresh }: { refresh: number, handleRefresh: ()
 	const [categories, setCategoryList] = useState<CategoryModel[]>([])
 	const [cartTotal, setTotalCart] = useState<number>(0)
 	const [test, setTest] = useState(0)
+	const [value, setValue] = useState("");
 
 	useEffect(() => {
 		axios.get(QueryAPI.category.all())
@@ -49,7 +50,7 @@ function Header({ refresh, handleRefresh }: { refresh: number, handleRefresh: ()
 	const renderMenuUser = () => {
 		return <Menu>
 			<Menu.Item><Link to="/manage-account">Account</Link></Menu.Item>
-			<Menu.Item><Link to={`order/${userInfo.id}`}>Purchase form</Link></Menu.Item>
+			<Menu.Item><Link to={`/order/${userInfo.id}`}>Purchase form</Link></Menu.Item>
 			<Menu.Item onClick={() => {
 				history.push('/manage-shop')
 				setTest(prev => prev + 1)
@@ -138,7 +139,7 @@ function Header({ refresh, handleRefresh }: { refresh: number, handleRefresh: ()
 							</div>
 							<div className="col-8 header-main-item navigate-wrap">
 								<div className="col-9">
-									<div className="search-wrap">
+									<form className="search-wrap">
 										<input type="text" name="" className="search-input-wrap" id=""
 											placeholder="Search for your item's type..."
 											onKeyDown={(e: any) => {
@@ -146,11 +147,14 @@ function Header({ refresh, handleRefresh }: { refresh: number, handleRefresh: ()
 													handleSearch(e.target.value)
 												}
 											}}
+											onChange={(e: any) => {
+												setValue(e.target.value);
+											}}
 										/>
-										<button className="search-btn">
+										<button className="search-btn" type="submit" onClick={() => handleSearch(value)}>
 											<i className="fa-solid fa-magnifying-glass search-btn-icon"></i>
 										</button>
-									</div>
+									</form>
 								</div>
 								<div className="col-3" style={{ display: 'flex', justifyContent: 'flex-end' }}>
 									<div className="header-main-icon-list">

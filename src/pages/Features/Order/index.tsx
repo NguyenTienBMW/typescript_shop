@@ -46,8 +46,8 @@ export default function Order() {
   return (
     <div className='checkout-container'>
       <div className="container">
-        <div style={{marginTop: '30px'}}>
-          <h4 style={{marginBottom: '10px'}}>List Order ({order.length})</h4>
+        <div style={{ marginTop: '30px' }}>
+          <h4 style={{ marginBottom: '10px' }}>List Order ({order.length})</h4>
           <TabItem cartList1={order} />
         </div>
         {/* <Tabs onChange={callback} type="card">
@@ -79,7 +79,7 @@ const TabItem = ({ cartList1 }: { cartList1: OrderModel[] }) => {
         <div className='total-price'>Total: {(Item.totalPrice + Item.totalShip).toFixed(2)} $</div>
         <div className='order-price'>
           <p>{moment(Item.update_at).format('YYYY-MM-DD, h:mm:ss a')}</p>
-          <div className='type-payment'>{Item.payment_method === 0 ? 'Paypal' : "Payment on delivery"}</div>
+          <div className='type-payment'>{Item.payment_method === 0 ? 'Paypal' : "Payment after arrival of goods"}</div>
         </div>
       </div>
     })}</>
@@ -113,7 +113,7 @@ const ItemRow = ({ orderId }: { orderId: string }) => {
           <p>Quanlity: {Item.quanlity}</p>
           {/* </Link> */}
         </div>
-        <div className="product-price" style={{display: 'flex', justifyContent: 'flex-end'}}>{Item.price} $</div>
+        <div className="product-price" style={{ display: 'flex', justifyContent: 'flex-end' }}>{Item.price} $</div>
       </div>
     </div>
 

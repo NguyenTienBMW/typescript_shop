@@ -64,7 +64,7 @@ export default function Card({ total, listId }: { total?: number; listId?: numbe
     })
       .then((response) => {
         if (response.data.code !== '404') {
-          notificationSuccess({ description: 'Bạn đã thêm địa chỉ thành công' });
+          notificationSuccess({ description: 'You have successfully added the address' });
           handleSetAddress();
           handleCancel();
         } else {
@@ -122,7 +122,7 @@ export default function Card({ total, listId }: { total?: number; listId?: numbe
         <table>
           <tr>
             <th></th>
-            <th>Tổng thanh toán {listId?.length} sản phẩm</th>
+            <th>Total payment{Number(listId?.length) > 1 ? ` ${listId?.length} products` : ` ${listId?.length} product`}</th>
           </tr>
           <th><h6>Total</h6></th>
           <th><strong>{total}</strong></th>

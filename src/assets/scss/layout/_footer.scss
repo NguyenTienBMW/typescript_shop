@@ -2,33 +2,43 @@
 	@include pxRem(padding, 10);
 	margin-top: 100px;
 }
+
 .footer-heading {
 	margin-bottom: 30px;
+	margin-top: 10px;
 }
+
 .footer-item {
 	margin: 15px 0;
 }
+
 .social-list {
 	display: flex;
 	justify-content: flex-start;
 }
+
 .social-item {
 	margin-right: 20px;
 	padding: 5px 0;
 }
+
 .footer-link {
 	display: block;
+
 	&:hover {
 		color: #025bbf;
 		font-weight: 500;
 	}
 }
+
 .footer-icon {
 	margin-right: 10px;
 }
+
 .footer-contact {
 	.footer-link {
 		pointer-events: none;
+
 		&:hover {
 			color: unset !important;
 		}

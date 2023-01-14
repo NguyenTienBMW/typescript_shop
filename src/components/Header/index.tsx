@@ -11,19 +11,21 @@ import {
 	useParams
 } from "react-router-dom";
 import { LogoutOutlined } from '@ant-design/icons'
-import Logo from "../../assets/images/logo.png";
+import Logo from "../../assets/images/t-shop1.png";
 import { UserModel } from "../../model/user";
 import { QueryAPI } from "../../access";
 import { CategoryModel } from '../../model'
 import { Dropdown, Menu } from 'antd'
 import { ShoppingCartOutlined } from '@ant-design/icons'
 
-function Header() {
+function Header({ refresh, handleRefresh }: { refresh: number, handleRefresh: () => void }) {
 	const user: any = localStorage.getItem('user');
 	const userInfo: UserModel = JSON.parse(user);
 	const history = useHistory();
 	const [categories, setCategoryList] = useState<CategoryModel[]>([])
+	const [cartTotal, setTotalCart] = useState<number>(0)
 	const [test, setTest] = useState(0)
+	const [value, setValue] = useState("");
 
 	useEffect(() => {
 		axios.get(QueryAPI.category.all())
@@ -35,16 +37,42 @@ function Header() {
 			})
 	}, [])
 
+	useEffect(() => {
+		axios.get(QueryAPI.cart.all(userInfo.id))
+			.then(res => {
+				setTotalCart(res.data?.length)
+			})
+			.catch(err => {
+				console.log(err)
+			})
+	}, [refresh])
+
 	const renderMenuUser = () => {
 		return <Menu>
-			<Menu.Item>Tài khoản của tôi</Menu.Item>
-			<Menu.Item>Đơn mua</Menu.Item>
+			<Menu.Item><Link to="/manage-account">Account</Link></Menu.Item>
+			<Menu.Item><Link to={`/order/${userInfo.id}`}>Purchase form</Link></Menu.Item>
+			<Menu.Item onClick={() => {
+				history.push('/manage-shop')
+				setTest(prev => prev + 1)
+			}}>Shop</Menu.Item>
 			<Menu.Item onClick={() => {
 				localStorage.removeItem('user')
 				setTest(prev => prev + 1)
-			}}>Đăng xuất</Menu.Item>
+				history.push('/login')
+				handleRefresh();
+			}}>Log out</Menu.Item>
 		</Menu>
 	}
+
+	const handleSearch = (value: string) => {
+		history.push(`/search/${value}`)
+	}
+
+	useEffect(() => {
+		window.addEventListener('storage', () => {
+			setTest(prev => prev + 1)
+		})
+	}, [])
 
 	return (
 		<>
@@ -107,18 +135,28 @@ function Header() {
 					<div className="container">
 						<div className="row header-main">
 							<div className="col-2 header-main-item">
-								<img src={Logo} />
+								<Link to={'/'}><img src={Logo} /></Link>
 							</div>
 							<div className="col-8 header-main-item navigate-wrap">
 								<div className="col-9">
-									<form action="" className="search-wrap">
-										<input type="text" name="" className="search-input-wrap" id="" placeholder="Search for your item's type..." />
-										<button className="search-btn">
+									<form className="search-wrap">
+										<input type="text" name="" className="search-input-wrap" id=""
+											placeholder="Search for your item's type..."
+											onKeyDown={(e: any) => {
+												if (13 === e.keyCode) {
+													handleSearch(e.target.value)
+												}
+											}}
+											onChange={(e: any) => {
+												setValue(e.target.value);
+											}}
+										/>
+										<button className="search-btn" type="submit" onClick={() => handleSearch(value)}>
 											<i className="fa-solid fa-magnifying-glass search-btn-icon"></i>
 										</button>
 									</form>
 								</div>
-								<div className="col-3" style={{display: 'flex', justifyContent: 'flex-end'}}>
+								<div className="col-3" style={{ display: 'flex', justifyContent: 'flex-end' }}>
 									<div className="header-main-icon-list">
 										{userInfo
 											? <div className="header-main-icon-item">
@@ -132,9 +170,9 @@ function Header() {
 												</Dropdown>
 											</div>
 											: <>
-												<a href="/login">Đăng nhập</a>
+												<a href="/login">Login</a>
 												<span>|</span>
-												<a href="/register">Đăng ký</a>
+												<a href="/register">Register</a>
 											</>
 										}
 									</div>
@@ -146,9 +184,13 @@ function Header() {
 				<div className="header-bottom">
 					<div className="container">
 						<div className="header-bottom-list">
+							<div className="home-redirect">
+								<Link to={'/'}>Home</Link>
+							</div>
 							<div className="cart-icon">
-								<Link to={'/cart'}>
-								<ShoppingCartOutlined />
+								<Link to={'/cart'} style={{ position: 'relative' }}>
+									<ShoppingCartOutlined />
+									{cartTotal ? <span style={{ position: 'absolute', top: '-3px', fontSize: '14px', color: 'white', backgroundColor: 'red', borderRadius: '50%', padding: '0 6px', right: '-9px' }}>{cartTotal}</span> : <></>}
 								</Link>
 							</div>
 						</div>

@@ -1,0 +1,402 @@
+/*--------------------
+Mixins
+--------------------*/
+@mixin center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+@mixin ball {
+  @include center;
+  content: "";
+  display: block;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  z-index: 2;
+  margin-top: 4px;
+  animation: ball 0.45s cubic-bezier(0, 0, 0.15, 1) alternate infinite;
+}
+
+.bg {
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  background: url("https://www.pikpng.com/pngl/b/109-1099794_ios-emoji-emoji-iphone-ios-heart-hearts-spin.png") no-repeat 0 0;
+  filter: blur(80px);
+  transform: scale(1.2);
+}
+
+/*--------------------
+Chat
+--------------------*/
+.chat {
+  position: fixed;
+  right: 15px;
+  bottom: 20px;
+  width: 300px;
+  height: 80vh;
+  max-height: 500px;
+  z-index: 2;
+  overflow: hidden;
+  box-shadow: 0 5px 30px rgba(0, 0, 0, 0.2);
+  background: #fff;
+  border-radius: 20px;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+}
+
+/*--------------------
+Chat Title
+--------------------*/
+.chat-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+  background: #fff;
+  text-align: left;
+  padding: 10px;
+  border-bottom: 1px solid #f2f2f2;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
+
+  h1 {
+    font-size: 16px;
+    color: #000;
+  }
+
+  .btn-close {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    outline: none;
+    border: none;
+    cursor: pointer;
+  }
+
+  .close-icon {
+    color: #000;
+  }
+}
+
+/*--------------------
+Messages
+--------------------*/
+.messages {
+  flex: 1 1 auto;
+  color: rgba(255, 255, 255, 0.5);
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+
+  & .messages-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 101%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 5px;
+    overflow-y: scroll;
+
+    &::-webkit-scrollbar-track {
+      -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+      border-radius: 10px;
+      background-color: #F5F5F5;
+    }
+
+    &::-webkit-scrollbar {
+      width: 10px;
+      background-color: #F5F5F5;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      border-radius: 10px;
+      -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+      background-color: gray;
+    }
+
+    .client {
+      color: #fff;
+      background-color: #1890ff;
+      max-width: 60%;
+      align-self: flex-end;
+      border-radius: 10px;
+      padding: 5px 10px;
+      display: inline-block;
+    }
+
+    .server {
+      background-color: rgba(0, 0, 0, 0.06);
+      color: #000;
+      max-width: 60%;
+      align-self: flex-start;
+      border-radius: 10px;
+      padding: 5px 10px;
+    }
+  }
+
+  .message {
+    clear: both;
+    float: left;
+    padding: 6px 10px 7px;
+    border-radius: 10px 10px 10px 0;
+    background: rgba(0, 0, 0, 0.3);
+    margin: 8px 0;
+    font-size: 11px;
+    line-height: 1.4;
+    margin-left: 35px;
+    position: relative;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+
+    .timestamp {
+      position: absolute;
+      bottom: -15px;
+      font-size: 9px;
+      color: rgba(255, 255, 255, 0.3);
+    }
+
+    &::before {
+      content: "";
+      position: absolute;
+      bottom: -6px;
+      border-top: 6px solid rgba(0, 0, 0, 0.3);
+      left: 0;
+      border-right: 7px solid transparent;
+    }
+
+    .avatar {
+      position: absolute;
+      z-index: 1;
+      bottom: -15px;
+      left: -35px;
+      border-radius: 30px;
+      width: 30px;
+      height: 30px;
+      overflow: hidden;
+      margin: 0;
+      padding: 0;
+      border: 2px solid rgba(255, 255, 255, 0.24);
+
+      img {
+        width: 100%;
+        height: auto;
+      }
+    }
+
+    &.message-personal {
+      float: right;
+      color: #fff;
+      text-align: right;
+      background: linear-gradient(120deg, #248a52, #257287);
+      border-radius: 10px 10px 0 10px;
+
+      &::before {
+        left: auto;
+        right: 0;
+        border-right: none;
+        border-left: 5px solid transparent;
+        border-top: 4px solid #257287;
+        bottom: -4px;
+      }
+    }
+
+    &:last-child {
+      margin-bottom: 30px;
+    }
+
+    &.new {
+      transform: scale(0);
+      transform-origin: 0 0;
+      animation: bounce 500ms linear both;
+    }
+
+    &.loading {
+      &::before {
+        @include ball;
+        border: none;
+        animation-delay: 0.15s;
+      }
+
+      & span {
+        display: block;
+        font-size: 0;
+        width: 20px;
+        height: 10px;
+        position: relative;
+
+        &::before {
+          @include ball;
+          margin-left: -7px;
+        }
+
+        &::after {
+          @include ball;
+          margin-left: 7px;
+          animation-delay: 0.3s;
+        }
+      }
+    }
+  }
+}
+
+/*--------------------
+Message Box
+--------------------*/
+.message-box {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-top: 1px solid #0000001a;
+  gap: 5px;
+
+  .ant-popover-inner-content {
+    display: flex;
+    flex-direction: column;
+  }
+
+
+
+  &.message-submit {
+    width: 50px;
+  }
+}
+
+.message-input.ant-input {
+  flex: 1;
+  padding: 0 5px;
+  border: none !important;
+  outline: none;
+  box-shadow: none !important;
+  border-color: none;
+
+  &:hover {
+    border: none !important;
+    outline: none;
+    box-shadow: none !important;
+    border-color: none;
+  }
+}
+
+.ant-popover-inner-content {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+/*--------------------
+Custom Srollbar
+--------------------*/
+.mCSB_scrollTools {
+  margin: 1px -3px 1px 0;
+  opacity: 0;
+}
+
+.mCSB_inside>.mCSB_container {
+  margin-right: 0px;
+  padding: 0 10px;
+}
+
+.mCSB_scrollTools .mCSB_dragger .mCSB_dragger_bar {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+/*--------------------
+Bounce
+--------------------*/
+@keyframes bounce {
+  0% {
+    transform: matrix3d(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+  }
+
+  4.7% {
+    transform: matrix3d(0.45, 0, 0, 0, 0, 0.45, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+  }
+
+  9.41% {
+    transform: matrix3d(0.883, 0, 0, 0, 0, 0.883, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+  }
+
+  14.11% {
+    transform: matrix3d(1.141, 0, 0, 0, 0, 1.141, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+  }
+
+  18.72% {
+    transform: matrix3d(1.212, 0, 0, 0, 0, 1.212, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+  }
+
+  24.32% {
+    transform: matrix3d(1.151, 0, 0, 0, 0, 1.151, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+  }
+
+  29.93% {
+    transform: matrix3d(1.048, 0, 0, 0, 0, 1.048, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+  }
+
+  35.54% {
+    transform: matrix3d(0.979, 0, 0, 0, 0, 0.979, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+  }
+
+  41.04% {
+    transform: matrix3d(0.961, 0, 0, 0, 0, 0.961, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+  }
+
+  52.15% {
+    transform: matrix3d(0.991, 0, 0, 0, 0, 0.991, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+  }
+
+  63.26% {
+    transform: matrix3d(1.007, 0, 0, 0, 0, 1.007, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+  }
+
+  85.49% {
+    transform: matrix3d(0.999, 0, 0, 0, 0, 0.999, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+  }
+
+  100% {
+    transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+  }
+}
+
+.btn-chat {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 60px;
+  height: 60px;
+  position: fixed;
+  right: 15px;
+  bottom: 15px;
+  background-color: #f2f2f2;
+  border-radius: 50%;
+  outline: none;
+  cursor: pointer;
+  border: 1px solid #0465D2;
+
+  .chat-icon {
+    font-size: 30px;
+    color: #0465D2;
+  }
+}
+
+@keyframes ball {
+  from {
+    transform: translateY(0) scaleY(0.8);
+  }
+
+  to {
+    transform: translateY(-10px);
+  }
+}

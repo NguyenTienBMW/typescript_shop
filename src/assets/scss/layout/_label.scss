@@ -1,6 +1,3 @@
-.label-section {
-	margin-top: 100px;
-}
 .label-wrap {
 	display: flex;
 	justify-content: space-between;
@@ -9,10 +6,12 @@
 	color: #fff;
 	border-radius: 4px;
 	transition: background 0.3s, border 0.3s, border-radius 0.3s, box-shadow 0.3s;
+
 	.label-heading {
 		margin-bottom: 15px;
 	}
 }
+
 .btn-label {
 	text-transform: uppercase;
 	font-size: 16px;
@@ -26,19 +25,29 @@
 	min-height: 80px;
 	margin-top: 100px;
 	height: 340px;
+
 	.label-wrap {
 		background-color: #252525;
 		flex-direction: column;
 	}
+
 	.label2-img {
 		height: 100%;
 	}
+
 	.label-text {
 		margin-bottom: 20px;
+		color: #fff;
 	}
+
+	.label-heading {
+		color: #fff;
+	}
+
 	.btn-label {
 		background-color: #0465d2;
 		padding: 20px 30px;
+
 		&:hover {
 			background-color: #252525;
 		}

@@ -16,12 +16,14 @@ import { UserModel } from "../../model/user";
 import { Spin, Skeleton } from 'antd';
 import './style.scss';
 
-export default function Product_List({
+export default function ProductList({
 	recommend,
-	title
+	title,
+	url = QueryAPI.product.all()
 }: {
 	recommend?: boolean,
-	title?: string
+	title?: string,
+	url?: string
 }) {
 	const user: any = localStorage.getItem('user');
 	const userInfo: UserModel = JSON.parse(user);
@@ -31,7 +33,7 @@ export default function Product_List({
 
 	useEffect(() => {
 		setLoading(true)
-		axios.get(recommend ? QueryAPI.product.recommend(userInfo.id) : QueryAPI.product.all())
+		axios.get(recommend ? QueryAPI.product.recommend(userInfo.id) : url)
 			.then(res => {
 				setLoading(false)
 				setProductList(res.data)
@@ -46,20 +48,26 @@ export default function Product_List({
 		<section className="product-section">
 			<h2 className="product-heading">{title || 'Products Of The Week'}</h2>
 			<Swiper
-				slidesPerView={5}
 				spaceBetween={20}
 				slidesPerGroup={3}
 				loopFillGroupWithBlank={true}
-				// autoplay={{
-				// 	delay: 2500,
-				// 	disableOnInteraction: false,
-				// }}
-				// pagination={{
-				// 	clickable: true,
-				// }}
-				// navigation={true}
-				// modules={[Pagination, Navigation]}
 				modules={[Autoplay]}
+				breakpoints={{
+
+					640: {
+						slidesPerView: 2,
+						spaceBetween: 20,
+					},
+					768: {
+						slidesPerView: 4,
+						spaceBetween: 40,
+					},
+					1024: {
+						slidesPerView: 5,
+						spaceBetween: 50,
+					},
+				}}
+
 			>
 				{loading
 					? <div className="card-loading">

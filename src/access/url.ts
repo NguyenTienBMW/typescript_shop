@@ -13,10 +13,14 @@ export const QueryAPI = {
 	},
 	product: {
 		all: () => buildUrl(["product"]),
+		topRate: () =>  buildUrl(["product", "top-rate"]),
 		recommend: (userId: string) => buildUrl(["recommend", userId]),
 		single: (productId: string) => {
 			return buildUrl(["product", productId]);
 		},
+		shopProduct: (userId: string) => buildUrl(["product", "shop", userId]),
+		productCategory: (categoryId: string) => buildUrl(["product", "category", categoryId]),
+		search: (key: string) => buildUrl(["product", "search", key])
 	},
 	recommend: {
 		all: () => buildUrl(["recommend"]),
@@ -37,18 +41,69 @@ export const QueryAPI = {
 	},
 	cart: {
 		all: (userId: string) => buildUrl(["cart", userId]),
+		list: (listId: number[], userId: string) => buildUrl(["cart", "cart-list", JSON.stringify(listId), "user", userId])
 	},
+	address: {
+		allFull: () => buildUrl(['full-address']),
+		all: (userId: string) => buildUrl(["address", "all", userId])
+	},
+	province: {
+		province: () => buildUrl(['province']),
+		district: (provinceId: string) => buildUrl(["district", provinceId]),
+		ward: (districtId: string) => buildUrl(["ward", districtId]),
+		fee: () => buildUrl(["fee"]),  
+	}, 
+	order: {
+		all: (userId: string) => buildUrl(["order", userId]),
+		product_order: (order_id: string) => buildUrl(["order","product_order",order_id])
+	},
+	shop: {
+		single: (user_id: string) => {
+			return buildUrl(["shop", user_id]);
+		},
+		signleWithshopId: (shopId: string) => buildUrl(["shop", "product", shopId]) 
+	},
+	chatbot: {
+		send: (content: string) => {
+			return buildUrl(["chatbot", content]);
+		},
+		 
+	}
 };
 
 export const Command = {
 	user: {
 		register: () => buildUrl(["register"]),
 		login: () => buildUrl(["login"]),
+		update: (userId: string) => buildUrl(["user", "update_user", userId]),
+		password: (userId: string) => buildUrl(["user", "update_password", userId])
 	},
 	comment: {
 		add: () => buildUrl(["rate", "create_rate"]),
 	},
 	cart: {
 		add: () => buildUrl(["cart", "add_cart"]),
+		delete: (cartId: string) => buildUrl(["cart", "delete_cart", cartId]),
+		update: (cartId: string) => buildUrl(["cart","update_cart", cartId])
 	},
+	payment: {
+		add: () => buildUrl(["pay"]),
+	},
+	address: {
+		add: (user_id: string) => buildUrl(["address", "create-address", user_id]),
+		update: (user_id: string) => buildUrl(["address", "update-address", user_id]),
+		services: (userId: string,shopId: string) => buildUrl(["available-services","user",userId,"shop",shopId]),
+		fee: (serviceId: string,userId: string,shopId: string) => buildUrl(["fee",serviceId,"user",userId,"shop",shopId]),
+	},
+	product: {
+		update: (productId: string) => buildUrl(["product","update_product", productId]),
+		add: () => buildUrl(["product", "create_product"]),
+		delete: (productId: string) => buildUrl(["product","delete_product", productId]),
+	},
+	shop: {
+		update: (shopId: string) => buildUrl(["shop","update_shop", shopId]),
+		add: (user_id: string) => buildUrl(["shop", "create_shop", user_id]),
+		// delete: (productId: string) => buildUrl(["product","delete_product", productId]),
+	}
+
 };

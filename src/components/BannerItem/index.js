@@ -3,16 +3,16 @@ import Banner31 from "../../assets/images/banner-31.jpg";
 import Banner32 from "../../assets/images/banner-32.jpg";
 import Banner33 from "../../assets/images/banner-33.jpg";
 
-export default function BannerItem() {
+export default function BannerItem({ Img, title, heading }) {
 	return (
 		<>
 			<div
 				className="banner-content"
-				style={{ backgroundImage: `url(${Banner32})` }}
+				style={{ backgroundImage: `url(${Img})` }}
 			>
 				<div className="banner-title">
-					<div className="banner-cate">Smart Phone</div>
-					<div className="banner-subtitle">Samsung note 21</div>
+					<div className="banner-cate">{title}</div>
+					<div className="banner-subtitle">{heading}</div>
 				</div>
 				{/* <div className="banner-price">
 					<div className="banner-discount-badge">Discounted Price</div>

@@ -7,22 +7,27 @@ import {
 	Redirect
 } from "react-router-dom";
 import { Footer, Header } from "./components";
+import { Chatbot } from "./components/Chatbot";
 import { UserModel } from "./model/user";
-import { Cart, Checkout, Home, ProductDetail } from "./pages/Features";
+import { Account } from "./pages/Account";
+import { Cart, Checkout, Home, ProductCategory, ProductDetail, ProductSearch, Order, ViewShop } from "./pages/Features";
 import { Login } from "./pages/Features/login";
 import { Register } from "./pages/Features/Register";
-import { Add_Product, TableProduct } from "./pages/Product"
+import { AddProduct, TableProduct } from "./pages/Product"
 
 export default function App() {
 	const user: any = localStorage.getItem('user');
 	const userInfo: UserModel = JSON.parse(user);
 	const location = window.location.pathname;
+	const [refresh, setRefresh] = useState(0)
+	const updateTotalCart = () => {
+		setRefresh(prev => prev + 1)
+	}
 
-	console.log('vo')
 	return (
 		<>
 			<Router>
-				{(!location.includes('login') && !location.includes('register')) ? <Header /> : <></>}
+				{(!location.includes('login') && !location.includes('register')) ? <Header refresh={refresh} handleRefresh={updateTotalCart} /> : <></>}
 				<Switch>
 					<Route path="/login">
 						<Login />
@@ -31,19 +36,34 @@ export default function App() {
 						<Register />
 					</Route>
 					<Route path="/product-detail/:product_id">
-						<ProductDetail />
+						<ProductDetail updateTotalCart={updateTotalCart} />
 					</Route>
 					<Route path="/cart">
-						<Cart />
+						<Cart updateTotalCart={updateTotalCart} />
 					</Route>
 					<Route path="/checkout">
-						<Checkout />
+						<Checkout updateTotalCart={updateTotalCart} />
 					</Route>
-					<Route path="/add-product">
-						<Add_Product />
+					<Route path="/manage-shop">
+						<AddProduct />
+					</Route>
+					<Route path="/manage-account">
+						<Account />
 					</Route>
 					<Route path="/list-product">
 						<TableProduct />
+					</Route>
+					<Route path="/product-category/:category">
+						<ProductCategory />
+					</Route>
+					<Route path="/view-shop/:shopId">
+						<ViewShop />
+					</Route>
+					<Route path="/search/:keyword">
+						<ProductSearch />
+					</Route>
+					<Route path="/order">
+						<Order />
 					</Route>
 					<Route path="/">
 						<Home />
@@ -51,6 +71,7 @@ export default function App() {
 				</Switch>
 				{(!location.includes('login') && !location.includes('register')) ? <Footer /> : <></>}
 			</Router>
+			{userInfo?.id && <Chatbot />}
 		</>
 	);
 }

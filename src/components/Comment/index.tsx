@@ -10,7 +10,7 @@ import { defaultUser, UserModel } from "../../model/user";
 import moment from "moment";
 import './style.scss';
 import { notificationError, notificationSuccess } from "../Noti";
-import { Pagination, PaginationProps } from "antd";
+import { Empty, Pagination, PaginationProps } from "antd";
 
 export const Comment = () => {
     const user: any = localStorage.getItem('user');
@@ -57,11 +57,11 @@ export const Comment = () => {
     return <div className="comment-wrapper">
         <h3>Comment</h3>
         <div className="comment-list">
-            {commentList.slice((current - 1) * 5, current * 5).map(comment => {
+            {commentList.length > 0 ? commentList.slice((current - 1) * 5, current * 5).map(comment => {
                 return <EntityComment data={comment} key={comment.id} />
-            })}
+            }) : <>No Comment</>}
         </div>
-        <Pagination current={current} onChange={onChange} pageSize={5} total={commentList.length} />
+        {commentList.length > 5 && <Pagination current={current} onChange={onChange} pageSize={5} total={commentList.length} />}
         <WriteCommentComponent disable={checkComment} onSuccess={() => {
             setfresh(prev => prev + 1)
             setCheckComment(true)
@@ -88,7 +88,7 @@ const EntityComment = React.memo(({ data }: { data: CommentModel }) => {
         <div className="information">
             <div className="user-name">{user?.name}</div>
             <div className="rating">
-                <RenderStarComponent numberStar={Number(data.rating)} />
+                <RenderStarComponent numberStar={Number(data.rating) / 2} />
             </div>
             <div className="date-time">{moment(data.created_at).format('MMMM do YYYY h:mm:ss a')}</div>
             <div className="content">{data.content}</div>
@@ -101,7 +101,7 @@ const WriteCommentComponent = ({
     disable
 }: {
     onSuccess: () => void,
-    disable: boolean
+    disable: boolean,
 }) => {
     const [rating, setRating] = useState<number>(0);
     const [content, setContent] = useState<string>('');
@@ -123,7 +123,7 @@ const WriteCommentComponent = ({
         })
             .then((response) => {
                 if (response.statusText === 'OK') {
-                    notificationSuccess({ description: 'Bạn đã thêm comment thành công' });
+                    notificationSuccess({ description: 'You have successfully added a comment' });
                     setRating(0);
                     setContent('');
                     onSuccess();
@@ -136,7 +136,7 @@ const WriteCommentComponent = ({
     return <div className="write-comment">
         <h4>Write Comment</h4>
         {disable
-            ? <div>Bạn đã comment sản phẩm này</div>
+            ? <div>You have commented on this product.</div>
             : userInfo ? <>
                 <StarRating rating={rating} handleRating={(value) => setRating(value)} />
                 <ListRecommendComment handleContent={(value) => setContent(value)} />
@@ -151,7 +151,7 @@ const WriteCommentComponent = ({
                     <button disabled={!rating || !content} style={(!rating || !content) ? { backgroundColor: 'gray', cursor: 'not-allowed' } : {}} onClick={handleSubmitComment}>Comment</button>
                 </div>
             </>
-                : <a href="/login">Đăng nhập để comment</a>}
+                : <a href="/login">Login to comment</a>}
     </div>
 }
 

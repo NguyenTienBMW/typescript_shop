@@ -10,7 +10,7 @@ export const defaultUser = {
     description: '',
     email: '',
     delete_at: '',
-    address: '',
+    address: false,
     created_at: '',
     updated_at: '',
 }

@@ -1,0 +1,11 @@
+.key-search-label {
+    padding-bottom: 20px;
+    font-size: 18px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    .key-word {
+        color: blue;
+        font-size: 22px;
+    }
+}

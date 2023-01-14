@@ -1,0 +1,210 @@
+.checkout-container {
+    font-size: 16px;
+
+    .box-container {
+        padding: 20px;
+        background-color: #f2f2f2;
+        margin-top: 30px;
+        border-radius: 3px;
+    }
+
+    .address-container {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .address-title {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 10px;
+
+        i {
+            color: blue;
+        }
+    }
+
+    .address-user {
+        display: flex;
+        align-items: center;
+        flex-direction: row;
+        gap: 10px;
+
+        .button-change {
+            color: blue;
+            cursor: pointer;
+        }
+    }
+
+    .product-container {
+        display: flex;
+        flex-direction: column;
+
+        .header {
+            display: flex;
+            align-items: center;
+            flex-direction: row;
+            gap: 10px;
+
+            .name {
+                flex: 1;
+            }
+
+            .price {
+                width: 120px;
+                text-align: center;
+            }
+
+            .quanlity {
+                width: 120px;
+                text-align: center;
+            }
+
+            .total {
+                width: 120px;
+                text-align: right;
+            }
+        }
+
+        .shop {}
+
+        .product-list.box-container {
+            margin-top: 0;
+        }
+
+        .product-item {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 0;
+            cursor: default;
+
+            .info-container {
+                flex: 1;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+
+                .product-image {
+                    height: 70px;
+                    width: 70px;
+                    border: solid 1px #007aff;
+
+                    img {
+                        object-fit: cover;
+                        height: 100%;
+                        width: 100%;
+                    }
+                }
+
+                .product-name {
+                    align-self: center;
+
+                    h5 {
+                        font-size: 16px;
+                    }
+                }
+            }
+
+            .product-price {
+                width: 120px;
+                align-self: center;
+                text-align: center;
+                margin-top: 0;
+            }
+
+            .product-quanlity {
+                align-self: center;
+                width: 120px;
+                text-align: center;
+            }
+
+            .product-total-price {
+                width: 120px;
+                text-align: right;
+            }
+        }
+
+        .product-item~.product-item {
+            border-top: solid 1px rgb(226, 226, 226);
+
+        }
+
+        .total-product-container {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 15px
+        }
+    }
+
+    .payment-container {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+
+        .payment-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .total-payment {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: flex-end;
+            gap: 10px;
+            padding-top: 15px;
+            border-top: solid 1px rgb(226, 226, 226);
+
+            .total-item {
+                display: flex;
+
+                div:last-child {
+                    width: 100px;
+                    text-align: right;
+                }
+            }
+        }
+
+        .btn-order-container {
+            display: flex;
+            width: 100%;
+            justify-content: flex-end;
+            border-top: solid 1px rgb(226, 226, 226);
+            padding-top: 15px;
+            
+        }
+        
+        
+        .btn-payment {
+            width: 200px;
+            height: 50px;
+            background-color: blue;
+            border-radius: 5px;
+            align-self: flex-end;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            outline: 0;
+            cursor: pointer;
+            border: none;
+        }
+    }
+    
+    .total-product-container.box-container {
+        border-top: solid 1px rgb(226, 226, 226);
+        margin-top: 0;
+    }
+
+    .shop.box-container,.header.box-container {
+        padding-bottom: 0;
+    }
+    .shop.box-container:nth-child(2) {
+        margin-top: 0;
+    }
+}

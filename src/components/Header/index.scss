@@ -238,15 +238,23 @@
 	}
 	.header-bottom-list {
 		display: flex;
-		flex-direction: column;
+		flex-direction: row;
 		align-items: center;
-		justify-content: center;
+		justify-content: space-between;
 		height: 100%;
 		.cart-icon {
 			cursor: pointer;
 			font-size: 30px;
 			color: white;
-			align-self: flex-end;
+			svg {
+				color: white;
+			}
+		}
+		.home-redirect {
+			font-size: 20px;
+			a {
+				color: white;
+			}
 		}
 	}
 }

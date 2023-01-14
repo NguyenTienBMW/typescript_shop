@@ -19,7 +19,7 @@ export const Chatbot = () => {
   const listMenu = [
     {
       type: "server",
-      content: "Which items do you sell?"
+      content: "can you show me the categories"
     },
     {
       type: "server",
@@ -27,12 +27,8 @@ export const Chatbot = () => {
     },
     {
       type: "server",
-      content: "Shoes"
-    },
-    {
-      type: "server",
-      content: "Iphone"
-    },
+      content: "Bye"
+    }
   ]
   console.log(typeof listContent)
 

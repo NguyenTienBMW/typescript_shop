@@ -38,7 +38,7 @@ function Home() {
 				<ProductList title="Top Rate" url={QueryAPI.product.topRate()} />
 			</div>
 			{/* <Label /> */}
-			<div className="container">
+			{/* <div className="container">
 				<Banner2 idCategory="1" title="Clothes" image="https://images.squarespace-cdn.com/content/v1/61dcd32b3fb8bb4b5af9b560/2469e772-d4de-4dcd-ade0-49183fe7d087/american-made-clothing.jpg" />
 			</div>
 			<div className="container">
@@ -46,7 +46,7 @@ function Home() {
 			</div>
 			<div className="container">
 				<Banner2 idCategory="3" title="Phone" />
-			</div>
+			</div> */}
 		</>
 	);
 }
